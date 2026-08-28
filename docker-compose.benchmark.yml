@@ -1,0 +1,126 @@
+# ============================================================================
+# Benchmark Environment for micro1 Hackathon
+# ============================================================================
+# Usage (via run-experiment.sh):
+#   ./run-experiment.sh baseline --docker
+#   ./run-experiment.sh advanced --docker
+#
+# Or manually:
+#   cd service && mvn clean package -DskipTests
+#   MODE=baseline docker compose -f docker-compose.benchmark.yml up -d
+#
+# Infrastructure limits:
+#   - postgres: 1 CPU, 512 MB
+#   - service:  2 CPU, 2 GB   (JVM pinned via -XX:ActiveProcessorCount)
+#   - k6:       1 CPU, 512 MB
+#
+# NOTE: Uncomment the redis block below if your application uses Redis.
+# ============================================================================
+
+services:
+  postgres:
+    image: postgres:16.9-alpine3.21
+    container_name: hackathon-postgres-bench
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_bench_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+
+#  redis:
+#    image: redis:7.4.3-alpine3.21
+#    container_name: hackathon-redis-bench
+#    volumes:
+#      - redis_bench_data:/data
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.50'
+#          memory: 256M
+
+  service:
+    build:
+      context: ./service
+      dockerfile: Dockerfile
+    container_name: hackathon-service-bench
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JAVA_OPTS: >-
+        -XX:ActiveProcessorCount=2
+        -XX:+UseContainerSupport
+        -Xms1536m
+        -Xmx1536m
+        -XX:StartFlightRecording=name=${MODE:-baseline},settings=profile,dumponexit=true,filename=/jfr-repo/${MODE:-baseline}.jfr
+        -XX:FlightRecorderOptions=repository=/jfr-repo
+        -Djava.security.egd=file:/dev/./urandom
+    volumes:
+      - ./evidence:/jfr-repo
+    depends_on:
+      postgres:
+        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '2.00'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    stop_grace_period: 15s
+
+  k6:
+    image: grafana/k6:0.57.0
+    container_name: hackathon-k6-bench
+    volumes:
+      - .:/hackathon:ro
+      - ./evidence:/hackathon/evidence
+    working_dir: /hackathon
+    environment:
+      TARGET_URL: http://service:8080
+      MODE: ${MODE:-baseline}
+      VUS: ${VUS:-50}
+      DURATION: ${DURATION:-60s}
+      RAMP: ${RAMP:-10s}
+      WRITE_RATIO: ${WRITE_RATIO:-0.1}
+      ENTITY_COUNT: ${ENTITY_COUNT:-100}
+      P95_THRESHOLD_MS: ${P95_THRESHOLD_MS:-500}
+      ERROR_RATE_THRESHOLD: ${ERROR_RATE_THRESHOLD:-0.01}
+      CHECK_RATE_THRESHOLD: ${CHECK_RATE_THRESHOLD:-0.95}
+    command: run benchmarks/k6.js
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+    depends_on:
+      service:
+        condition: service_healthy
+
+volumes:
+  postgres_bench_data:
+#  redis_bench_data:

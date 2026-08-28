@@ -1,0 +1,118 @@
+# Test Environment for micro1 Hackathon
+# Usage: docker compose up -d
+# Verifies your machine can handle the infrastructure stack.
+#
+# NOTE: If the problem requires per-service databases, use:
+#   docker compose --profile per-service-db up -d
+#
+# NOTE: Prometheus + Grafana available via:
+#   docker compose --profile monitoring up -d
+
+services:
+  # Default: shared Postgres with logical schema isolation.
+  # Fastest to scaffold. Good enough unless the problem tests
+  # distributed transactions or gives a per-service starter.docker-compose.benchmark.yml
+  postgres:
+    image: postgres:16.9-alpine3.21
+    container_name: hackathon-postgres
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Optional per-service databases — enable if the problem rewards
+  # distributed consistency demonstrations or provides a starter with
+  # separate DBs.
+  # Usage: docker compose --profile per-service-db up -d
+
+
+#  redis:
+#    image: redis:7.4.3-alpine3.21
+#    container_name: hackathon-redis
+#    ports:
+#      - "6379:6379"
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+
+#  kafka:
+#    image: confluentinc/cp-kafka:7.6.0
+#    container_name: hackathon-kafka
+#    environment:
+#      KAFKA_NODE_ID: 1
+#      KAFKA_PROCESS_ROLES: broker,controller
+#      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+#      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+#      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#    ports:
+#      - "9092:9092"
+#    healthcheck:
+#      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+
+  # Optional: PgBouncer — only enable if the problem explicitly requires
+  # high connection counts or you measure pool exhaustion in k6.
+  # Start without it; add only if JFR proves pool exhaustion.
+  # Usage: docker compose --profile pgbouncer up -d
+#  pgbouncer:
+#    image: pgbouncer/pgbouncer:1.22
+#    container_name: hackathon-pgbouncer
+#    profiles: ["pgbouncer"]
+#    environment:
+#      DATABASES_HOST: postgres
+#      DATABASES_PORT: 5432
+#      DATABASES_DATABASE: mydb
+#      DATABASES_USER: username
+#      DATABASES_PASSWORD: password
+#      POOL_MODE: transaction
+#      MAX_CLIENT_CONN: 1000
+#      # Default_pool_size: keep low — pgbouncer is a pool of pools
+#      DEFAULT_POOL_SIZE: 20
+#    ports:
+#      - "6432:6432"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+
+  # Optional monitoring profile — off by default.
+  # Only enable if you have 8GB+ RAM free and want graphs for the video.
+#  prometheus:
+#    image: prom/prometheus:v2.53.0
+#    container_name: hackathon-prometheus
+#    profiles: ["monitoring"]
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+#    command:
+#      - '--config.file=/etc/prometheus/prometheus.yml'
+#      - '--storage.tsdb.path=/prometheus'
+
+#  grafana:
+#    image: grafana/grafana:10.4.0
+#    container_name: hackathon-grafana
+#    profiles: ["monitoring"]
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      GF_SECURITY_ADMIN_PASSWORD: admin
+#    depends_on:
+#      - prometheus
+
+volumes:
+  postgres_data:
