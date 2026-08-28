@@ -1,0 +1,14 @@
+# Sample Java backend repos used as analysis targets.
+# Format: <git-url>  # <expected tier> — <why>
+# Tiers are hypotheses to be validated during evaluation design (Day 2),
+# not ground truth. The human-expert ranking supersedes them.
+
+# Confirmed targets
+https://github.com/spring-projects/spring-petclinic  # good — reference Spring Boot app, maintained, tested
+
+# Candidates (must be validated: builds on Java 21, license OK, size reasonable)
+# TODO(day-2): add 7-9 more repos spanning good / average / poor quality so the
+# baseline-vs-advanced correlation metric has a meaningful spread. Criteria:
+#   - public, license permits analysis
+#   - Maven or Gradle build
+#   - mix of: well-maintained OSS, tutorial-grade, abandoned/legacy

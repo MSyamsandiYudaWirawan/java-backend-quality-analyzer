@@ -1,4 +1,4 @@
-# [Problem Name] — Hackathon Submission
+# Java Backend Code Quality Analyzer — Hackathon Submission
 
 > **Context:** micro1 Frontier Engineering Challenge. This repo contains a baseline solution and an advanced solution, with measured evidence for every experiment.
 
@@ -38,11 +38,11 @@ This repo was initialized from a personal hackathon template built before the ev
 
 ## Problem & User
 
-**User:** [Describe who uses this system and what they need.]
+**User:** An engineering team evaluating a Java backend repository before an acquisition or merge. They did not build the code and must decide what it is worth before committing to a price.
 
-**Bottleneck:** [Describe the core bottleneck. What limits throughput or correctness under load?]
+**Bottleneck:** A README or working demo reveals little about actual code quality. The buyer must understand an unfamiliar codebase, run its build and tests, inspect architecture and dependencies, and assess technical debt and runtime behavior. Manual review is slow, inconsistent between reviewers, and routinely misses runtime performance and structural problems. Without a repeatable method, the valuation rests on incomplete, biased judgment.
 
-**Why it matters:** [Describe the business impact. Why is solving this bottleneck valuable?]
+**Why it matters:** A bad repository decision costs real engineering time and acquisition money. An objective, evidence-backed quality score — where every point traces to a file, a test result, or a profiler recording — reduces reviewer bias and makes the assessment reproducible by a second person.
 
 ---
 
