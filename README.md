@@ -84,13 +84,32 @@ An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end
 - **Runtime evidence is bounded by deployability.** A repo that cannot be built and booted as a service (libraries, broken builds, ungeneratable load scenarios) scores 0 on the Runtime dimension with an explicit note — that absence is itself a finding for a backend being acquired, not a skipped checkbox.
 - **Load scenarios are agent-generated, then frozen.** k6 scripts are generated from the target's API surface against a fixed scenario standard (mixed create→read, fixed VU/duration profile across all repos), smoke-validated, and committed as evidence. Re-runs use the committed artifact, so measurements are reproducible even though authoring is agentic.
 
----
 
-## Key Failure Mode
 
 **[Failure name].** [Describe the subtle failure you encountered and how you fixed it. Be specific about the root cause and the solution.]
 
 **Fix:** [Describe the fix.]
+
+---
+
+## Eval Set
+
+The 10-repo evaluation set is composed of public repos, one synthetic degraded fork, and four self-authored controlled repos:
+
+| # | Repo | Type | Purpose |
+|---|------|------|---------|
+| 1 | spring-projects/spring-petclinic | public good | Boots with H2, already scored 100/100 by baseline — saturation demo |
+| 2 | petclinic-degraded (fork) | synthetic bottom | Ground-truth anchor; tests stripped, README gutted, dependency broken |
+| 3 | spring-guides/gs-rest-service | public weak | Official skeleton, minimal tests — separates "minimal" from "bad" |
+| 4 | RameshMF/springboot-blog-rest-api | public average | Tutorial-grade full app, needs MySQL — exercises Testcontainers handling |
+| 5 | spring-projects/spring-mvc-showcase | public legacy | Archived XML config — tests legacy handling and dependency-health scoring |
+| 6 | iluwatar/java-design-patterns | public edge case | Library, not a bootable backend — triggers Runtime=0 finding |
+| 7 | practice-mvc | self-authored | Controlled baseline: plain Spring MVC, no cache |
+| 8 | practice-mvc-redis | self-authored | Controlled mid: MVC + Redis cache layer |
+| 9 | practice-webflux | self-authored | Controlled mid: WebFlux, no cache |
+| 10 | practice-webflux-redis | self-authored | Controlled top: WebFlux + Redis — known best runtime |
+
+**Disclosure:** Repos 7–10 are self-authored practice services built before the event to test the benchmark pipeline. They are included because they provide known ground-truth runtime rankings (MVC < MVC+Redis < WebFlux < WebFlux+Redis). The agent had no access to this ground truth during development — rankings were determined by the rubric applied to JFR evidence, the same process used for every other repo.
 
 ---
 
