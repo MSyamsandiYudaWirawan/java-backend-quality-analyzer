@@ -6,14 +6,14 @@ Every experiment lives on its own branch. Pick the one you want to verify:
 
 | Branch | What it is | Key result |
 |--------|------------|------------|
-| `baseline` | [Tech stack]. Naive CRUD, no cache. Control for all experiments. | [X] req/s, p95=[X]ms |
-| `experiment/[NAME]` | [Hypothesis]. **[KEPT/REJECTED]** — [one-line reason]. | [delta] |
-| `advanced` | Final submission. [Tech stack]. | [X] req/s, p95=[X]ms |
+| `baseline` | Naive shell-script analyzer: 5 shallow checks → 0–100 score. Control for all experiments. | spring-petclinic → 100/100 (saturates) |
+| `exp/[name]` | [Hypothesis / capability added]. **[KEPT/REJECTED]** — [one-line reason]. | [Δρ / findings delta] |
+| `advanced` | Final agent workflow: build + test evidence + JFR/k6 runtime profiling + rubric-scored report. | [baseline ρ → advanced ρ] |
 
 ```bash
 git checkout baseline
 # or
-git checkout experiment/[NAME]
+git checkout exp/[name]
 # or
 git checkout advanced
 ```
@@ -22,201 +22,93 @@ git checkout advanced
 
 ## Prerequisites
 
-- Docker + Docker Compose
-- Java 21
-- Maven (wrapper included: `./mvnw`)
-- k6 (for load testing)
-- OS: [your OS]
+- Git
+- Java 21 (`java -version`)
+- Maven 3.9+ (`mvn -version`)
+- bash (Linux/macOS native; on Windows use Git Bash)
+- **Advanced workflow only:** Docker + Docker Compose, k6, `jfr` CLI (ships with the JDK)
+
+No other dependencies. `jq` is **not** required.
 
 ## Versions Used
 
 | Component | Version |
 |-----------|---------|
-| Java | 21 |
-| Spring Boot | [e.g., 4.1.1] |
-| PostgreSQL | [e.g., 16-alpine] |
-| Redis | [e.g., 7-alpine] — only if used |
+| Java | 21.0.11 |
+| Maven | 3.9.11 |
+| k6 | [fill when advanced lands] |
+| OS | Windows 11 + Git Bash (also runs on Linux/macOS bash) |
 
-## Setup
+---
 
-```bash
-# 1. Start infrastructure
-docker compose up -d
-
-# 2. Verify health
-docker compose ps
-
-# 3. Build
-cd service && ./mvnw clean package -DskipTests
-
-# 4. Run
-cd service && ./mvnw spring-boot:run
-# or: java -jar target/service-0.0.1-SNAPSHOT.jar
-```
-
-The service starts on `http://localhost:8080`.
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `[ENDPOINT]` | [Description] |
-| GET | `[ENDPOINT]` | [Description] |
-
-## Health Check
+## Running the Baseline Analyzer
 
 ```bash
-curl http://localhost:8080/actuator/health
-# Expected: {"status":"UP"}
+# Analyze any public Java repo (or a local path):
+./service/baseline/analyze.sh https://github.com/spring-projects/spring-petclinic \
+  --out evidence/baseline/spring-petclinic
+
+# Structural checks only, no Maven run (fast, offline):
+./service/baseline/analyze.sh <repo-url-or-path> --skip-build
 ```
 
-## Running Tests
+**What it does:** clones the target (shallow), checks for README / `pom.xml` / test sources, runs `mvn package` and `mvn test` (15-minute timeout each, override with `BUILD_TIMEOUT_SECONDS`), then writes:
+
+```
+<out>/
+├── baseline-report.md    # human-readable score table
+├── baseline-score.json   # machine-readable score
+├── build.log             # full mvn package output (evidence)
+└── test.log              # full mvn test output (evidence)
+```
+
+**Expected output for spring-petclinic:** `Score: 100/100` — all five checks pass. This saturation is intentional; it is the control the advanced workflow is measured against.
+
+## Running the Unit Tests
+
+Fast, offline, no Maven or network needed:
 
 ```bash
-# Unit + integration tests
-cd service && ./mvnw test
-
-# Compile only (faster)
-cd service && ./mvnw test-compile
+tests/unit/test-baseline.sh
+# Expected: "All unit tests passed." (9 assertions against fixture repos)
 ```
 
-## Load Test
+---
 
-### Automated Pipeline (recommended)
+## Running the Advanced Workflow
 
-`run-experiment.sh` is a full 4-step pipeline — build, benchmark, report, diagnose — in one command:
+[Day 2–3. The advanced workflow is an agent-driven analysis: clone → build → parsed test evidence → k6 + JFR runtime profile of the target (`run-experiment.sh`, `jfr-diagnose.sh`) → rubric-scored report. Exact commands and the eval harness over `service/targets.txt` will be documented here when the `advanced` branch lands.]
 
-```bash
-# Native mode (uses your local JVM + k6)
-./run-experiment.sh baseline
-./run-experiment.sh advanced
+## Running the Evaluation (baseline vs. advanced)
 
-# Docker mode (isolated, resource-limited — apples-to-apples across machines)
-./run-experiment.sh baseline --docker
-./run-experiment.sh advanced --docker
-```
+[Day 2–3. Both analyzers run over the same fixed eval set in `service/targets.txt`; scores are compared against the human-expert ranking. Primary metric: Spearman ρ. Per-repo score table and methodology will be documented here.]
 
-**What it does under the hood:**
-
-| Step | What happens |
-|------|--------------|
-| `[1/4]` Build | `mvn clean package -DskipTests` |
-| `[2/4]` Benchmark | Native: `node benchmarks/orchestrate.js` starts app, runs k6, records JFR. Docker: spins up isolated stack (service 2CPU/2GB, k6 1CPU/512MB, Postgres 1CPU/512MB), waits for k6 to finish, gracefully stops service to flush JFR via `dumponexit=true` |
-| `[3/4]` k6 report | `node benchmarks/k6-report.js` parses k6 JSON → markdown summary |
-| `[4/4]` JFR diagnosis | `./jfr-diagnose.sh` dumps events, computes percentiles, classifies severity, generates hypothesis-driven report |
-
-**Tunable load parameters (env vars):**
-
-```bash
-VUS=300 DURATION=60s RAMP=10s ENTITY_COUNT=100 ./run-experiment.sh baseline --docker
-```
-
-**Artifacts produced:**
-
-```
-evidence/
-├── {mode}.jfr                          # raw JFR recording
-├── k6-{mode}.json                      # raw k6 output
-├── k6-{mode}.md                        # k6 summary report
-└── {mode}/diagnosis-report-{mode}.md   # JFR diagnosis report
-```
-
-### Manual k6 run
-
-```bash
-# Requires service running on localhost:8080
-k6 run --env MODE=baseline benchmarks/k6.js
-
-# Generate / regenerate report from existing JSON (no re-run needed)
-node benchmarks/k6-report.js advanced
-node benchmarks/k6-report.js evidence/k6-advanced.json --baseline evidence/k6-baseline.json
-```
-
-> ⚠️ `benchmarks/k6.js` is a template — replace `[ENDPOINT]` placeholders in `setup()` and `default()` before running. See [`benchmarks/README.md`](benchmarks/README.md).
-
-### Expected output (advanced branch)
-
-```
-RPS: ~[X] req/s
-p50 latency: ~[X]ms
-p95 latency: ~[X]ms
-p99 latency: ~[X]ms
-errors: [X]%
-```
-
-> **Note:** Numbers vary by hardware. The delta (baseline → advanced) matters more than absolute values.
-
-## Reproducing Individual Iterations
-
-Every experiment lives on its own branch. To reproduce any iteration:
-
-```bash
-# List all experiment branches
-git branch -a
-
-# Reproduce baseline
-git checkout baseline
-cd service && ./mvnw clean package
-# Run load test: ./run-experiment.sh baseline
-
-# Reproduce a kept experiment
-git checkout experiment/[NAME]
-cd service && ./mvnw clean package
-# Run load test: ./run-experiment.sh advanced
-```
-
-Compare `evidence/k6-baseline.json` and `evidence/k6-advanced.json` to verify the measured improvement.
-
-## JFR Analysis
-
-```bash
-# Analyze any JFR recording
-./jfr-diagnose.sh evidence/baseline.jfr
-./jfr-diagnose.sh evidence/advanced.jfr
-
-# Override thresholds
-SEV_IO_CONCERNING_MS=30 ./jfr-diagnose.sh evidence/advanced.jfr
-```
-
-Output: `evidence/baseline/diagnosis-report-baseline.md` or `evidence/advanced/diagnosis-report-advanced.md`
+---
 
 ## Approximate Runtime & Cost
 
 | Step | Time |
 |------|------|
-| `docker compose up -d` | ~15 seconds |
-| `./mvnw clean package` | ~30–60 seconds |
-| `./run-experiment.sh baseline` | ~2 minutes |
-| `./run-experiment.sh advanced` | ~2 minutes |
-| Full test suite | ~1 minute |
+| Unit tests | < 5 seconds |
+| Baseline on spring-petclinic (first run, cold Maven cache) | ~5–10 minutes |
+| Baseline on spring-petclinic (warm Maven cache) | ~2–3 minutes |
+| Advanced workflow per repo | [TBD] |
+| Full eval set | [TBD] |
 
-**Cost:** Zero. All infrastructure runs locally in Docker. No cloud resources.
+**Cost:** Zero. Everything runs locally; Docker is used only for isolated target infra in the advanced workflow.
 
 ## Troubleshooting
 
-### `localhost` connection refused during k6 / orchestrator
-
-`localhost` can resolve to `127.0.0.1` (IPv4) or `::1` (IPv6) depending on your OS hosts file and JVM binding preferences. If the health poll or k6 setup fails with `connection refused`, the client and server may be on different loopback families.
-
-**Quick fix — override the URL:**
+### `mvn` times out on a large target repo
 
 ```bash
-# Orchestrator (Node health poll + k6)
-SERVICE_URL=http://127.0.0.1:8080 ./run-experiment.sh baseline
-
-# Manual k6 only
-k6 run --env TARGET_URL=http://127.0.0.1:8080 benchmarks/k6.js
-
-# If IPv4 still fails, try forcing IPv6
-k6 run --env TARGET_URL=http://[::1]:8080 benchmarks/k6.js
+BUILD_TIMEOUT_SECONDS=1800 ./service/baseline/analyze.sh <repo-url>
 ```
 
-**Verify which address the JVM bound to:**
+### Shell script fails with `\r` errors after checkout on Windows
+
+Line endings were normalized by Git. `.gitattributes` pins `*.sh` to LF — re-checkout with:
 
 ```bash
-# macOS / Linux
-lsof -i :8080
-
-# Windows (PowerShell)
-Get-NetTCPConnection -LocalPort 8080
+git rm --cached -r . && git reset --hard
 ```

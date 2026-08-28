@@ -1,12 +1,21 @@
 # Improvement Changelog
 
+## The Metric
+
+The unit of improvement here is **agent capability**, not service throughput. Every experiment adds one capability to the analysis workflow and is measured by running baseline and experiment over the **same fixed eval set** (`service/targets.txt`, ~10 Java backend repos) and comparing both against the human-expert ranking.
+
+- **Primary:** Spearman rank correlation (ρ) between analyzer score order and expert ranking.
+- **Secondary:** concrete findings per repo (each traced to a file/test/profiler recording), evidence traceability, wall-clock time per analysis.
+
+With ~10 repos, ρ is a coarse signal — one repo moving a rank swings it. So per-repo scores and the "findings the baseline missed" story are co-primary evidence in every entry.
+
 ## Structure
 
 This document tracks every meaningful iteration. The judges want to see **how you think**, not just what you built.
 
 **Only two final solutions exist:**
 - **Baseline** — simplest thing that passes tests (`baseline` branch)
-- **Advanced** — incorporates optimizations that **survived measurement** (`advanced` branch)
+- **Advanced** — incorporates capabilities that **survived measurement** (`advanced` branch)
 
 Everything else is an experiment: kept or rejected. Rejected experiments are required by the rubric ("one experiment you removed").
 
@@ -16,18 +25,17 @@ Everything else is an experiment: kept or rejected. Rejected experiments are req
 git log --oneline --all
 
 a1b2c3d  (advanced) Final advanced: [description]
-e4f5g6h  (experiment/h[N]) [Description] — KEPT (partial)
-i7j8k9l  (experiment/h[N]) [Description] — KEPT
-m0n1o2p  (experiment/h[N]) [Description] — REJECTED
-q3r4s5t  (experiment/h[N]) [Description] — REJECTED
-u6v7w8x  (baseline) Baseline: [tech stack]
+e4f5g6h  (exp/h[N]-[name]) [Description] — KEPT (partial)
+i7j8k9l  (exp/h[N]-[name]) [Description] — KEPT
+m0n1o2p  (exp/h[N]-[name]) [Description] — REJECTED
+u6v7w8x  (baseline) Baseline: naive analyzer
 ```
 
 **Reproducing any iteration:**
 ```bash
-git checkout experiment/[name]
-cd service && ./mvnw clean package
-# Run k6 load test per REPRODUCTION.md
+git checkout exp/[name]
+tests/unit/test-baseline.sh                 # fast offline checks
+./service/baseline/analyze.sh <repo-url>    # or the advanced workflow per REPRODUCTION.md
 ```
 
 ---
@@ -36,27 +44,26 @@ cd service && ./mvnw clean package
 
 | # | Branch | Change | Evidence | Result | Status |
 |---|--------|--------|----------|--------|--------|
-| 1 | `baseline` | [Tech stack and scope] | [Benchmark config] | [RPS], [p95], [errors] | BASELINE |
-| 2 | `experiment/h1-[name]` | [What changed] | [Evidence type] | [Measured result] | **REJECTED** |
-| 3 | `experiment/h2-[name]` | [What changed] | [Evidence type] | [Measured result] | **KEPT** |
-| 4 | `experiment/h3-[name]` | [What changed] | [Evidence type] | [Measured result] | **KEPT** |
-| 5 | `advanced` | [Final stack] | [Evidence type] | [Final numbers] | ADVANCED |
+| 1 | `baseline` | Naive analyzer: 5 shallow yes/no checks → 0–100 score | spring-petclinic run (`evidence/baseline/spring-petclinic/`) | 100/100 — saturates, no headroom to rank repos | BASELINE |
+| 2 | `exp/h1-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
+| 3 | `exp/h2-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
+| 4 | `advanced` | [Final workflow] | [Full eval-set comparison] | [baseline ρ → advanced ρ] | ADVANCED |
 
 ---
 
 ## Experiment Details
 
 ### REJECTED: H1 — [Hypothesis Name]
-- **Hypothesis:** [What you thought would improve.]
-- **Evidence:** [What JFR/JMH/k6 showed before the change.]
-- **Result:** [What actually happened after the change, with numbers.]
+- **Hypothesis:** [What capability you thought would improve ranking quality.]
+- **Evidence:** [What the eval set showed before the change — scores, missed findings.]
+- **Result:** [What actually happened after the change, with per-repo scores.]
 - **Why rejected:** [Why the numbers didn't justify keeping it.]
 - **Full report:** [`evidence/experiments/h1-[name].md`](evidence/experiments/h1-[name].md)
 
 ### KEPT: H2 — [Hypothesis Name]
-- **Hypothesis:** [What you thought would improve.]
-- **Evidence:** [What JFR/JMH/k6 showed before the change.]
-- **Result:** [What actually happened after the change, with numbers.]
+- **Hypothesis:** [What capability you thought would improve ranking quality.]
+- **Evidence:** [What the eval set showed before the change — scores, missed findings.]
+- **Result:** [What actually happened after the change, with per-repo scores.]
 - **Why kept:** [Why the numbers justified keeping it.]
 - **Full report:** [`evidence/experiments/h2-[name].md`](evidence/experiments/h2-[name].md)
 
@@ -80,4 +87,4 @@ cd service && ./mvnw clean package
 
 ## Video Changelog Reference (30 seconds)
 
-> "Baseline: [tech stack] — [baseline numbers]. First I tried [experiment 1] and [experiment 2] — both falsified by measurement. The real win was [kept experiment]: [what changed], [measured delta]. I also explored [other experiment] — it [result]. [X] mattered most. [Y] mattered least."
+> "Baseline: a naive script that gives spring-petclinic 100/100 and can't tell good from great. First I tried [experiment 1] and [experiment 2] — both falsified on the eval set. The real win was [kept experiment]: [what changed], [measured delta in ranking quality / findings]. I also explored [other experiment] — it [result]. [X] mattered most. [Y] mattered least."

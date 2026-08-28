@@ -48,29 +48,35 @@ This repo was initialized from a personal hackathon template built before the ev
 
 ## Baseline Solution
 
-[Tech stack: e.g., Spring MVC + JPA + PostgreSQL.]
+A naive shell-script analyzer: `service/baseline/analyze.sh`. No AI, no deep analysis. For a target Java repo it checks five shallow yes/no signals and sums them into a 0–100 score:
 
-- `POST [ENDPOINT]` — [what it does]
-- `GET [ENDPOINT]` — [what it does]
+| Check | Weight |
+|-------|--------|
+| README present | 10 |
+| Maven build file (`pom.xml`) | 10 |
+| Tests present under `src/test` | 20 |
+| `mvn package` succeeds | 25 |
+| `mvn test` passes | 35 |
 
-**Measured:** [RPS] req/s, p95 latency [X]ms, [Y]% errors.
+**Measured:** spring-petclinic @ `818c413` → **100/100** (`evidence/baseline/spring-petclinic/`).
 
-The baseline is intentionally naive — it passes functional tests but makes no performance concessions. This is the control against which all experiments are judged.
+The baseline is intentionally naive — it saturates on any well-formed repo and cannot distinguish "compiles and has tests" from "well-architected, low-debt, performant under load". This scoring ceiling is the control against which all experiments are judged.
 
 ---
 
 ## Advanced Solution
 
-[Tech stack: e.g., WebFlux + R2DBC + Redis cache.]
+An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end:
 
-**What changed:**
-1. **[Change 1]:** [One sentence description.]
-2. **[Change 2]:** [One sentence description.]
-3. **[Change 3]:** [One sentence description.]
+1. **Clone + build** the target (Testcontainers for isolated infra where needed).
+2. **Full test evidence** — parsed surefire results: counts, failures, coverage trend, not a pass/fail bit.
+3. **Runtime profiling** — k6 load test + JFR recording of the *target* repo, via the pre-existing `run-experiment.sh` / `jfr-diagnose.sh` pipeline.
+4. **Architecture & dependency health** — layering, MVC vs WebFlux, outdated/risky dependencies.
+5. **Evidence-linked report** — every score traces to a file, test result, or profiler recording; scored against a fixed rubric shared with the human expert.
 
-**Measured:** [RPS] req/s, p95 latency [X]ms, [key JFR metric delta].
+**Measured:** [Spearman ρ vs. human-expert ranking on the 10-repo eval set: baseline ρ = X → advanced ρ = Y. Secondary: findings per repo, evidence traceability, wall-clock time per analysis.]
 
-> ⚠️ [Add any caveats about benchmark conditions here.]
+> ⚠️ [Add caveats about eval-set size and ranking methodology here.]
 
 ---
 
@@ -119,7 +125,7 @@ A submission is scored only after it passes completeness, integrity, trace, and 
 - [ ] `baseline` branch passes all unit and integration tests
 - [ ] `advanced` branch passes all unit and integration tests
 - [ ] Every experiment branch exists and is documented in `IMPROVEMENTS.md`
-- [ ] `evidence/` contains JFR recordings and k6 results for both baseline and advanced
+- [ ] `evidence/` contains analysis reports (markdown + JSON) for baseline and advanced across the eval repos, plus JFR/k6 recordings for repos where runtime profiling was used
 - [ ] `REPRODUCTION.md` commands run successfully on a clean environment
 - [ ] Trajectories exported for every major agent session in `trajectories/kimi-cli/`
 - [ ] 5-minute video recorded and under 5 minutes

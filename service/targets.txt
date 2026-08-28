@@ -4,11 +4,26 @@
 # not ground truth. The human-expert ranking supersedes them.
 
 # Confirmed targets
-https://github.com/spring-projects/spring-petclinic  # good — reference Spring Boot app, maintained, tested
+https://github.com/spring-projects/spring-petclinic  # good — reference Spring Boot app, maintained, tested (baseline: 100/100)
 
-# Candidates (must be validated: builds on Java 21, license OK, size reasonable)
-# TODO(day-2): add 7-9 more repos spanning good / average / poor quality so the
-# baseline-vs-advanced correlation metric has a meaningful spread. Criteria:
-#   - public, license permits analysis
-#   - Maven or Gradle build
-#   - mix of: well-maintained OSS, tutorial-grade, abandoned/legacy
+# Candidates (must be validated: exists, clones, builds on Java 21, license OK, size reasonable)
+# Good tier
+https://github.com/iluwatar/java-design-patterns  # good-ish — mature, CI, many tests; caveat: patterns library, not a deployable backend
+# Average / tutorial tier
+https://github.com/eugenp/tutorials  # average/mixed — huge multi-module tutorial repo; caveat: very long build, consider a subset
+https://github.com/RameshMF/springboot-blog-rest-api  # average — tutorial-grade REST API
+https://github.com/eugenp/REST-With-Spring  # average — course project repo
+# Weak / minimal tier
+https://github.com/spring-guides/gs-rest-service  # weak-minimal — official guide skeleton, almost no tests
+# Legacy tier
+https://github.com/spring-projects/spring-mvc-showcase  # legacy — archived, XML-config MVC, pre-Boot era
+
+# Synthetic (recommended — controlled ground truth, no license risk)
+# TODO(day-2): create under a separate repo or tests/targets/:
+#   petclinic-degraded: petclinic fork with tests stripped + README removed + a broken test
+#   petclinic-legacy:   petclinic pinned to an old Spring Boot with no tests and unused deps
+# Synthetic repos give a known-correct bottom rank, which anchors the correlation metric.
+
+# TODO(day-2): add 1-2 more candidates to reach ~10 total, then run a validation
+# pass over every row: shallow clone + `mvn -q -DskipTests package` on Java 21.
+# Drop or replace any target that fails validation; record drops here.

@@ -32,5 +32,9 @@ evidence/experiments/*.md~
 # k6 binary cache (if any)
 .k6/
 
+# Python bytecode
+__pycache__/
+*.pyc
+
 # Personal study materials (not part of submission)
 personal/
