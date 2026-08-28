@@ -1,256 +1,177 @@
-# Agent Prompt Templates
+# Agent Onboarding Brief — READ THIS FIRST EVERY SESSION
 
-Reference material for the hackathon workflow. These are **starting points** — adapt or ignore them as needed.
-
-## My workflow
-
-I write the code. The AI is a sparring partner, not a code generator. No end-to-end prompts.
-
-```
-implement baseline (MVC + JPA)  ← I do this
-    ↓
-JFR (baseline) → identify hotspots
-    ↓
-COMMIT baseline, tag it
-    ↓
-Macro-prompt AI: "Here's my JFR + k6. I think X is the bottleneck." → hypothesis
-    ↓
-CHECKOUT exp/<hypothesis> from baseline
-    ↓
-Implement experiment ← I do this (micro-prompt AI on stuck details)
-    ↓
-JFR / JMH / k6 — prove or reject
-    ↓
-CEILING EXPERIMENT — find where baseline collapses, run advanced at same load, push beyond
-    ↓
-SAVE TRAJECTORY ← AI MUST REMIND ME BEFORE ENDING ANY SESSION
-    ↓
-if KEEP: commit, find next hotspot → repeat
-    ↓
-last: branch `advanced`, merge last kept experiment
-    ↓
-FINALIZE: write IMPROVEMENTS.md, README.md, REPRODUCTION.md, trajectories
-    ↓
-Macro-prompt AI: "Review my evidence. What did I miss?"
-```
-
-> **AI HARD RULE:** Before ending any session, the AI MUST ask: "Did you save the trajectory? Run `./save-traj.sh '[current-branch-name]'` now." No exceptions. Trajectories are a scored rubric item.
+> You are the coding agent for the micro1 Frontier Engineering Challenge
+> (Aug 28–31, 2026). This file is the single source of truth for the project
+> state. Read it fully before doing anything. Skim sections 1–3 every session;
+> the rest is reference.
 
 ---
 
-## Event Rules (from micro1 post.txt)
+## 1. The Problem
 
-These are non-negotiable. A submission that violates any of these may be disqualified before scoring.
+**Code Quality Analyzer for Java backends.** User: a team evaluating a Java
+backend repo before acquisition/merge. Manual review is inconsistent and
+misses runtime/structural issues. We build an evidence-based quality
+assessment where every score traces to a file, test result, or profiler
+recording.
 
-### Required Solutions
-- **Baseline + Advanced are both mandatory.** The advanced solution must show meaningful improvement in capability, reliability, efficiency, coverage, or engineering quality — not a cosmetic variation.
-- **Coding-agent use is required.** Must disclose tools used and submit trajectories.
-- **Make it clear what existed before the competition and what you added.**
+- **Baseline** (done): naive shell script, 5 shallow checks → 0–100 score.
+  Saturates on any well-formed repo (spring-petclinic = 100/100). This
+  blindness is intentional — it is the control.
+- **Advanced** (to build): agent workflow — clone → build → parsed test
+  evidence → k6+JFR runtime profile of the *target* repo → rubric-scored,
+  evidence-linked report.
 
-### Data & Ethics
-- Use public or synthetic data. Keep credentials and private information outside the submission.
-- Choose a legal and ethical use case.
-- Keep consequential actions controlled through a sandbox or simulation; add human approval.
+## 2. The Metric (this replaced the template's throughput framing)
 
-### Evidence & Reproducibility
-- **Connect every claim about results to submitted evidence.**
-- **Give judges enough access to run the project and reproduce the main result.**
-- A submission is scored only after passing eligibility, completeness, integrity, trace, and reproducibility checks.
+Unit of improvement = **agent capability**, measured on a fixed ~10-repo eval
+set (`service/targets.txt`):
 
-### Submission Package (5 items)
-1. **Complete solution code + Improvement Changelog** — every meaningful iteration, connected to evidence that guided the next decision. Main failure mode + hot take.
-2. **README.md** — introduce intended user, explain bottleneck, why solving it is valuable.
-3. **REPRODUCTION.md** — clean-environment setup, exact commands, required data, expected output, versions, runtime, cost.
-4. **Solution video (up to 5 minutes)** — problem → baseline → one realistic execution → final comparison → explain changelog. Highlight the change that contributed most, and one experiment removed.
-5. **Agent trajectories** — for every agent used. Show what the agent did, how tools responded, feedback that shaped next steps, retries, human checkpoints.
+- **Primary:** Spearman ρ between analyzer score order and the human-expert
+  ranking (`service/eval/expert-ranking.txt`).
+- **Co-primary:** per-repo findings the baseline missed, each traced to
+  evidence. ρ is coarse at n=10 — never report it alone.
+- **Secondary:** evidence traceability, wall-clock time per analysis.
 
----
+The **rubric** (`service/rubric/quality-rubric.md`) is the shared contract:
+the expert ranks with it, the agent scores with it. 100 pts: Build & Test 25,
+Architecture 20, Dependencies 15, Runtime 25, Maintainability 15.
 
-## Scoring & Tie-Break Order
-
-Scored out of 100 by micro1's engineering team. **Qualification gate first** — a project that cannot be run or verified may be disqualified before rubric scoring.
-
-Tie-break order (higher wins):
-1. **Agent Solution & Engineering** ← optimize here first
-2. **Reproducibility**
-3. **Measured Improvement**
-4. **End to End Quality**
-5. Final panel review of documented evidence
-
-**Implication:** Trajectory quality, clear evidence, and honest keep/reject decisions matter more than marginal benchmark gains.
-
----
-
-## Ceiling Experiment
-
-A benchmark that never stresses the baseline cannot distinguish architectural wins from noise.
-Run these three stages in order before finalizing.
-
-**Stage 1 — Find the baseline ceiling.**
-Ramp VUs until RPS plateaus or p99 exceeds 500ms. That is `CEILING_VUS`.
+The **harness** (`service/eval/evaluate.py`, stdlib-only Python) runs any
+analyzer over the eval set and computes ρ:
 
 ```bash
-VUS=150 DURATION=60s RAMP=10s ENTITY_COUNT=100 ./run-experiment.sh baseline --docker
-VUS=200 DURATION=60s RAMP=10s ENTITY_COUNT=100 ./run-experiment.sh baseline --docker
-VUS=300 DURATION=60s RAMP=10s ENTITY_COUNT=100 ./run-experiment.sh baseline --docker
+python service/eval/evaluate.py --label <name> \
+  --analyzer "bash service/baseline/analyze.sh {target} --skip-build --out {out}" \
+  --targets service/targets.txt --ranking service/eval/expert-ranking.txt \
+  --out evidence/eval/<name>
 ```
 
-JFR signal to confirm: `ThreadPark` on `HikariPool-1:connection-adder` or `HikariPool-1:housekeeper`, `SocketRead` p95 climbing.
+## 3. Current State (end of Day 1, Aug 28)
 
-**Stage 2 — Run advanced at the same ceiling load.**
-Apples-to-apples. Same VUs, same duration, same entity spread.
+Branch: `baseline`. Clean tree. Commits: `6bbabd9` (baseline analyzer),
+`b5eb30e` (reframe + rubric + harness + evidence).
 
+**Built and tested:**
+- `service/baseline/analyze.sh` — naive analyzer. 9 bash unit tests pass.
+- `service/eval/evaluate.py` — eval harness. 12 Python unit tests pass
+  (`python tests/unit/test_spearman.py`). Smoke-verified end-to-end.
+- `service/rubric/quality-rubric.md` — scoring contract v1.
+- Docs reframed to the eval metric: README, IMPROVEMENTS, REPRODUCTION,
+  CHECKLIST. Trajectories started: `trajectories/kimi-cli/` (2 sessions) +
+  `index.md`.
+- Evidence: `evidence/baseline/spring-petclinic/` (100/100, saturated).
+
+**Session-start sanity check (run these):**
 ```bash
-VUS=<CEILING_VUS> DURATION=60s RAMP=10s ENTITY_COUNT=100 ./run-experiment.sh advanced --docker
+tests/unit/test-baseline.sh && python tests/unit/test_spearman.py
 ```
 
-JFR signal to confirm: `SocketRead` count = 0, `ThreadPark` count < 100, hottest frame in reactive pipeline.
+**Environment:** Windows + Git Bash, Java 21.0.11, Maven 3.9.11, k6, Docker,
+Python 3.13. **No jq — do not depend on it.** Shell scripts are pinned to LF
+via `.gitattributes`. Paths crossing Python→bash must go through
+`bash_path()`-style handling (backslashes get eaten; see trajectory
+2026-08-28_23-32 for the incident).
 
-**Stage 3 — Push advanced beyond the baseline ceiling.**
-Find where the advanced stack saturates. This shows the headroom the architecture buys.
+## 4. Day 2 Plan (in order — do not skip ahead)
 
-```bash
-VUS=500 DURATION=90s RAMP=15s ENTITY_COUNT=100 ./run-experiment.sh advanced --docker
-```
+1. **Validate public targets.** Clone + Java 21 build pass over
+   `service/targets.txt` candidates; drop/replace failures, record drops.
+2. **Import the 4 controlled practice repos** (MVC / MVC+Redis / WebFlux /
+   WebFlux+Redis — product create + get-by-id service the human built to test
+   the benchmark pipeline). TODO: human provides location; import as local
+   targets. Their quality ordering is *known* (runtime-measured during
+   practice) — they are the method-validation set, and the baseline
+   scores all four ~100/100 (baseline-blindness demo for the video).
+3. **Expert ranking session (human, 1–2h timeboxed).** Score every validated
+   target with the rubric → `service/eval/expert-ranking.txt` + per-repo
+   justifications in `evidence/expert-ranking-notes.md`.
+4. **Baseline ρ headline.** Run harness (baseline, full build mode) over the
+   eval set → `evidence/eval/baseline/`. Record in IMPROVEMENTS.md.
+5. **Experiments** (one branch each, `exp/<name>`, each measured through the
+   harness on the full eval set):
+   - `exp/h1-rubric-scoring` — agent scores repos against the rubric with
+     build+test evidence. Expected largest Δρ; becomes the advanced spine.
+   - `exp/h2-runtime-profiling` — k6+JFR of *target* services via
+     `run-experiment.sh` / `jfr-diagnose.sh`. Start with the 4 controlled
+     repos (k6 already exists there).
+   - `exp/h3-k6-generation` — agent generates k6 scripts for arbitrary repos
+     (see §5). Validation: generated tests must recover the known ordering of
+     the 4 controlled repos.
+   - REJECTED candidate: pure code-metrics scoring (LOC/complexity) — cheap,
+     likely no Δρ, good "what did not matter" entry.
+6. **Package:** full baseline-vs-advanced eval table, IMPROVEMENTS/README
+   numbers, REPRODUCTION final, video script, trajectories. **No new
+   experiments in the final 4 hours.**
 
+## 5. k6 Generation Policy (for h3)
 
-## How I prompt
+Reproducibility lives in the **artifact**, not the authoring:
 
-| Type | When | Example |
-|------|------|---------|
-| **Micro** | Stuck on one specific thing | "`GenericJacksonJsonRedisSerializer` no-arg constructor is missing in Spring Data Redis 4.1.1. What's the right fix?" |
-| **Macro** | Strategic decision, report review, blind spot check | "Here's my baseline JFR + 3 experiment branches. Which hypothesis has the strongest evidence? What should I try next?" |
-| **None** | Straightforward code I can write faster than explaining | Scaffold, CRUD, wiring, config I already know |
+- Generated k6 scripts are **committed per repo as evidence**; re-runs use
+  the committed script, never regeneration.
+- Generation is **template + slots**, not free-form: fixed scenario standard
+  (mixed create→read from the actual API surface — OpenAPI/springdoc if
+  present, controllers otherwise), fixed load profile (VUs/duration/ramp)
+  across all repos for comparability.
+- **Smoke gate:** a generated script must pass a short validation run (setup
+  succeeds, response checks pass) before acceptance. We vouch by validation,
+  not by trust.
+- Repo can't be load-tested → Runtime dimension scores 0 with an explicit
+  "could not generate a valid load scenario" note. That is a finding, not a
+  harness failure.
 
-## Template index
+**Scoped out (documented limitation):** multi-service architectures (Kafka /
+outbox / microservice meshes). The pipeline measures one deployable unit —
+the bootable service or its gateway. Say so plainly in reports; do not build
+a multi-service harness.
 
-| File | What's inside |
-|------|---------------|
-| `01-scaffold-service.md` | **Baseline:** MVC + JPA + PostgreSQL — reference if I forget the exact pom.xml deps |
-| `00-scaffold-reactive-service.md` | **Advanced:** WebFlux + R2DBC + Redis — reference for reactive migration experiments |
-| `02-implement-cas-update.md` | Optimistic locking pattern |
-| `03-idempotency-filter.md` | Deduplication / retry safety |
-| `04-chaos-sigkill-test.md` | Crash recovery test |
-| `05-outbox-publisher.md` | Dual-write safety |
+## 6. Working Agreements (the human holds you to these)
 
-## Rule
+1. **Trajectories are curated, not raw dumps.** After each meaningful work
+   block, write/update a file in `trajectories/kimi-cli/YYYY-MM-DD_HH-MM-{topic}.md`
+   using the format in `trajectories/README.md` (prompt, key decisions,
+   output summary, human checkpoint, retries) and add a row to
+   `trajectories/index.md`. **Engineering content only** — no personal chat,
+   no motivation talk. Include genuine retries/corrections; judges want them.
+2. **Git mutations need explicit confirmation each time** (commit, branch,
+   tag). Propose, wait for approval.
+3. **One experiment per branch** (`exp/<name>`); every branch has tests;
+   every experiment gets `evidence/experiments/h[N]-[name].md` with
+   hypothesis → harness numbers → KEPT/REJECTED before the next one starts.
+4. **No claim without evidence.** Every number in README/IMPROVEMENTS links
+   to a file under `evidence/`.
+5. **TIGERSTYLE** (`prompts/TIGERSTYLE.md`) applies to all generated code.
+   Python harness stays stdlib-only.
+6. **Pre-existing vs new:** prompts/, benchmarks/, run-experiment.sh,
+   jfr-diagnose.sh, docker-compose*.yml, doc scaffolding are pre-existing
+   template. Only service/, tests/, evidence/, filled docs, and trajectories
+   are event work. Never blur this.
+7. **Stop on deadline.** Final 4 hours: docs, video, verification only.
 
-Use only what the problem requires. "Minimal" means **no unnecessary architecture theater** — not "stop optimizing."
+## 7. Scoring Reality Check
 
-- Baseline must pass tests first.
-- **Every branch (baseline + every experiment + advanced) must have unit tests and integration tests.** Integration tests must use Testcontainers for Postgres (and Redis/Kafka if used). Do not skip this — "tests" is a required submission item.
-- Then optimize based on **measured evidence** (JFR → hypothesis → experiment → keep/reject).
-- Do NOT keep optimizing past the deadline. A clean submission with honest rejected experiments beats an unfinished advanced solution.
-
-## Branches
-
-| Branch | Purpose |
-|--------|---------|
-| `baseline` | First working solution. Tag this. |
-| `exp/<hypothesis>` | One experiment per branch. Throw away if rejected. |
-| `advanced` | Final improved solution. Merge last kept experiment here. |
-
-> **When referencing an experiment stage in your report, point to the exact branch.** Judges can `git checkout exp/<name>` to reproduce that exact state and verify your numbers.
-
-## Evidence folder
-
-```
-evidence/
-├── experiments/
-│   ├── h1-cache-warmup.md
-│   ├── h2-connection-pool.md
-│   └── ...
-├── baseline.jfr
-├── advanced.jfr
-├── k6-baseline.json
-└── k6-advanced.json
-```
-
-Every hypothesis gets a markdown file with:
-- The observed hotspot (with JFR flame graph reference)
-- The proposed change
-- Benchmark result (before vs after)
-- Keep or reject decision
-
-## Finalize & Submit
-
-After the last experiment is merged into `advanced`, stop optimizing and **package the submission**:
-
-| Artifact | What to write | Where |
-|----------|--------------|-------|
-| **IMPROVEMENTS.md** | Changelog: every experiment, evidence, measured delta, keep/reject decision | Repo root |
-| **README.md** | Problem, user, bottleneck, baseline vs advanced numbers, key failure mode, hot take, trade-offs | Repo root |
-| **REPRODUCTION.md** | Exact commands, versions, expected output, runtime, how to checkout each branch | Repo root |
-| **Trajectories** | Agent session logs with prompts, decisions, retries, human checkpoints | `trajectories/` |
-| **Video script** | 5-min walkthrough: problem → baseline → one kept experiment → one rejected experiment → advanced comparison | `video/script.md` (optional) |
-
-> **Rule:** Do not keep iterating past the deadline. A clean submission with honest rejected experiments beats an unfinished advanced solution.
+Tie-break order: Agent Solution & Engineering (30) > Reproducibility (15) >
+Measured Improvement (15) > End-to-End Quality (20). 80/100 points are
+execution, not idea. The single most valuable artifact to aim for: **one
+undeniable evidence moment** — a repo the baseline scored 100/100 that the
+advanced workflow catches failing under load, with the JFR to prove it.
 
 ---
 
-## Clean Template Structure (Post-Practice)
+## Reference (pre-existing template material)
 
-After deleting the practice-specific directories (`service/`, `evidence/`, `personal/`), the repo becomes a reusable kickoff template:
+| File | What it is | Status |
+|------|-----------|--------|
+| [`post.txt`](post.txt) | Event rules, timeline, judging criteria | current |
+| [`problem.txt`](problem.txt) | Full problem statement incl. the code-analysis example (appendix 01) | current |
+| [`TIGERSTYLE.md`](TIGERSTYLE.md) | Coding principles for all generated code | current |
+| [`../run-experiment.sh`](../run-experiment.sh) | Build → k6 benchmark → report → JFR diagnose pipeline | current — re-pointed at *target* repos in h2/h3 |
+| [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — same |
+| `01-scaffold-service.md`, `00-scaffold-reactive-service.md` | MVC / WebFlux+Redis scaffold references | legacy — from the practice problem; useful only as reference for the 4 controlled repos |
+| `02–05-*.md` (CAS, idempotency, chaos, outbox) | Practice-problem patterns | legacy — out of scope (multi-service excluded) |
+| `00-git-workflow.md` | Branch/commit workflow | current |
 
-```
-hackathon-template/
-├── prompts/              # All prompt files + TIGERSTYLE + post rules
-│   ├── 00-git-workflow.md
-│   ├── 00-scaffold-reactive-service.md
-│   ├── 01-scaffold-service.md
-│   ├── 02-implement-cas-update.md
-│   ├── 03-idempotency-filter.md
-│   ├── 04-chaos-sigkill-test.md
-│   ├── 05-outbox-publisher.md
-│   ├── README.md         # This file
-│   ├── TIGERSTYLE.md
-│   └── post.txt
-├── benchmarks/           # k6.js, k6-report.js, orchestrate.js
-├── tests/                # unit/, integration/, chaos/ (populate per problem)
-├── trajectories/         # README.md + session logs
-├── docker-compose.yml    # Postgres + Redis + Kafka + optional profiles
-├── prometheus.yml
-├── jfr-diagnose.sh       # Generic JFR analyzer
-├── run-experiment.sh     # Full pipeline wrapper
-├── README.md             # ← Template with placeholders
-├── REPRODUCTION.md       # ← Template with placeholders
-├── IMPROVEMENTS.md       # ← Template with placeholders
-└── .gitignore
-```
-
-### Mandatory root files (template version)
-
-These were replaced from practice content into structured placeholders so the AI can fill them during the event without guessing the rubric sections.
-
-   ┌─────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-   │ File            │ What's Inside                                                                                                                                                      │
-   ├─────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-   │ README.md       │ Skeleton with Problem & User, Baseline, Advanced, Key Failure Mode, Hot Take, Trade-offs. All practice content replaced with [bracketed placeholders].             │
-   ├─────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-   │ REPRODUCTION.md │ Full structure: Prerequisites, Versions, Setup, Endpoints, Tests, Load Test, Branch Checkout, JFR Analysis, Runtime table. Placeholders for URLs and expected      │
-   │                 │ numbers.                                                                                                                                                           │
-   ├─────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-   │ IMPROVEMENTS.md │ Experiment log table template, REJECTED/KEPT detail sections, "What Mattered Most / What Did Not Matter," and a 30-second video script template.                   │
-   └─────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-## AI Operating Rules for This Event
-
-I (the AI agent) must follow these rules on every session. The human will hold me accountable.
-
-1. **Before ending any session, ask:** "Did you save the trajectory? Run `/export-md trajectories/kimi-cli/YYYY-MM-DD_HH-MM-{topic}.md` now."
-2. **Every branch must have tests.** If I generate code without tests, stop and add them. Integration tests must use Testcontainers.
-3. **Measured evidence first.** No optimization without JFR/k6 numbers. No keeping an experiment without a benchmark delta.
-4. **One experiment per branch.** Name it `exp/<hypothesis>`.
-5. **Document every experiment** in `evidence/experiments/h[N]-[name].md` before moving on.
-6. **Pre-existing vs new:** I must not claim template files (prompts, benchmarks, scripts) as event work. Only solution code, tests, experiments, and evidence are new.
-7. **Macro-prompt at milestones:** After baseline JFR, after final experiment merge, and before submission, the human will run a macro-prompt for blind-spot review.
-8. **Stop on deadline:** Do not start new experiments in the final 4 hours. Docs and video take longer than expected.
-
-## References
-
-| File                                           | What it is |
-|------------------------------------------------|-----------|
-| [`post.txt`](post.txt)                         | Event details — micro1 Frontier Engineering Challenge rules, timeline, evaluation criteria, prizes |
-| [`TIGERSTYLE.md`](TIGERSTYLE.md)               | Coding principles I enforce on all generated code |
-| [`../run-experiment.sh`](../run-experiment.sh) | Full pipeline: `mvn clean package` → `node benchmarks/orchestrate.js <mode>` → `./jfr-diagnose.sh <mode>` |
-| [`../jfr-diagnose.sh`](../jfr-diagnose.sh)     | JFR analysis script — dumps events, computes percentiles, classifies severity, generates hypothesis-driven diagnosis report |
+The old "ceiling experiment" and perf-tuning workflow from the practice
+problem do not apply here — JFR/k6 are analysis tools pointed at *target*
+repos, not optimization loops on our own service.

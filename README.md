@@ -78,6 +78,12 @@ An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end
 
 > ⚠️ [Add caveats about eval-set size and ranking methodology here.]
 
+### Scope & Limitations
+
+- **Single deployable unit only.** The runtime pipeline (k6 + JFR) measures one bootable service — the target itself or its gateway. Multi-service architectures (Kafka topologies, outbox patterns, microservice meshes) are analyzed with static signals only; we deliberately do not spin up multi-service harnesses, and reports say so plainly rather than faking coverage.
+- **Runtime evidence is bounded by deployability.** A repo that cannot be built and booted as a service (libraries, broken builds, ungeneratable load scenarios) scores 0 on the Runtime dimension with an explicit note — that absence is itself a finding for a backend being acquired, not a skipped checkbox.
+- **Load scenarios are agent-generated, then frozen.** k6 scripts are generated from the target's API surface against a fixed scenario standard (mixed create→read, fixed VU/duration profile across all repos), smoke-validated, and committed as evidence. Re-runs use the committed artifact, so measurements are reproducible even though authoring is agentic.
+
 ---
 
 ## Key Failure Mode
