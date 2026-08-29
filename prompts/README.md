@@ -47,17 +47,38 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Aug 29 ~16:20 +07 — h2 KEPT, ρ = 0.954 vs v2; h3 or packaging next)
+## 3. Current State (Aug 29 ~18:00 +07 — h3 KEPT, ρ = 0.973 vs v2; packaging next)
 
-Branch: `exp/h2-k6-generation`. **h1 DONE, verdict KEPT (ρ = 0.939 vs v2).**
-**h2 DONE, verdict KEPT (ρ = 0.954 vs v2; h1 0.939, baseline 0.811).** Blind
-Runtime scoring done (JFR item 0-for-all, h2 max runtime 15/25), score
-sheets extended in place, eval at `evidence/eval/h2/`, full record at
-`evidence/experiments/h2-k6-generation.md`. Tie bounds [0.939, 0.964];
-pairs 41/3/1. Validation bar met: controlled-repo ordering recovered
-exactly from the load reports.
+Branch: `exp/h3-full-pipeline`. **h1 DONE, KEPT (ρ = 0.865). h2 DONE, KEPT
+(ρ = 0.954). h3 DONE, KEPT (ρ = 0.973 vs v2; baseline 0.811).** JFR item
+scored blind from 7 measured profiles (uniform pre-registered 0–10 rubric;
+3 NOT_TESTABLE repos stay 0 citing h2 findings, no h3 runs). Eval at
+`evidence/eval/h3/` (bounds [0.964, 0.976]; pairs 42/2/1), full record at
+`evidence/experiments/h3-full-pipeline.md`.
 
-**h2 evidence:**
+**h3 headline evidence (the §7 moment):** spring-petclinic — baseline's
+100/100 repo — collapses at 200 VUs (189 rps, p95 2500ms, checks 100%) on
+ONE global monitor: the fat-jar classloader's `UrlJarFiles$Cache`
+(71,193/71,738 monitor events, p95 407ms). petclinic-degraded replicates it
+exactly (control). **module6 PASSed k6 with a CRITICAL JFR signal**
+(5,018 monitor events p95 1310ms) — the h3 grading rule held it below a
+clean-profile repo. mvc FAIL = blocking Postgres reads on request threads
+(6,859 SocketReads p95 79ms); caffeine sibling does ~2.7x fewer
+reads/request at 2.2x throughput. webflux/redis: clean profiles, 10/10.
+
+**h3 pipeline fixes (trajectory 2026-08-29_17-10):** in-memory JFR +
+dumponexit (disk=true chunk writes fail on Windows bind mounts);
+MSYS_NO_PATHCONV=1 on ALL compose calls (4th path-mangling instance, first
+on `up` — exported JFR_OPTS got rewritten); Python json.dump needs explicit
+encoding="utf-8" on Windows (cp1252 default corrupted sheets; harness JSON
+parse caught it); Dockerfile.target pinned to `eclipse-temurin:21-jre-jammy`.
+
+**NEXT (fresh session — packaging only, §4 item 6):** full
+baseline-vs-advanced eval table, IMPROVEMENTS/README numbers,
+REPRODUCTION final, video script. **No new experiments in the final 4
+hours.**
+
+**h2 evidence (kept, see git log for full detail):**
 - **Dual profile** (human decision): 50-VU efficiency runs preserved at
   `evidence/advanced/h2-50vus/<repo>/`; 200-VU stress runs at
   `evidence/advanced/h2/<repo>/`. 50 VUs kept every repo far from its
@@ -88,19 +109,10 @@ exactly from the load reports.
   approach the generator's ceiling, compressing the top end.
 
 Commits: `bc9212f` (form+jarGlob tooling), `e401654` (slots+scripts),
-`402f6ac` (pilot fixes), `3f791ee` (trajectory); measured evidence +
-this state update committed after this note — see git log.
-
-**NEXT (fresh session — h3 or packaging per remaining time):**
-1. h3 (`exp/h3-full-pipeline`): JFR profiling during the generated load —
-   seam ready (`JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh` unchanged).
-   Runtime dimension grades on k6 + JFR together; update the JFR item
-   (currently 0-for-all) in the score sheets, re-run the eval, write
-   `evidence/experiments/h3-full-pipeline.md`. Target: explain the
-   petclinic 200-VU collapse (p95 2191ms, checks 100%) with a JFR signal.
-2. Or packaging (§4 item 6) if time is short: full baseline-vs-advanced
-   eval table, IMPROVEMENTS/README numbers, REPRODUCTION final, video
-   script. **No new experiments in the final 4 hours.**
+`402f6ac` (pilot fixes), `3f791ee` (trajectory); h3 commits `d16809e`
+(tooling + hypothesis), `8124f93` (JFR fixes + petclinic evidence),
+`d8656ac`/`094437b` (batches 1–2); scoring + eval + this state update
+committed after this note — see git log.
 
 **h1 context (from Day 3 morning):** h1 ρ = 0.865 vs v1 ranking
 (baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
