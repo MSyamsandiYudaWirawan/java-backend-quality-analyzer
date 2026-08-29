@@ -1,0 +1,21 @@
+{
+  "repo": "springboot-blog-rest-api",
+  "dateUtc": "2026-08-29T08:53:20Z",
+  "rps": null,
+  "totalRequests": 0,
+  "latency": {
+    "avg": null,
+    "p50": null,
+    "p95": null,
+    "p99": null,
+    "max": null
+  },
+  "failRate": null,
+  "checkPassRate": null,
+  "thresholds": {
+    "verdict": "NOT_TESTABLE",
+    "breached": []
+  },
+  "rawK6Json": null,
+  "note": "could not generate a valid load scenario: target crashes at boot in a clean environment: HikariPool init fails with 'Public Key Retrieval is not allowed' against stock MySQL 8.4 (see boot-diagnosis.log) — the hardcoded datasource URL in application.properties assumes the author's local MySQL auth setup (no allowPublicKeyRetrieval, no migrations, undeclared DB dependency). Even if booted, all create endpoints require an ADMIN JWT with manual roles-table bootstrap SQL, so no valid load scenario can be authored. Runtime scores 0 by policy (prompts/README.md section 5)."
+}

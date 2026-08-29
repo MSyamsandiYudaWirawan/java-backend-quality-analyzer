@@ -45,7 +45,7 @@ DEFAULTS = {
     "readStatus": 200,
     "entityCount": 50,
     "writeRatio": 0.1,
-    "vus": 50,
+    "vus": 200,
     "duration": "60s",
     "ramp": "10s",
     "p95ThresholdMs": 500,

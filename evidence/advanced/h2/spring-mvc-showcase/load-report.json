@@ -1,0 +1,21 @@
+{
+  "repo": "spring-mvc-showcase",
+  "dateUtc": "2026-08-29T08:54:01Z",
+  "rps": null,
+  "totalRequests": 0,
+  "latency": {
+    "avg": null,
+    "p50": null,
+    "p95": null,
+    "p99": null,
+    "max": null
+  },
+  "failRate": null,
+  "checkPassRate": null,
+  "thresholds": {
+    "verdict": "NOT_TESTABLE",
+    "breached": []
+  },
+  "rawK6Json": null,
+  "note": "could not generate a valid load scenario: mvn package fails on Java 21: 'package javax.xml.bind.annotation does not exist' (JavaBean.java, see build.log) — archived Spring 5 / Java 1.8 / javax-era WAR with no maintained upgrade path; cannot be built, booted, or load-tested. Runtime scores 0 by policy (prompts/README.md section 5). Consistent with baseline evidence (evidence/eval/baseline/spring-mvc-showcase/)."
+}

@@ -18,6 +18,10 @@ Thumbs.db
 *.log
 logs/
 
+# Exception: evidence logs are committed artifacts — findings cite them
+# (working agreement 4: no claim without evidence)
+!evidence/**/*.log
+
 # Local env
 .env
 application-local.yml

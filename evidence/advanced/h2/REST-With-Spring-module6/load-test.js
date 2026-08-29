@@ -42,7 +42,7 @@ const SLOTS = {
   "readStatus": 200,
   "repoName": "REST-With-Spring-module6",
   "scenario": "json",
-  "vus": 50,
+  "vus": 200,
   "writeRatio": 0.1
 };
 

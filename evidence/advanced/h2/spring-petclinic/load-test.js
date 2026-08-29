@@ -50,7 +50,7 @@ const SLOTS = {
   "readStatus": 200,
   "repoName": "spring-petclinic",
   "scenario": "form",
-  "vus": 50,
+  "vus": 200,
   "writeRatio": 0.1
 };
 

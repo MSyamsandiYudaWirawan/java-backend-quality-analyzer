@@ -1,0 +1,20 @@
+{
+  "repo": "practice-webflux",
+  "dateUtc": "2026-08-29T08:34:33Z",
+  "rps": 1031.457404479322,
+  "totalRequests": 77807,
+  "latency": {
+    "avg": 173.7014466484761,
+    "p50": 182.780968,
+    "p95": 298.0275615,
+    "p99": 335.77566398,
+    "max": 1192.671342
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "PASS",
+    "breached": []
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h2/practice-webflux/k6-full.json"
+}

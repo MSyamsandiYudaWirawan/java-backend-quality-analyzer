@@ -1,0 +1,21 @@
+{
+  "repo": "springboot-blog-rest-api",
+  "dateUtc": "2026-08-29T08:20:47Z",
+  "rps": null,
+  "totalRequests": 0,
+  "latency": {
+    "avg": null,
+    "p50": null,
+    "p95": null,
+    "p99": null,
+    "max": null
+  },
+  "failRate": null,
+  "checkPassRate": null,
+  "thresholds": {
+    "verdict": "NOT_TESTABLE",
+    "breached": []
+  },
+  "rawK6Json": null,
+  "note": "could not generate a valid load scenario: no pom.xml at repo root"
+}

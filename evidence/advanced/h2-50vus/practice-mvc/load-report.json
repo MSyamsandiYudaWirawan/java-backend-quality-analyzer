@@ -1,0 +1,20 @@
+{
+  "repo": "practice-mvc",
+  "dateUtc": "2026-08-29T08:11:02Z",
+  "rps": 1072.4238354392692,
+  "totalRequests": 80852,
+  "latency": {
+    "avg": 41.55209580664669,
+    "p50": 13.0003625,
+    "p95": 106.15792049999999,
+    "p99": 188.93253954000016,
+    "max": 386.450585
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "PASS",
+    "breached": []
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h2/practice-mvc/k6-full.json"
+}

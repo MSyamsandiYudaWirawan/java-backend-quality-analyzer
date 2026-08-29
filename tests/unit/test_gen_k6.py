@@ -58,7 +58,7 @@ class TestValidation(unittest.TestCase):
         slots = gen_k6.validate_slots(dict(VALID_SLOTS))
         self.assertEqual(slots["idField"], "id")
         self.assertEqual(slots["createStatus"], 201)
-        self.assertEqual(slots["vus"], 50)
+        self.assertEqual(slots["vus"], 200)
         self.assertEqual(slots["infra"], ["postgres"])
 
     def test_missing_required_key_rejected(self):

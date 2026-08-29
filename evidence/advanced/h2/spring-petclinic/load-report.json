@@ -1,0 +1,22 @@
+{
+  "repo": "spring-petclinic",
+  "dateUtc": "2026-08-29T08:41:15Z",
+  "rps": 233.766154748522,
+  "totalRequests": 17631,
+  "latency": {
+    "avg": 769.4302994298714,
+    "p50": 604.96791,
+    "p95": 2190.5716975,
+    "p99": 3095.1720885,
+    "max": 8111.030431
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "FAIL",
+    "breached": [
+      "http_req_duration: p(95)<500"
+    ]
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h2/spring-petclinic/k6-full.json"
+}

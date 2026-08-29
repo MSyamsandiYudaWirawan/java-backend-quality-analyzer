@@ -1,0 +1,22 @@
+{
+  "repo": "petclinic-degraded",
+  "dateUtc": "2026-08-29T08:43:40Z",
+  "rps": 240.42736695062902,
+  "totalRequests": 18138,
+  "latency": {
+    "avg": 748.3141676517278,
+    "p50": 598.2230735,
+    "p95": 2105.2811226,
+    "p99": 2993.441974460001,
+    "max": 6610.285106
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "FAIL",
+    "breached": [
+      "http_req_duration: p(95)<500"
+    ]
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h2/petclinic-degraded/k6-full.json"
+}

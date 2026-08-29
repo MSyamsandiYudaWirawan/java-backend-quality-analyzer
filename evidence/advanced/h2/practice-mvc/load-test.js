@@ -51,7 +51,7 @@ const SLOTS = {
   "readStatus": 200,
   "repoName": "practice-mvc",
   "scenario": "json",
-  "vus": 50,
+  "vus": 200,
   "writeRatio": 0.1
 };
 
