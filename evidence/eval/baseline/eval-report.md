@@ -17,7 +17,7 @@
 | petclinic-degraded | 55 | 9.0 | 9 | reused from previous run (--resume) |
 | spring-mvc-showcase | 40 | 10.0 | 10 | reused from previous run (--resume) |
 
-**Spearman rho vs expert ranking: 0.811** (n=10)
+**Spearman rho vs expert ranking: 0.811** (n=10) — NOT ROBUST: tie-sensitive, range [0.527, 0.915], 24% of pairs unjudged
 
 Tie check: 7 of 10 scored repos sit in 2 tie group(s); within a tie the analyzer carries no ordering information. If every tie broke luckily/unluckily, rho would be in [0.527, 0.915].
 

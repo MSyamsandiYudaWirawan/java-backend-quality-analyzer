@@ -329,8 +329,16 @@ def main():
         ))
     report_lines.append("")
     if rho is not None:
-        report_lines.append("**Spearman rho vs expert ranking: %.3f** (n=%d)"
-                            % (rho, len(comparable)))
+        total_pairs = (pair_stats["concordant"] + pair_stats["discordant"]
+                       + pair_stats["tied"])
+        unjudged_pct = round(100 * pair_stats["tied"] / total_pairs)
+        headline = "**Spearman rho vs expert ranking: %.3f** (n=%d)" % (
+            rho, len(comparable))
+        if unjudged_pct > 20:
+            headline += (" — NOT ROBUST: tie-sensitive, range [%.3f, %.3f], "
+                         "%d%% of pairs unjudged"
+                         % (rho_worst, rho_best, unjudged_pct))
+        report_lines.append(headline)
         if tie_stats["tiedRepos"]:
             report_lines.append("")
             report_lines.append(
@@ -339,8 +347,6 @@ def main():
                 "If every tie broke luckily/unluckily, rho would be in "
                 "[%.3f, %.3f]." % (tie_stats["tiedRepos"], len(comparable),
                                    tie_stats["groups"], rho_worst, rho_best))
-        total_pairs = (pair_stats["concordant"] + pair_stats["discordant"]
-                       + pair_stats["tied"])
         report_lines.append("")
         report_lines.append(
             "Pair check: of %d repo pairs, %d concordant, %d discordant, "
