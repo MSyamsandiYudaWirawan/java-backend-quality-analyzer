@@ -47,21 +47,66 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Aug 29 ~18:45 +07 — h3 KEPT ρ = 0.973; PACKAGING DONE on `advanced`)
+## 3. Current State (Aug 29 ~19:00 +07 — ALL EXPERIMENTS KEPT, PACKAGING DONE; next: refinement)
 
 Branch: `advanced` (created at the `exp/h3-full-pipeline` tip — chained
-KEPT branches, so it IS baseline + h1 + h2 + h3). **h1 KEPT (0.865),
-h2 KEPT (0.954), h3 KEPT (0.973 vs v2; baseline 0.811 v1 / 0.850 v2).**
-Packaging complete: 4-stage eval table + all details in IMPROVEMENTS.md,
-README filled (headline, corrected eval set, hot take, trade-offs),
-REPRODUCTION final (every command verified — `--resume` reproduces
-0.973 in <10s), video script filled, full unit suite green on `advanced`.
-New artifact: `evidence/eval/baseline-v2/` (original baseline scores
-re-ranked vs v2, no re-measurement: 0.850, still NOT ROBUST).
+KEPT branches, so it IS baseline + h1 + h2 + h3). **The project is
+feature-complete: h1 KEPT (ρ 0.865), h2 KEPT (0.954), h3 KEPT (0.973 vs
+v2; baseline 0.811 v1 / 0.850 v2).** Packaging complete: 4-stage eval
+table + details in IMPROVEMENTS.md, README filled, REPRODUCTION final
+(every command verified — `--resume` reproduces 0.973 in <10s), video
+script filled, full unit suite green on `advanced`, trajectories 1–18
+indexed. New artifact: `evidence/eval/baseline-v2/` (original baseline
+scores re-ranked vs v2, no re-measurement: 0.850, still NOT ROBUST).
 
 **Remaining (human):** record the video; decide whether to fast-forward
 `master` to `advanced` for platforms that judge the default branch;
 final submission checklist at README bottom.
+
+### NEXT SESSION — refinement (polish, no new capabilities)
+
+The pipeline works end to end and all numbers are committed. Refinement =
+making the tooling sharper WITHOUT invalidating committed evidence. Rule:
+any change that alters measured numbers requires re-running affected
+evidence on a new branch; pure tooling/UX/doc fixes can go on `advanced`.
+Known rough edges, most valuable first:
+
+1. **jfr-diagnose severity labels are too liberal** — p95-only thresholds
+   mark 2 monitor events "CRITICAL" (webflux). h3 scoring had to reason
+   around the labels (count × duration on the request path). Fix the
+   thresholds/labels in `jfr-diagnose.sh` so reports read honest without
+   interpretation; keep the committed h3 reports as-is (they're evidence,
+   warts documented in trajectory 17).
+2. **ThreadPark interpretation** — idle-pool parks (SynchronousQueue
+   handoff, 30s+ waits) drown the request-path signal. Filter/classify
+   parks by business frame (the `park_sorted.txt` machinery exists) so
+   "request threads parked" is a first-class metric.
+3. **k6 generator ceiling caveat** — k6 container has 1 CPU; caffeine's
+   2168 rps may be generator-capped, compressing the top end. Either
+   measure the generator's ceiling (hello-world target) or document the
+   bound quantitatively in the reports.
+4. **Giant JFR dump txts** — `locks.txt` hit 250 MB (71k events ×
+   stack-depth 32). Cap stack depth or sample events in jfr-diagnose for
+   high-count event types; diagnosis quality won't change.
+5. **Mojibake in h2-committed score-sheet notes** — double-encoded
+   em-dashes (`â€"`) from a Windows locale bug; cosmetic, fix in place
+   (scores/structure untouched) or leave and document.
+6. **Hollow local clones** — `targets/spring-petclinic` and
+   `targets/springboot-blog-rest-api` are empty git inits (failed clones);
+   delete or re-clone so local-path invocations stop misfiring (URL
+   invocation is the working path and how all measured runs happened).
+7. **Native-mode JFR** — `--jfr` is docker-only (orchestrate.js has no
+   JAVA_OPTS wiring); either wire it or remove native mode from the docs.
+8. **Dual-profile scoring** — h2 kept 50-VU + 200-VU reports, but the
+   JFR item used only the 200-VU window. If refined, record BOTH profiles
+   with JFR and grade efficiency vs stress separately.
+
+Orientation for the session: sanity suite is the command block below;
+state of every experiment is in `evidence/experiments/h[N]-*.md`; the
+score-of-record per repo is `evidence/advanced/h1/*/score-sheet.json`;
+eval history is `evidence/eval/{baseline,baseline-v2,h1,h1-v2,h2,h3}/`.
+Working agreements in §6 still apply (trajectory per work block, tests
+on every branch, no claim without evidence).
 
 **h2 evidence (kept, see git log for full detail):**
 - **Dual profile** (human decision): 50-VU efficiency runs preserved at
