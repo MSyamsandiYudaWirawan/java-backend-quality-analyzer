@@ -37,12 +37,13 @@ set -uo pipefail
 # Findings: a target that cannot be built/booted/load-tested is NOT a harness
 # failure — the pipeline writes a NOT_TESTABLE load report and exits 3.
 #
-# h3 (--jfr, docker mode only): the service boots with a JFR disk recording
-# (settings=profile, dumponexit) written to evidence/advanced/h3/<repo>/
-# profile.jfr. After the full k6 run the service is stopped (JVM shutdown
-# finalizes the recording) and jfr-diagnose.sh produces the hypothesis report
-# at h3/<repo>/jfr/diagnosis-report.md. k6 outputs also land in h3/<repo>/ so
-# the h2 evidence stays immutable. Runtime scoring grades on k6 + JFR together.
+# h3 (--jfr, docker mode only): the service boots with an in-memory JFR
+# recording (settings=profile, dumponexit) flushed to
+# evidence/advanced/h3/<repo>/profile.jfr on graceful stop. After the full k6
+# run the service is stopped and jfr-diagnose.sh produces the hypothesis
+# report at h3/<repo>/jfr/diagnosis-report.md. k6 outputs also land in
+# h3/<repo>/ so the h2 evidence stays immutable. Runtime scoring grades on
+# k6 + JFR together.
 #
 # Exit codes: 0 measured (any threshold verdict), 2 usage/environment error,
 #             3 could not load-test (a finding).
@@ -201,10 +202,12 @@ PY
   export DOCKERFILE_TARGET="$(cygpath -w "$PROJECT_ROOT/service/advanced/docker/Dockerfile.target" 2>/dev/null || echo "$PROJECT_ROOT/service/advanced/docker/Dockerfile.target")"
   export TARGET_ENV_FILE="$(cygpath -w "$TARGET_ENV_FILE" 2>/dev/null || echo "$TARGET_ENV_FILE")"
   if [ "$JFR_MODE" = true ]; then
-    # h3: record the whole load window to disk; the JVM finalizes the file on
-    # shutdown (compose stop below — temurin JRE has no jcmd for live dumps).
-    # The service container sees the evidence mount as /jfr-repo.
-    export JFR_OPTS="-XX:StartFlightRecording=disk=true,dumponexit=true,filename=/jfr-repo/advanced/h3/$NAME/profile.jfr,settings=profile"
+    # h3: in-memory recording (NO disk=true — JFR's disk-chunk writes fail on
+    # Docker Desktop's Windows bind mount), dumponexit flushes the finished
+    # file straight to the evidence mount on graceful shutdown (compose stop
+    # below — temurin JRE has no jcmd for live dumps). Same recipe as the
+    # pre-existing docker-compose.benchmark.yml.
+    export JFR_OPTS="-XX:StartFlightRecording=name=h3,settings=profile,dumponexit=true,filename=/jfr-repo/advanced/h3/$NAME/profile.jfr"
   fi
   for i in "${!COMPOSE_FILES[@]}"; do
     case "${COMPOSE_FILES[$i]}" in
@@ -212,18 +215,21 @@ PY
     esac
   done
 
-  COMPOSE=(docker compose "${COMPOSE_FILES[@]}")
+  # MSYS_NO_PATHCONV=1 on every compose call (via env in the array): Git Bash
+  # rewrites POSIX-looking env values ('/hackathon/...', and now JFR_OPTS's
+  # '/jfr-repo/...') into 'C:/Program Files/Git/...' when spawning docker.exe
+  # — the Windows path-mangling bug class (trajectories 2026-08-28_23-32,
+  # 2026-08-29_11-37; h2 patched only the k6 `compose run` calls, h3's
+  # JFR_OPTS hit the same mangling on `up`). Scoped to compose so node/python
+  # calls keep normal /c/... conversion.
+  COMPOSE=(env MSYS_NO_PATHCONV=1 docker compose "${COMPOSE_FILES[@]}")
 
   "${COMPOSE[@]}" build service || finding "docker image build failed"
   "${COMPOSE[@]}" up -d --wait --wait-timeout 240 service \
     || finding "target did not become healthy in docker"
 
   echo ">> Smoke gate (${SMOKE_VUS} VUs, ${SMOKE_DURATION}; validates the committed script)"
-  # MSYS_NO_PATHCONV=1: Git Bash rewrites '/hackathon/...' env values into
-  # 'C:/Program Files/Git/hackathon/...' when spawning docker.exe (the
-  # Windows path-mangling bug class — trajectories 2026-08-28_23-32,
-  # 2026-08-29_11-37). k6 inside the container needs the POSIX path.
-  MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
+  "${COMPOSE[@]}" run --rm \
     -e K6_VUS=$SMOKE_VUS -e K6_DURATION=$SMOKE_DURATION -e K6_RAMP=$SMOKE_RAMP \
     -e K6_ENTITY_COUNT=$SMOKE_ENTITY_COUNT \
     -e K6_JSON_OUT="/hackathon/evidence/advanced/$PROFILE/$NAME/k6-smoke.json" \
@@ -243,7 +249,7 @@ PY
   fi
 
   echo ">> Full run (fixed profile from committed script)"
-  MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
+  "${COMPOSE[@]}" run --rm \
     -e K6_JSON_OUT="/hackathon/evidence/advanced/$PROFILE/$NAME/k6-full.json" \
     k6
   K6_RC=$?
@@ -271,8 +277,9 @@ node "$PROJECT_ROOT/benchmarks/k6-report.js" \
 
 # --- h3: finalize the JFR recording and diagnose -------------------------------
 if [ "$JFR_MODE" = true ]; then
-  # Stopping the service (SIGTERM, 15s grace) makes the JVM dump the completed
-  # recording via dumponexit — the trap's compose down removes it afterwards.
+  # Stopping the service (SIGTERM, 15s grace) makes the JVM flush the
+  # recording to the evidence mount via dumponexit — the trap's compose down
+  # removes the container afterwards.
   echo "[h3] Stopping service to finalize the JFR recording ..."
   "${COMPOSE[@]}" stop service >/dev/null 2>&1 || true
 

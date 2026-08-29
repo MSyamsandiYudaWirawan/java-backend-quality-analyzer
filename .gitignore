@@ -32,6 +32,11 @@ evidence/*.json
 evidence/baseline/*.txt
 evidence/advanced/*.txt
 evidence/experiments/*.md~
+# h3: JFR recordings + verbose event dumps regenerate via
+# `run-experiment.sh <target> --docker --jfr`; the diagnosis report
+# (h3/<repo>/jfr/diagnosis-report.md) and k6 JSON/reports stay committed
+evidence/advanced/h3/**/*.jfr
+evidence/advanced/h3/*/jfr/*.txt
 
 # k6 binary cache (if any)
 .k6/
