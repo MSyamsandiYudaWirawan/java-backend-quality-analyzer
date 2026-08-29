@@ -47,44 +47,61 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Aug 29 ~14:30 +07 — v2 ruled; h2 tooling built)
+## 3. Current State (Aug 29 ~16:30 +07 — h2 measured runs DONE; blind Runtime scoring next)
 
-Branch: `exp/h2-k6-generation`. **h1 DONE, verdict KEPT.**
-**Expert-ranking v2 RULED + applied this session** (human decision, memo:
-`evidence/experiments/expert-ranking-v2-decision.md`): blog-rest-api
-6th → **10th, scored 0/100** — undeclared-MySQL test failure + committed
-JWT secret verified in `evidence/advanced/h1/springboot-blog-rest-api/`;
-"a committed signing secret is unforgivable." petclinic-degraded **kept**
-with an intentional-degradation note (its failures are injected by the
-expert — design intent is not a code property). h1 re-eval vs v2:
-**ρ = 0.939** (was 0.865 vs v1), tie bounds [0.894, 0.965], pairs
-39/3/3 — `evidence/eval/h1-v2/`. Always cite ρ with its ranking version.
+Branch: `exp/h2-k6-generation`. **h1 DONE, verdict KEPT (ρ = 0.939 vs v2).**
+**h2 measured runs DONE: 7/10 repos measured under the docker envelope,
+3 NOT_TESTABLE findings with cited evidence. Runtime scoring + h2 eval
+NOT yet done — hand off to a FRESH session for blind scoring (h1
+discipline: score without reading the expert ranking).**
 
-**h2 tooling BUILT (this session), not yet run on targets:**
-- Generator: `service/advanced/k6/template.js` + `gen-k6.py` (template +
-  slots; slots also carry `infra`/`bootEnv`/`infraEnv` for the benchmark
-  environment). Scripts are committed per repo under
-  `evidence/advanced/h2/<repo>/` before any measured run.
-- Pipeline re-pointed at targets: `run-experiment.sh <target> [--docker]`
-  (baseline/advanced MODE removed), `benchmarks/orchestrate.js` (native
-  dev iteration), `benchmarks/k6-report.js` (fixed report shape +
-  NOT_TESTABLE finding mode), `benchmarks/k6.js` marked legacy.
-- Docker is the OFFICIAL measured path (human decision, fairness):
-  template's exact resource envelope in
-  `service/advanced/docker/h2-{target,postgres,mysql,redis}.yml`
-  (addendums merged per slots.infra) + generic `Dockerfile.target`.
-  Pre-existing `docker-compose.benchmark.yml` untouched.
-- Smoke gate inside the pipeline: 2 VUs/5s, setup must seed + checks must
-  pass, else NOT_TESTABLE finding (exit 3) — a finding, not a failure.
-- h3 seam ready: `JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh` already
-  works on any .jfr path unchanged.
-- Tests: +37 (test_gen_k6.py 16, test-k6-report.sh 16,
-  test-run-experiment.sh 5) → **77 total green**.
-- NEXT: generate slots+scripts per repo (inspect API surface), commit
-  them, then the 10 measured docker runs, Runtime scoring, h2 eval.
+**h2 evidence:**
+- **Dual profile** (human decision): 50-VU efficiency runs preserved at
+  `evidence/advanced/h2-50vus/<repo>/`; 200-VU stress runs at
+  `evidence/advanced/h2/<repo>/`. 50 VUs kept every repo far from its
+  saturation knee (vacuous thresholds), so the profile was raised BEFORE
+  any evidence was committed. Otherwise identical fixed profile: 10s ramp
+  + 60s hold, 10% creates / 90% reads of 50 seeded entities, thresholds
+  p95<500ms / err<1% / checks>95%.
+- 200-VU results: practice-mvc **FAIL** (p95 646ms — blocking stack chokes
+  while its caffeine sibling PASSes at 2168 rps), webflux PASS (1031 rps),
+  webflux-redis PASS (1448 rps, tightest tail max 382ms), module6 PASS
+  (1288 rps), spring-petclinic **FAIL** (234 rps, p95 2191ms, max 8111ms —
+  the baseline-100 repo saturating), petclinic-degraded **FAIL**
+  (240 rps, p95 2105ms — statistically identical to petclinic, consistent
+  with byte-identical runtime code). Checks 100% everywhere: differences
+  are queueing/latency, not errors.
+- NOT_TESTABLE findings (Runtime = 0 by policy §5): blog-rest-api (boot
+  crash on stock MySQL 8.4 — "Public Key Retrieval is not allowed",
+  `boot-diagnosis.log`; JWT wall beyond), gs-rest-service-complete (no
+  create endpoint exists), spring-mvc-showcase (build fails on Java 21,
+  javax.xml.bind; `build.log`).
+- New generator capability: `scenario` slot — `form` variant
+  (`template-form.js`: form POST → 302 → id from Location-header regex →
+  HTML read) makes petclinic-class apps measurable; `jarGlob` slot pins
+  the boot jar in multi-module repos (module6's largest jar was the wrong
+  module). Pipeline fixes mid-pilot: `MSYS_NO_PATHCONV=1` on compose runs
+  (third path-mangling instance), k6 `.values` summary nesting.
+- Caveat for scoring: k6 container has 1 CPU; mvc-caffeine's 2168 rps may
+  approach the generator's ceiling, compressing the top end.
 
-Commits through `68265e4` (h1); this session's work (v2 ruling + h2
-tooling) committed after this note as two commits — see git log.
+Commits: `bc9212f` (form+jarGlob tooling), `e401654` (slots+scripts),
+`402f6ac` (pilot fixes), `3f791ee` (trajectory); measured evidence +
+this state update committed after this note — see git log.
+
+**NEXT (fresh session — blind Runtime scoring + h2 eval):**
+1. Read the rubric Runtime dimension, all `load-report.json` (BOTH
+   profiles), and the 3 findings; extend the 10 committed h1 score sheets
+   (`evidence/advanced/h1/*/score-sheet.json`) with Runtime scores +
+   per-item citations. Do NOT read `service/eval/expert-ranking.txt`.
+2. Run the h2 eval through the harness (§2 command, analyzer =
+   analyze-h1.sh-style wrapper pointing at the updated score sheets) vs
+   the v2 ranking; report ρ + tie bounds + pair counts.
+3. Write `evidence/experiments/h2-k6-generation.md` (hypothesis → numbers
+   → KEPT/REJECTED). Validation bar: the 4 controlled repos' known
+   ordering should be recoverable from the load reports.
+4. Then h3 (JFR seam ready: `JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh`
+   unchanged) or packaging per remaining time.
 
 **h1 context (from Day 3 morning):** h1 ρ = 0.865 vs v1 ranking
 (baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
@@ -137,12 +154,14 @@ ranking v1), `a39e072` (baseline ρ headline + harness fixes), `80adef9`
   tests), `--resume` flag added (reuses existing `*-score.json` per repo;
   crashed runs are resumable). 14 Python unit tests + 9 bash tests green.
 
-**Environment notes:** `practice-postgres` container is currently STOPPED
-(restart with `docker compose up -d postgres` in `targets/practice-mvc/`
-before running practice-mvc/mvc-caffeine tests or k6). practice-mvc and
+**Environment notes:** `practice-postgres` + `practice-redis` containers are
+currently RUNNING (started for the webflux-redis live verification; the h2/h3
+docker pipeline binds no host ports so they cannot interfere with measured
+runs — but remember the port-5432 incident before any NATIVE test/k6 run).
+practice-mvc and
 mvc-caffeine tests need Postgres on localhost:5432 (only their ITs use
-Testcontainers). blog-rest-api tests need an undeclared MySQL (genuine
-repo finding — baseline 65 stands).
+Testcontainers). blog-rest-api crashes at boot on stock MySQL 8.4 (see its
+h2 finding) in addition to needing an undeclared MySQL for tests.
 
 **Session-start sanity check (run these):**
 ```bash
@@ -188,8 +207,8 @@ variant of the same bug class).
      the raw k6 JSON path — fixed report shape across repos for
      comparability. Question: can the agent generate *and execute* its own
      load tests? Validation: generated tests must recover the known ordering
-     of the 4 controlled repos. **Tooling built Aug 29 (see §3); measured
-     runs pending.**
+     of the 4 controlled repos. **Measured runs DONE Aug 29 (dual 50/200-VU
+     profile, see §3); Runtime scoring + eval pending in fresh session.**
    - `exp/h3-full-pipeline` — k6 alone only says *how fast*, not *why*: a
      service can post high RPS with a critical hotspot underneath. h3 adds
      JFR profiling during the generated load (`run-experiment.sh` /
