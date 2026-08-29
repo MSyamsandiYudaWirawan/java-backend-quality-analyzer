@@ -29,8 +29,8 @@ This repo was initialized from a personal hackathon template built before the ev
 
 - `service/` — all solution code (baseline and advanced)
 - All filled-in values in README, IMPROVEMENTS.md, REPRODUCTION.md
-- All experiment branches (`experiment/h*`)
-- All evidence files (`evidence/*.jfr`, `evidence/k6-*.json`, `evidence/*/diagnosis-report-*.md`)
+- All experiment branches (`exp/h1-rubric-scoring`, `exp/h2-k6-generation`, `exp/h3-full-pipeline`) and the `advanced` final branch
+- All evidence files (`evidence/eval/`, `evidence/advanced/`, `evidence/experiments/`, `evidence/baseline/`)
 - All agent trajectories in `trajectories/kimi-cli/`
 - The solution video
 
@@ -68,15 +68,16 @@ The baseline is intentionally naive — it saturates on any well-formed repo and
 
 An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end:
 
-1. **Clone + build** the target (Testcontainers for isolated infra where needed).
-2. **Full test evidence** — parsed surefire results: counts, failures, coverage trend, not a pass/fail bit.
-3. **Runtime profiling** — k6 load test + JFR recording of the *target* repo, via the pre-existing `run-experiment.sh` / `jfr-diagnose.sh` pipeline.
-4. **Architecture & dependency health** — layering, MVC vs WebFlux, outdated/risky dependencies.
-5. **Evidence-linked report** — every score traces to a file, test result, or profiler recording; scored against a fixed rubric shared with the human expert.
+1. **Clone + build** the target (Maven, Java 21; infra addendums for Postgres/MySQL/Redis where the repo needs them).
+2. **Full test evidence** — parsed surefire results: counts, failures, not a pass/fail bit.
+3. **Agent-generated load testing** — k6 scripts generated from the target's API surface (template+slots, fixed profile, smoke-gated), executed in a resource-limited docker envelope (`run-experiment.sh <target> --docker`).
+4. **Runtime profiling** — JFR recording during the generated load (`--jfr`), diagnosed by `jfr-diagnose.sh`: lock contention, blocking I/O, GC, allocation.
+5. **Architecture & dependency health** — layering, MVC vs WebFlux, outdated/risky dependencies.
+6. **Evidence-linked report** — every score traces to a file, test result, or profiler recording; scored against a fixed rubric shared with the human expert.
 
-**Measured:** [Spearman ρ vs. human-expert ranking on the 10-repo eval set: baseline ρ = X → advanced ρ = Y. Secondary: findings per repo, evidence traceability, wall-clock time per analysis.]
+**Measured:** Spearman ρ vs. human-expert ranking on the 10-repo eval set: **baseline ρ = 0.811 → advanced ρ = 0.973** (`evidence/eval/baseline/`, `evidence/eval/h3/`; same scores re-ranked against the v2 ranking: 0.850 → 0.973). Co-primary: findings the baseline missed — spring-petclinic (baseline 100/100) collapses at 200 VUs on a fat-jar classloader lock (`evidence/advanced/h3/spring-petclinic/`); blog-rest-api boot-crashes on stock MySQL 8.4. Secondary: unjudged ranking pairs 11 → 1 of 45; every score cites a file, load report, or JFR recording.
 
-> ⚠️ [Add caveats about eval-set size and ranking methodology here.]
+> ⚠️ Caveats: n=10 makes ρ coarse — one repo moving a rank swings it (tie bounds reported with every headline: h3 [0.964, 0.976]). The baseline's 0.811 is itself luck-sensitive (24% of pairs unjudged, NOT ROBUST stamp). The expert ranking is one senior reviewer using the same rubric; a v1→v2 revision was pre-authorized and executed once, with justification, when runtime evidence contradicted v1 (`evidence/expert-ranking-notes.md`).
 
 ### Scope & Limitations
 
@@ -86,36 +87,36 @@ An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end
 
 
 
-**[Failure name].** [Describe the subtle failure you encountered and how you fixed it. Be specific about the root cause and the solution.]
+**JFR recordings silently dying on Windows Docker Desktop.** The first h3 runs failed at container start: with `disk=true`, JFR streams recording chunks during the run, and that write mechanism fails on Docker Desktop's Windows bind mount — the JVM aborts at init ("not able to write to file"). A second, subtler instance followed: Git Bash rewrote the exported `JFR_OPTS` POSIX path (`/jfr-repo/...`) into a Windows path when the pipeline spawned docker.exe — the fourth occurrence of this path-mangling bug class in the project.
 
-**Fix:** [Describe the fix.]
+**Fix:** in-memory recording + `dumponexit=true` (the finished file is written once, on graceful shutdown — a plain write the mount tolerates), and `MSYS_NO_PATHCONV=1` on every compose invocation. Both verified by manual container repro before re-running; full story in `trajectories/kimi-cli/2026-08-29_17-10-h3-jfr-tooling.md`.
 
 ---
 
 ## Eval Set
 
-The 10-repo evaluation set is composed of public repos, one synthetic degraded fork, and four self-authored controlled repos:
+The 10-repo evaluation set is composed of public repos, one synthetic degraded fork, and four self-authored controlled repos (`service/targets.txt` is the authoritative record, incl. pins):
 
 | # | Repo | Type | Purpose |
 |---|------|------|---------|
-| 1 | spring-projects/spring-petclinic | public good | Boots with H2, already scored 100/100 by baseline — saturation demo |
-| 2 | petclinic-degraded (fork) | synthetic bottom | Ground-truth anchor; tests stripped, README gutted, dependency broken |
-| 3 | spring-guides/gs-rest-service | public weak | Official skeleton, minimal tests — separates "minimal" from "bad" |
-| 4 | RameshMF/springboot-blog-rest-api | public average | Tutorial-grade full app, needs MySQL — exercises Testcontainers handling |
-| 5 | spring-projects/spring-mvc-showcase | public legacy | Archived XML config — tests legacy handling and dependency-health scoring |
-| 6 | iluwatar/java-design-patterns | public edge case | Library, not a bootable backend — triggers Runtime=0 finding |
-| 7 | practice-mvc | self-authored | Controlled baseline: plain Spring MVC, no cache |
-| 8 | practice-mvc-redis | self-authored | Controlled mid: MVC + Redis cache layer |
-| 9 | practice-webflux | self-authored | Controlled mid: WebFlux, no cache |
+| 1 | spring-projects/spring-petclinic | public good | Boots with H2, scored 100/100 by baseline — saturation demo; h3's headline runtime finding |
+| 2 | MSyamsandiYudaWirawan/petclinic-degraded | synthetic bottom | Ground-truth anchor; byte-identical runtime code to #1 — its identical JFR signature is a control |
+| 3 | spring-guides/gs-rest-service-complete | public weak | Official skeleton; exposes only GET /greeting — NOT_TESTABLE finding (no create endpoint) |
+| 4 | RameshMF/springboot-blog-rest-api | public average | Tutorial-grade full app; boot-crashes on stock MySQL 8.4 + committed JWT secret — bottom-ranked by v2 ruling |
+| 5 | spring-projects/spring-mvc-showcase | public legacy | Archived XML config; build fails on Java 21 (javax.xml.bind) — NOT_TESTABLE finding |
+| 6 | eugenp/REST-With-Spring (module6 branch) | public multi-module | javax-era course app @ 9c06a66; pinned local clone (default branch has no build file); jarGlob pins the boot module |
+| 7 | practice-mvc | self-authored | Controlled baseline: plain Spring MVC + JPA, no cache |
+| 8 | practice-mvc-caffeine | self-authored | Controlled mid: same MVC app + Caffeine cache — isolates caching at runtime |
+| 9 | practice-webflux | self-authored | Controlled mid: WebFlux + R2DBC, no cache |
 | 10 | practice-webflux-redis | self-authored | Controlled top: WebFlux + Redis — known best runtime |
 
-**Disclosure:** Repos 7–10 are self-authored practice services built before the event to test the benchmark pipeline. They are included because they provide known ground-truth runtime rankings (MVC < MVC+Redis < WebFlux < WebFlux+Redis). The agent had no access to this ground truth during development — rankings were determined by the rubric applied to JFR evidence, the same process used for every other repo.
+**Disclosure:** Repos 7–10 are self-authored practice services built before the event to test the benchmark pipeline. They are included because they provide known ground-truth runtime rankings (mvc < mvc-caffeine at throughput, webflux stacks clean of blocking signals). The analyzer recovered this ordering from its own measurements only — the expert ranked these four on measured runtime knowledge, the agent scored them blind (`evidence/expert-ranking-notes.md`).
 
 ---
 
 ## Hot Take
 
-> **[Your opinionated conclusion about what actually mattered.]** [e.g., "Micro-optimizations are a trap. The real bottleneck was 6 orders of magnitude larger — DB round-trips. If your optimization target isn't visible in the JFR flame graph, you're optimizing noise. Measure first, benchmark second."]
+> **Static review can't see the failures that matter.** The eval set's most polished repo — the one every structural check loves — is its worst runtime performer, collapsing on a classloader lock that only appears under real concurrency. And the signal everyone expects to find in a Java profile (GC) explained nothing in seven out of seven recordings. If your quality assessment doesn't boot the repo and put it under load, you're grading the README.
 
 ---
 
@@ -123,9 +124,10 @@ The 10-repo evaluation set is composed of public repos, one synthetic degraded f
 
 | What we gained | What we gave up |
 |----------------|-----------------|
-| [Gain 1] | [Cost 1] |
-| [Gain 2] | [Cost 2] |
-| [Gain 3] | [Cost 3] |
+| Measured runtime evidence (k6 + JFR) that breaks structural ties — ρ 0.811 → 0.973 | Wall-clock: a full advanced analysis is minutes per repo (build + 70s load + diagnosis), not the baseline's seconds |
+| Reproducibility from committed artifacts (frozen k6 scripts, committed score sheets, fixed docker envelope) | Agent authoring is not reproducible — only its artifacts are; regeneration is forbidden, re-runs use committed scripts |
+| Honest findings over coverage theater (NOT_TESTABLE = Runtime 0 with a root-cause note) | 3 of 10 repos get no runtime score at all — the report says "we could not measure this" instead of faking a number |
+| One fixed load profile everywhere = fair cross-repo comparison | No per-repo tuning: some apps are measured away from their real saturation knee, and the 1-CPU k6 container may cap the top end |
 
 ---
 
