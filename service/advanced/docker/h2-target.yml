@@ -18,7 +18,8 @@
 #   TARGET_ENV_FILE  SERVER_PORT + slots.bootEnv (datasource etc.)
 #   REPO             eval-set repo name (locates the committed k6 script)
 #   PROJECT_ROOT_WIN repo root, Windows-style (evidence mount; JFR in h3)
-#   JFR_OPTS         h3 seam: JFR flags appended to JAVA_OPTS (empty in h2)
+#   JFR_OPTS         h3: set by run-experiment.sh --jfr (StartFlightRecording
+#                    to /jfr-repo/advanced/h3/<repo>/profile.jfr); empty in h2
 # ============================================================================
 
 services:

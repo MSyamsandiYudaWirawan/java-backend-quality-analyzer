@@ -46,7 +46,24 @@ code=0
 "$PIPELINE" a b >/dev/null 2>&1 || code=$?
 assert_exit_code 2 "$code" "unexpected extra argument exits with code 2"
 
-# --- Case 6: slots.jarGlob matching nothing -> finding, exit 3 ---------------------------
+# --- Case 6: --jfr without --docker -> exit 2 -------------------------------------------
+code=0
+"$PIPELINE" some-target --jfr >/dev/null 2>&1 || code=$?
+assert_exit_code 2 "$code" "--jfr without --docker exits with code 2"
+
+# --- Case 7: --jfr --docker without committed script -> exit 2, no h3 dir leaked ---------
+code=0
+"$PIPELINE" "$REPO_ROOT/tests/unit/fixtures/bare-repo" --jfr --docker >/dev/null 2>&1 || code=$?
+assert_exit_code 2 "$code" "--jfr --docker without committed script/slots exits with code 2"
+if [ ! -d "$REPO_ROOT/evidence/advanced/h3/bare-repo" ]; then
+  echo "PASS: failed --jfr lookup leaves no h3 evidence dir"
+else
+  echo "FAIL: failed --jfr lookup leaves no h3 evidence dir"
+  failures=$((failures + 1))
+  rm -rf "$REPO_ROOT/evidence/advanced/h3/bare-repo"
+fi
+
+# --- Case 8: slots.jarGlob matching nothing -> finding, exit 3 ---------------------------
 # The fixture repo + evidence are created at runtime and removed afterwards:
 # *.jar and */target/ are gitignored, so a committed fixture jar would vanish.
 FAKE_NAME="jarglob-repo"

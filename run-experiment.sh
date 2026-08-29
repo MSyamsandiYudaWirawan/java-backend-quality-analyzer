@@ -2,19 +2,20 @@
 set -uo pipefail
 
 # ============================================================================
-# Experiment Pipeline: Build TARGET → Benchmark → Report → (h3: Diagnose)
+# Experiment Pipeline: Build TARGET → Benchmark → Report → (h3: JFR Diagnose)
 # ============================================================================
 # h2 re-point (2026-08-29, exp/h2-k6-generation): the measured subject is a
 # TARGET repo. The old `baseline|advanced` MODE (two variants of our own
 # service) is gone — that service no longer exists in this repo.
 #
 # Usage:
-#   ./run-experiment.sh <git-url|local-path> [--docker] [--skip-build]
+#   ./run-experiment.sh <git-url|local-path> [--docker] [--skip-build] [--jfr]
 #
 # Prereq: a committed k6 script + slots for the target must exist at
 #   evidence/advanced/h2/<repo>/{load-test.js,slots.json}
 # (generated via service/advanced/gen-k6.py — generation is a separate,
-# earlier step and is never part of this pipeline).
+# earlier step and is never part of this pipeline). Committed inputs stay in
+# h2/ and are never rewritten; --jfr writes all run outputs to h3/<repo>/.
 #
 # Boot jar selection: an optional "jarGlob" in slots.json pins the boot jar
 # as */target/<jarGlob> — needed for multi-module repos where the largest
@@ -36,7 +37,12 @@ set -uo pipefail
 # Findings: a target that cannot be built/booted/load-tested is NOT a harness
 # failure — the pipeline writes a NOT_TESTABLE load report and exits 3.
 #
-# h3 seam: JFR_OPTS (compose) + jfr-diagnose.sh join here in exp/h3.
+# h3 (--jfr, docker mode only): the service boots with a JFR disk recording
+# (settings=profile, dumponexit) written to evidence/advanced/h3/<repo>/
+# profile.jfr. After the full k6 run the service is stopped (JVM shutdown
+# finalizes the recording) and jfr-diagnose.sh produces the hypothesis report
+# at h3/<repo>/jfr/diagnosis-report.md. k6 outputs also land in h3/<repo>/ so
+# the h2 evidence stays immutable. Runtime scoring grades on k6 + JFR together.
 #
 # Exit codes: 0 measured (any threshold verdict), 2 usage/environment error,
 #             3 could not load-test (a finding).
@@ -49,13 +55,15 @@ SMOKE_ENTITY_COUNT=3
 
 TARGET=""
 DOCKER_MODE=false
+JFR_MODE=false
 SKIP_BUILD=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --docker) DOCKER_MODE=true; shift ;;
+    --jfr) JFR_MODE=true; shift ;;
     --skip-build) SKIP_BUILD=1; shift ;;
-    -h|--help) sed -n '2,37p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,43p' "$0"; exit 0 ;;
     -*) echo "ERROR: unknown option: $1" >&2; exit 2 ;;
     *)
       if [ -z "$TARGET" ]; then TARGET="$1"
@@ -65,7 +73,14 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$TARGET" ]; then
-  echo "Usage: $0 <git-url|local-path> [--docker] [--skip-build]"
+  echo "Usage: $0 <git-url|local-path> [--docker] [--skip-build] [--jfr]"
+  exit 2
+fi
+
+# JFR profiling rides on the docker resource envelope; native mode has no
+# JAVA_OPTS wiring into orchestrate.js.
+if [ "$JFR_MODE" = true ] && [ "$DOCKER_MODE" = false ]; then
+  echo "ERROR: --jfr requires --docker (h3 measured runs use the docker envelope)" >&2
   exit 2
 fi
 
@@ -75,15 +90,25 @@ done
 
 PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
 NAME="$(basename "$TARGET" .git)"
-EVIDENCE_DIR="$PROJECT_ROOT/evidence/advanced/h2/$NAME"
-SLOTS="$EVIDENCE_DIR/slots.json"
-K6_SCRIPT="$EVIDENCE_DIR/load-test.js"
+# Committed k6 script + slots always live in h2/ (immutable evidence); --jfr
+# only changes where run OUTPUTS land (h3/), never the inputs.
+SCRIPT_DIR="$PROJECT_ROOT/evidence/advanced/h2/$NAME"
+SLOTS="$SCRIPT_DIR/slots.json"
+K6_SCRIPT="$SCRIPT_DIR/load-test.js"
+
+if [ "$JFR_MODE" = true ]; then
+  PROFILE=h3
+else
+  PROFILE=h2
+fi
+EVIDENCE_DIR="$PROJECT_ROOT/evidence/advanced/$PROFILE/$NAME"
 
 if [ ! -f "$K6_SCRIPT" ] || [ ! -f "$SLOTS" ]; then
-  echo "ERROR: no committed k6 script/slots for '$NAME' under $EVIDENCE_DIR" >&2
+  echo "ERROR: no committed k6 script/slots for '$NAME' under $SCRIPT_DIR" >&2
   echo "Generate + commit them first (service/advanced/gen-k6.py)." >&2
   exit 2
 fi
+mkdir -p "$EVIDENCE_DIR"
 
 finding() { # <reason> — record a could-not-load-test finding and exit 3
   echo ">> FINDING: $1"
@@ -175,6 +200,12 @@ PY
   export PROJECT_ROOT_WIN="$(cygpath -w "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")"
   export DOCKERFILE_TARGET="$(cygpath -w "$PROJECT_ROOT/service/advanced/docker/Dockerfile.target" 2>/dev/null || echo "$PROJECT_ROOT/service/advanced/docker/Dockerfile.target")"
   export TARGET_ENV_FILE="$(cygpath -w "$TARGET_ENV_FILE" 2>/dev/null || echo "$TARGET_ENV_FILE")"
+  if [ "$JFR_MODE" = true ]; then
+    # h3: record the whole load window to disk; the JVM finalizes the file on
+    # shutdown (compose stop below — temurin JRE has no jcmd for live dumps).
+    # The service container sees the evidence mount as /jfr-repo.
+    export JFR_OPTS="-XX:StartFlightRecording=disk=true,dumponexit=true,filename=/jfr-repo/advanced/h3/$NAME/profile.jfr,settings=profile"
+  fi
   for i in "${!COMPOSE_FILES[@]}"; do
     case "${COMPOSE_FILES[$i]}" in
       /*) COMPOSE_FILES[$i]="$(cygpath -w "${COMPOSE_FILES[$i]}" 2>/dev/null || echo "${COMPOSE_FILES[$i]}")" ;;
@@ -195,7 +226,7 @@ PY
   MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
     -e K6_VUS=$SMOKE_VUS -e K6_DURATION=$SMOKE_DURATION -e K6_RAMP=$SMOKE_RAMP \
     -e K6_ENTITY_COUNT=$SMOKE_ENTITY_COUNT \
-    -e K6_JSON_OUT="/hackathon/evidence/advanced/h2/$NAME/k6-smoke.json" \
+    -e K6_JSON_OUT="/hackathon/evidence/advanced/$PROFILE/$NAME/k6-smoke.json" \
     k6 || true
   if ! python - "$EVIDENCE_DIR/k6-smoke.json" <<'PY'
 import json, sys
@@ -213,7 +244,7 @@ PY
 
   echo ">> Full run (fixed profile from committed script)"
   MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
-    -e K6_JSON_OUT="/hackathon/evidence/advanced/h2/$NAME/k6-full.json" \
+    -e K6_JSON_OUT="/hackathon/evidence/advanced/$PROFILE/$NAME/k6-full.json" \
     k6
   K6_RC=$?
 else
@@ -238,6 +269,27 @@ node "$PROJECT_ROOT/benchmarks/k6-report.js" \
   "$EVIDENCE_DIR/k6-full.json" --repo "$NAME" --out "$EVIDENCE_DIR" \
   || { echo "ERROR: report generation failed." >&2; exit 2; }
 
+# --- h3: finalize the JFR recording and diagnose -------------------------------
+if [ "$JFR_MODE" = true ]; then
+  # Stopping the service (SIGTERM, 15s grace) makes the JVM dump the completed
+  # recording via dumponexit — the trap's compose down removes it afterwards.
+  echo "[h3] Stopping service to finalize the JFR recording ..."
+  "${COMPOSE[@]}" stop service >/dev/null 2>&1 || true
+
+  JFR_FILE="$EVIDENCE_DIR/profile.jfr"
+  if [ -s "$JFR_FILE" ]; then
+    echo "[h3] Diagnosing $JFR_FILE ..."
+    bash "$PROJECT_ROOT/jfr-diagnose.sh" -o "$EVIDENCE_DIR/jfr" -n diagnosis \
+      "$JFR_FILE" || echo "WARNING: jfr-diagnose failed; JFR evidence incomplete" >&2
+  else
+    echo "WARNING: no JFR recording at $JFR_FILE (k6 evidence still valid)" >&2
+  fi
+fi
+
 echo ""
 echo "Pipeline complete: $NAME (k6 exit $K6_RC)"
-echo "Artifacts: $EVIDENCE_DIR/{k6-smoke.json,k6-full.json,load-report.json,load-report.md}"
+if [ "$JFR_MODE" = true ]; then
+  echo "Artifacts: $EVIDENCE_DIR/{k6-smoke.json,k6-full.json,load-report.json,load-report.md,profile.jfr,jfr/}"
+else
+  echo "Artifacts: $EVIDENCE_DIR/{k6-smoke.json,k6-full.json,load-report.json,load-report.md}"
+fi
