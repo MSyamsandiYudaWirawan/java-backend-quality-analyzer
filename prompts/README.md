@@ -47,20 +47,45 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (end of Day 1, Aug 28)
+## 3. Current State (end of Day 2, Aug 29 ~11:45)
 
-Branch: `baseline`. Clean tree. Commits: `6bbabd9` (baseline analyzer),
-`b5eb30e` (reframe + rubric + harness + evidence).
+Branch: `exp/h1-rubric-scoring` (created from `baseline` at `a39e072`; h1
+design DECIDED — Option A, agent judgment + committed artifacts; see §4
+item 5. Scoring work starts in the next session).
+Commits: `6bbabd9` (baseline analyzer), `b5eb30e` (reframe + rubric +
+harness), `e3040f1` (controlled repos import), `1cfd7dd` (eval set + expert
+ranking v1), `a39e072` (baseline ρ headline + harness fixes).
 
-**Built and tested:**
-- `service/baseline/analyze.sh` — naive analyzer. 9 bash unit tests pass.
-- `service/eval/evaluate.py` — eval harness. 12 Python unit tests pass
-  (`python tests/unit/test_spearman.py`). Smoke-verified end-to-end.
-- `service/rubric/quality-rubric.md` — scoring contract v1.
-- Docs reframed to the eval metric: README, IMPROVEMENTS, REPRODUCTION,
-  CHECKLIST. Trajectories started: `trajectories/kimi-cli/` (2 sessions) +
-  `index.md`.
-- Evidence: `evidence/baseline/spring-petclinic/` (100/100, saturated).
+**Day 2 DONE (items 1–4):**
+- **Eval set finalized, n=10, all validated** (clone + Java 21 build).
+  `service/targets.txt` is the record, incl. drops and pins. 4 controlled
+  practice repos + petclinic + blog-rest-api + spring-mvc-showcase as URLs/
+  local clones; 2 non-root-buildable repos pinned as local clones
+  (`targets/REST-With-Spring-module6` @9c06a66, `targets/gs-rest-service-complete`
+  @2ef8e28); `petclinic-degraded` fork created by the human.
+- **Expert ranking v1 complete** (`service/eval/expert-ranking.txt`,
+  notes in `evidence/expert-ranking-notes.md`). Graded on structure +
+  pom.xml + collected facts; ONLY the 4 practice repos were ranked on
+  measured runtime knowledge. **v2 policy:** if h3 runtime evidence
+  contradicts v1, revise the ranking with justification and re-run the
+  eval — never blame ρ on the analyzer.
+- **Baseline ρ headline: 0.811 (n=10)** (`evidence/eval/baseline/`).
+  Carried by 3 anchors; the story is the **5-way tie at 90 spanning expert
+  ranks 2–8** (gs-rest-service skeleton = practice-webflux-redis).
+  **Environment sensitivity is a headline finding:** ρ swung 0.493 → 0.811
+  because a stray `practice-postgres` container held port 5432 during
+  petclinic's tests. Never report ρ without the per-repo table.
+- **Harness hardened:** `bash_path()` URL-mangling fixed (URLs were
+  rewritten to `https:/...` → git scp-parse → ssh fail; 2 regression
+  tests), `--resume` flag added (reuses existing `*-score.json` per repo;
+  crashed runs are resumable). 14 Python unit tests + 9 bash tests green.
+
+**Environment notes:** `practice-postgres` container is currently STOPPED
+(restart with `docker compose up -d postgres` in `targets/practice-mvc/`
+before running practice-mvc/mvc-caffeine tests or k6). practice-mvc and
+mvc-caffeine tests need Postgres on localhost:5432 (only their ITs use
+Testcontainers). blog-rest-api tests need an undeclared MySQL (genuine
+repo finding — baseline 65 stands).
 
 **Session-start sanity check (run these):**
 ```bash
@@ -71,29 +96,37 @@ tests/unit/test-baseline.sh && python tests/unit/test_spearman.py
 Python 3.13. **No jq — do not depend on it.** Shell scripts are pinned to LF
 via `.gitattributes`. Paths crossing Python→bash must go through
 `bash_path()`-style handling (backslashes get eaten; see trajectory
-2026-08-28_23-32 for the incident).
+2026-08-28_23-32 for the incident, and 2026-08-29_11-37 for the URL
+variant of the same bug class).
 
-## 4. Day 2 Plan (in order — do not skip ahead)
+## 4. Day 2 Plan (items 1–4 DONE; item 5 in progress — h1 next)
 
-1. **Validate public targets.** Clone + Java 21 build pass over
-   `service/targets.txt` candidates; drop/replace failures, record drops.
-2. **Import the 4 controlled practice repos** (MVC / MVC+Redis / WebFlux /
-   WebFlux+Redis — product create + get-by-id service the human built to test
-   the benchmark pipeline). TODO: human provides location; import as local
-   targets. Their quality ordering is *known* (runtime-measured during
-   practice) — they are the method-validation set, and the baseline
-   scores all four ~100/100 (baseline-blindness demo for the video).
-3. **Expert ranking session (human, 1–2h timeboxed).** Score every validated
-   target with the rubric → `service/eval/expert-ranking.txt` + per-repo
-   justifications in `evidence/expert-ranking-notes.md`.
-4. **Baseline ρ headline.** Run harness (baseline, full build mode) over the
-   eval set → `evidence/eval/baseline/`. Record in IMPROVEMENTS.md.
+1. ~~**Validate public targets.**~~ DONE — 10-repo set validated, drops/pins
+   recorded in `service/targets.txt`.
+2. ~~**Import the 4 controlled practice repos.**~~ DONE — local clones under
+   `targets/`; baseline ties all four at 90/100 (blindness evidence in
+   `evidence/baseline/practice-*`).
+3. ~~**Expert ranking session.**~~ DONE — v1 in
+   `service/eval/expert-ranking.txt` + `evidence/expert-ranking-notes.md`
+   (v2 revision policy pre-authorized).
+4. ~~**Baseline ρ headline.**~~ DONE — **ρ = 0.811** with a 5-way tie at 90
+   spanning expert ranks 2–8; recorded in IMPROVEMENTS.md.
 5. **Experiments** (one branch each, `exp/<name>`, each measured through the
    harness on the full eval set). Each adds one capability on top of the
    previous; h3 is the everything-working-together payoff:
-   - `exp/h1-rubric-scoring` — agent scores repos against the rubric with
-     build+test evidence. Question: can the agent score repos at all?
-     Expected largest Δρ; becomes the advanced spine.
+   - `exp/h1-rubric-scoring` — **branch created; design DECIDED (Option A):**
+     agent judgment with committed artifacts. Per repo: mechanical collectors
+     (build+test logs, test census, package tree, `dependency:analyze`,
+     README/license scan) → agent reads evidence → scores the rubric with
+     per-item citations → score sheet committed as evidence. Harness command
+     = thin wrapper (collector + read committed scores). Runtime dimension
+     scores 0 for ALL repos in h1 ("not yet measured", uniform rule so it
+     cannot distort ρ). Question: can the agent score repos at all? Expected
+     largest Δρ — judgment must break the 90-tie on Architecture /
+     Dependencies / Maintainability, which a script cannot see.
+     (Rejected designs: B pure-scripted proxies — shallow package-name
+     heuristics, the failure mode we are trying to beat; C hybrid — less
+     agent surface.)
    - `exp/h2-k6-generation` — agent generates k6 load scripts for arbitrary
      repos (see §5), runs them against the booted target, and produces a
      per-repo load report as committed evidence: RPS, latency percentiles
