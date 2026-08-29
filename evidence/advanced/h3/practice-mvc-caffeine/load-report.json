@@ -1,0 +1,20 @@
+{
+  "repo": "practice-mvc-caffeine",
+  "dateUtc": "2026-08-29T10:19:32Z",
+  "rps": 2133.412012348888,
+  "totalRequests": 161138,
+  "latency": {
+    "avg": 80.92348742994741,
+    "p50": 92.1054675,
+    "p95": 193.27576754999998,
+    "p99": 396.39129494000014,
+    "max": 1799.435744
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "PASS",
+    "breached": []
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h3/practice-mvc-caffeine/k6-full.json"
+}
