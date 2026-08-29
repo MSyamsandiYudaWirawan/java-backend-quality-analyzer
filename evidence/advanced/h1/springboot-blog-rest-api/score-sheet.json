@@ -1,0 +1,41 @@
+{
+  "target": "https://github.com/RameshMF/springboot-blog-rest-api",
+  "commit": "b080232",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 42,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 10, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 0, "max": 10, "evidence": "surefire-summary.txt, test.log", "note": "GENUINE repo defect: the only test (contextLoads) fails — the app requires a MySQL instance that is nowhere declared (no docker-compose, no Testcontainers, no H2 test scope). Baseline's 65 already reflected this." },
+        "testDepth": { "score": 0, "max": 5, "evidence": "test-census.txt", "note": "1 test file, 13 LOC, 0 assertions — no meaningful tests." }
+      }
+    },
+    "architecture": {
+      "score": 16, "max": 20,
+      "items": {
+        "layering": { "score": 8, "max": 10, "evidence": "package-tree.txt", "note": "Textbook controller / service(+impl) / repository / entity / payload(DTO) / security / config separation across 41 files." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "Blocking MVC + Spring Security JWT for a blog REST API — appropriate." },
+        "structuralSanity": { "score": 3, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 141 LOC); violation: hardcoded JWT secret and DB passwords in application*.properties." }
+      }
+    },
+    "dependencies": {
+      "score": 9, "max": 15,
+      "items": {
+        "currency": { "score": 4, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 3.2.1 / Spring Security 6.2.1 (Dec 2023) — noticeably behind current Boot 4.x." },
+        "riskBloat": { "score": 5, "max": 7, "evidence": "dependency-analyze.log", "note": "Unused-declared starters are mostly dependency:analyze false positives; devtools/lombok/starter-test flags are mild. No vulnerability audit was run — not scored as clean, scored as unverified-but-ordinary." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 7, "max": 15,
+      "items": {
+        "readme": { "score": 3, "max": 5, "evidence": "repo-scan.txt", "note": "README.md 1.9 KB exists; setup steps do NOT mention the required MySQL (proven by the failing contextLoads test) — incomplete onboarding." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Consistent tutorial-grade code, readable throughout." },
+        "hygiene": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "Two violations: no license file, and committed secrets — a real JWT secret plus DB passwords in four application*.properties files." }
+      }
+    }
+  }
+}

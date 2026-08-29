@@ -1,0 +1,14 @@
+# Top 20 Java files by LOC (path LOC)
+src/test/java/com/MSyamsandiYW/service/integration/ProductControllerIT.java 70
+src/test/java/com/MSyamsandiYW/service/product/ProductServiceImplTest.java 54
+src/main/java/com/MSyamsandiYW/service/product/impl/ProductServiceImpl.java 37
+src/main/java/com/MSyamsandiYW/service/product/ProductController.java 33
+src/main/java/com/MSyamsandiYW/service/exception/GlobalExceptionHandler.java 30
+src/main/java/com/MSyamsandiYW/service/product/Product.java 22
+src/main/java/com/MSyamsandiYW/service/product/request/CreateProductRequest.java 17
+src/main/java/com/MSyamsandiYW/service/ServiceApplication.java 13
+src/main/java/com/MSyamsandiYW/service/product/ProductService.java 12
+src/main/java/com/MSyamsandiYW/service/product/response/GetProductResponse.java 10
+src/test/java/com/MSyamsandiYW/service/ServiceApplicationTests.java 8
+src/main/java/com/MSyamsandiYW/service/product/ProductRepository.java 8
+src/main/java/com/MSyamsandiYW/service/exception/ProductNotFoundException.java 7

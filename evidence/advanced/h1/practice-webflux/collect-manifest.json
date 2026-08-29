@@ -1,0 +1,15 @@
+{
+  "target": "targets/practice-webflux",
+  "commit": "ec9d052",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:01:38Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 10,
+  "testJavaFiles": 3,
+  "mainLoc": 189,
+  "testLoc": 132,
+  "assertionCalls": 1
+}

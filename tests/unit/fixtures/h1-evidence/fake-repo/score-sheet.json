@@ -1,0 +1,14 @@
+{
+  "target": "tests/unit/fixtures/h1-target",
+  "commit": "fixture",
+  "analyzer": "h1-rubric-scoring (fixture)",
+  "score": 42,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": { "score": 17, "max": 25 },
+    "architecture": { "score": 10, "max": 20 },
+    "dependencies": { "score": 8, "max": 15 },
+    "runtime": { "score": 0, "max": 25, "note": "h1: runtime not yet measured" },
+    "maintainability": { "score": 7, "max": 15 }
+  }
+}

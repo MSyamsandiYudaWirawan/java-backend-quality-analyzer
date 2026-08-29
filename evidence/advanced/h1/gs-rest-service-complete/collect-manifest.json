@@ -1,0 +1,15 @@
+{
+  "target": "targets/gs-rest-service-complete",
+  "commit": "unknown",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:10:47Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 3,
+  "testJavaFiles": 1,
+  "mainLoc": 35,
+  "testLoc": 38,
+  "assertionCalls": 0
+}

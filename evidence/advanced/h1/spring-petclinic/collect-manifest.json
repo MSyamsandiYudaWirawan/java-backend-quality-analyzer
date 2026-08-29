@@ -1,0 +1,15 @@
+{
+  "target": "https://github.com/spring-projects/spring-petclinic",
+  "commit": "818c413",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:19:44Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 30,
+  "testJavaFiles": 20,
+  "mainLoc": 1878,
+  "testLoc": 2336,
+  "assertionCalls": 102
+}

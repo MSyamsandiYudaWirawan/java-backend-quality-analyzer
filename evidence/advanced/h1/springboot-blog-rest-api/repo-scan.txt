@@ -1,0 +1,19 @@
+# README files at repo root (size in bytes)
+README.md 1893
+
+# License files at repo root
+
+# Config files (application*.properties/yml/yaml, excluding target/)
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+src/main/resources/application-qa.properties
+src/main/resources/application.properties
+
+# Committed binaries (jar/class/war/ear, excluding target/)
+
+# Suspicious secret-looking lines in tracked config/source (password|secret|apikey|token = <value>)
+src/main/resources/application-dev.properties:3:spring.datasource.password = root
+src/main/resources/application-prod.properties:3:spring.datasource.password = Mysql123$
+src/main/resources/application-qa.properties:3:spring.datasource.password = root
+src/main/resources/application.properties:3:spring.datasource.password = Mysql@123
+src/main/resources/application.properties:11:app.jwt-secret=daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb

@@ -1,0 +1,41 @@
+{
+  "target": "https://github.com/spring-projects/spring-mvc-showcase",
+  "commit": "71d8c7e",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 26,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 2, "max": 25,
+      "items": {
+        "buildPasses": { "score": 0, "max": 10, "evidence": "build.log", "note": "Build FAILS on Java 21: javax.xml.bind removed after Java 8 (expected for this archived pre-Boot project; kept in the eval set as the honest legacy bottom tier)." },
+        "testsPass": { "score": 0, "max": 10, "evidence": "test.log", "note": "Cannot run — build fails first." },
+        "testDepth": { "score": 2, "max": 5, "evidence": "test-census.txt, package-tree.txt", "note": "18 test files / 1148 LOC of MockMvc tests exist and mirror the main package structure, but cannot be executed or verified on the eval toolchain. Assertion census 0 is a collector limitation (andExpect-style tests)." }
+      }
+    },
+    "architecture": {
+      "score": 12, "max": 20,
+      "items": {
+        "layering": { "score": 7, "max": 10, "evidence": "package-tree.txt", "note": "Feature packages (async/convert/data/form/mapping/views/...) with a separated config package — reasonable structure for a showcase app." },
+        "frameworkFit": { "score": 2, "max": 5, "evidence": "dependency-analyze.log (absent — build fails), package-tree.txt", "note": "XML-config, pre-Boot Spring MVC on javax.* — the choice actively fights any modern deployment; project is archived." },
+        "structuralSanity": { "score": 3, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 155 LOC), no secrets; XML-based configuration is the era's style, not externalized modern config." }
+      }
+    },
+    "dependencies": {
+      "score": 1, "max": 15,
+      "items": {
+        "currency": { "score": 0, "max": 8, "evidence": "build.log", "note": "javax-era dependencies (pre-Jakarta); effectively EOL stack — proven by the Java 21 build failure." },
+        "riskBloat": { "score": 1, "max": 7, "evidence": "build.log", "note": "dependency:analyze could not run (build fails). Ancient javax dependencies carry known-vulnerability risk by era; unverified specifics, scored near-zero on principle." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 11, "max": 15,
+      "items": {
+        "readme": { "score": 3, "max": 5, "evidence": "repo-scan.txt", "note": "README.md 1.6 KB exists and describes the showcase; setup is pre-Boot WAR deployment, stale for modern toolchains." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Clean, well-organized sample code of its era." },
+        "hygiene": { "score": 4, "max": 5, "evidence": "repo-scan.txt", "note": "LICENSE present, no committed binaries or secrets." }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "target": "https://github.com/MSyamsandiYudaWirawan/petclinic-degraded",
+  "commit": "307e5fd",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:22:46Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "FAIL",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 30,
+  "testJavaFiles": 20,
+  "mainLoc": 1878,
+  "testLoc": 2336,
+  "assertionCalls": 102
+}

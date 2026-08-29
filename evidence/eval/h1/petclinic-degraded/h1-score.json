@@ -1,0 +1,41 @@
+{
+  "target": "https://github.com/MSyamsandiYudaWirawan/petclinic-degraded",
+  "commit": "307e5fd",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 55,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 14, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 0, "max": 10, "evidence": "surefire-summary.txt, test.log", "note": "GENUINE failure: ClinicServiceTests 1 failure + 1 error of 76 (injected breakage). PostgresIntegrationTests context failures in the first collection were environmental (port 5432 held by practice-postgres); after re-collection with the port free, only the injected failures remain." },
+        "testDepth": { "score": 4, "max": 5, "evidence": "test-census.txt", "note": "Same full suite as upstream petclinic (20 files, 2336 LOC, 102 assertion calls) — deep, but currently red." }
+      }
+    },
+    "architecture": {
+      "score": 18, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "Identical to upstream petclinic: feature packages with controllers + repositories." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "MVC + Thymeleaf — correct fit." },
+        "structuralSanity": { "score": 4, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes; same k8s/db.yml literal dev password as upstream." }
+      }
+    },
+    "dependencies": {
+      "score": 14, "max": 15,
+      "items": {
+        "currency": { "score": 8, "max": 8, "evidence": "dependency-list.txt", "note": "Same current stack as upstream (Spring Boot 4.x line)." },
+        "riskBloat": { "score": 6, "max": 7, "evidence": "dependency-analyze.log", "note": "Same starter-transitive false-positive profile as upstream; no genuine bloat." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 9, "max": 15,
+      "items": {
+        "readme": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "README deliberately removed (degradation) — no onboarding at repo root." },
+        "legibility": { "score": 5, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Upstream petclinic code quality, unchanged." },
+        "hygiene": { "score": 4, "max": 5, "evidence": "repo-scan.txt", "note": "LICENSE.txt present; env-default datasource passwords; k8s/db.yml literal dev password." }
+      }
+    }
+  }
+}

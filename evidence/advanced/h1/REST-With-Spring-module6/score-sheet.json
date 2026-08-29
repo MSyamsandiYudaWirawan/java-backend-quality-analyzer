@@ -1,0 +1,41 @@
+{
+  "target": "targets/REST-With-Spring-module6",
+  "commit": "9c06a66",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 63,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 24, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21 (7-lesson multi-module layout)." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log", "note": "Full suite green across lessons." },
+        "testDepth": { "score": 4, "max": 5, "evidence": "test-census.txt, package-tree.txt", "note": "34 test files, 4259 test LOC vs 11266 main LOC (38%), 130 assertion calls; real contract + end-to-end API integration tests per lesson. Held back by heavy duplication of the same tests across lesson variants." }
+      }
+    },
+    "architecture": {
+      "score": 19, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "Textbook controller / service(+impl) / persistence-repository / web-dto(+mapper) / web-error separation in every lesson." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "Blocking MVC for a CRUD REST API — appropriate." },
+        "structuralSanity": { "score": 5, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (largest main class 161 LOC), per-lesson application.properties, no secret-looking lines." }
+      }
+    },
+    "dependencies": {
+      "score": 11, "max": 15,
+      "items": {
+        "currency": { "score": 5, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 3.4.0 / Spring 6.2.0 — roughly a year behind current (Boot 4.x), not EOL." },
+        "riskBloat": { "score": 6, "max": 7, "evidence": "dependency-analyze.log", "note": "Only starter-transitive used-undeclared noise; no unused-declared bloat of note." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 9, "max": 15,
+      "items": {
+        "readme": { "score": 2, "max": 5, "evidence": "repo-scan.txt", "note": "README.md exists but only 347 bytes — pointer-grade, not onboarding." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Consistent course-code style; duplication across -start/-end lessons is inherent to the teaching format." },
+        "hygiene": { "score": 3, "max": 5, "evidence": "repo-scan.txt", "note": "No license file in the pinned clone; no committed binaries or secrets." }
+      }
+    }
+  }
+}

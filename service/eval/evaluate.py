@@ -166,6 +166,62 @@ def spearman(xs, ys):
     return pearson(ranks(xs), ranks(ys))
 
 
+def tie_groups(values):
+    """Groups of indices sharing the same value (only groups of size >= 2)."""
+    by_value = {}
+    for i, v in enumerate(values):
+        by_value.setdefault(v, []).append(i)
+    return [members for members in by_value.values() if len(members) >= 2]
+
+
+def spearman_tie_bounds(xs, ys):
+    """(rho, rho_best, rho_worst): Spearman rho plus the range rho could
+    take if every tie in xs were broken luckily or unluckily.
+
+    Tied values share an average rank, which flatters an analyzer that
+    cannot order the tied items: the average sits mid-pack either way.
+    The bounds break each tie by redistributing the group's own rank
+    positions, aligned with ys (best) or anti-aligned (worst). Ranks
+    outside tie groups are unaffected, so this is an exact sensitivity
+    range, not a simulation.
+    """
+    rx = ranks(xs)
+    ry = ranks(ys)
+    best = list(rx)
+    worst = list(rx)
+    for members in tie_groups(xs):
+        lo = int(min(rx[i] for i in members))
+        positions = list(range(lo, lo + len(members)))
+        aligned = sorted(members, key=lambda i: -ys[i])
+        for position, i in zip(positions, aligned):
+            best[i] = position
+        for position, i in zip(positions, reversed(aligned)):
+            worst[i] = position
+    return pearson(rx, ry), pearson(best, ry), pearson(worst, ry)
+
+
+def pair_counts(xs, ys):
+    """(concordant, discordant, tied) over all i<j pairs.
+
+    tied = pairs where xs (or ys) ties, i.e. the analyzer expressed no
+    ordering opinion. An analyzer that saturates has a high tied count —
+    that absence of judgment is itself reported here, not hidden inside
+    a correlation coefficient.
+    """
+    concordant = discordant = tied = 0
+    for i in range(len(xs)):
+        for j in range(i + 1, len(xs)):
+            dx = (xs[i] > xs[j]) - (xs[i] < xs[j])
+            dy = (ys[i] > ys[j]) - (ys[i] < ys[j])
+            if dx == 0 or dy == 0:
+                tied += 1
+            elif dx == dy:
+                concordant += 1
+            else:
+                discordant += 1
+    return concordant, discordant, tied
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -228,11 +284,19 @@ def main():
 
     comparable = [e for e in results
                   if e["score"] is not None and e["expertRank"] is not None]
-    rho = None
+    rho = rho_best = rho_worst = None
+    tie_stats = None
+    pair_stats = None
     if len(comparable) >= 2:
         scores = [e["score"] for e in comparable]
         expert_quality = [len(expert_rank_of) - e["expertRank"] + 1 for e in comparable]
-        rho = spearman(scores, expert_quality)
+        rho, rho_best, rho_worst = spearman_tie_bounds(scores, expert_quality)
+        groups = tie_groups(scores)
+        tie_stats = {"groups": len(groups),
+                     "tiedRepos": sum(len(g) for g in groups)}
+        concordant, discordant, tied = pair_counts(scores, expert_quality)
+        pair_stats = {"concordant": concordant, "discordant": discordant,
+                      "tied": tied}
     elif args.ranking:
         print("WARNING: fewer than 2 comparable repos; rho not computed.", file=sys.stderr)
 
@@ -267,6 +331,22 @@ def main():
     if rho is not None:
         report_lines.append("**Spearman rho vs expert ranking: %.3f** (n=%d)"
                             % (rho, len(comparable)))
+        if tie_stats["tiedRepos"]:
+            report_lines.append("")
+            report_lines.append(
+                "Tie check: %d of %d scored repos sit in %d tie group(s); "
+                "within a tie the analyzer carries no ordering information. "
+                "If every tie broke luckily/unluckily, rho would be in "
+                "[%.3f, %.3f]." % (tie_stats["tiedRepos"], len(comparable),
+                                   tie_stats["groups"], rho_worst, rho_best))
+        total_pairs = (pair_stats["concordant"] + pair_stats["discordant"]
+                       + pair_stats["tied"])
+        report_lines.append("")
+        report_lines.append(
+            "Pair check: of %d repo pairs, %d concordant, %d discordant, "
+            "%d tied by the analyzer (no ordering opinion)."
+            % (total_pairs, pair_stats["concordant"],
+               pair_stats["discordant"], pair_stats["tied"]))
     else:
         report_lines.append("**Spearman rho: not computed.** %s" % unranked_note)
     if unranked_note:
@@ -279,7 +359,10 @@ def main():
 
     results_path = os.path.join(args.out, "eval-results.json")
     with open(results_path, "w", encoding="utf-8") as f:
-        json.dump({"label": args.label, "rho": rho, "results": results}, f, indent=2)
+        json.dump({"label": args.label, "rho": rho,
+                   "rhoBest": rho_best, "rhoWorst": rho_worst,
+                   "ties": tie_stats, "pairs": pair_stats,
+                   "results": results}, f, indent=2)
 
     print()
     print("\n".join(report_lines))

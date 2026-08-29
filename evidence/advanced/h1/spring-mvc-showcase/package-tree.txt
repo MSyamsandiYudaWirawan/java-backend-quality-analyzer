@@ -1,0 +1,34 @@
+# Java packages under src/main/java (file counts per directory)
+      1 src/main/java/org/springframework/mvc/extensions/ajax
+      4 src/main/java/org/springframework/samples/mvc/async
+      3 src/main/java/org/springframework/samples/mvc/config
+      6 src/main/java/org/springframework/samples/mvc/convert
+      2 src/main/java/org/springframework/samples/mvc/data
+      3 src/main/java/org/springframework/samples/mvc/data/custom
+      1 src/main/java/org/springframework/samples/mvc/data/standard
+      3 src/main/java/org/springframework/samples/mvc/exceptions
+      1 src/main/java/org/springframework/samples/mvc/fileupload
+      3 src/main/java/org/springframework/samples/mvc/form
+      3 src/main/java/org/springframework/samples/mvc/mapping
+      2 src/main/java/org/springframework/samples/mvc/messageconverters
+      1 src/main/java/org/springframework/samples/mvc/redirect
+      1 src/main/java/org/springframework/samples/mvc/response
+      2 src/main/java/org/springframework/samples/mvc/simple
+      2 src/main/java/org/springframework/samples/mvc/validation
+      2 src/main/java/org/springframework/samples/mvc/views
+
+# Java packages under src/test/java (file counts per directory)
+      1 src/test/java/org/springframework/samples/mvc
+      2 src/test/java/org/springframework/samples/mvc/async
+      1 src/test/java/org/springframework/samples/mvc/convert
+      3 src/test/java/org/springframework/samples/mvc/data
+      1 src/test/java/org/springframework/samples/mvc/exceptions
+      1 src/test/java/org/springframework/samples/mvc/fileupload
+      1 src/test/java/org/springframework/samples/mvc/form
+      1 src/test/java/org/springframework/samples/mvc/mapping
+      1 src/test/java/org/springframework/samples/mvc/messageconverters
+      1 src/test/java/org/springframework/samples/mvc/redirect
+      1 src/test/java/org/springframework/samples/mvc/response
+      2 src/test/java/org/springframework/samples/mvc/simple
+      1 src/test/java/org/springframework/samples/mvc/validation
+      1 src/test/java/org/springframework/samples/mvc/views

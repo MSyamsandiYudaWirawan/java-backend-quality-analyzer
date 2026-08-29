@@ -1,0 +1,4 @@
+[ERROR] Tests run: 12, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.978 s <<< FAILURE! -- in org.springframework.samples.petclinic.service.ClinicServiceTests
+[ERROR] org.springframework.samples.petclinic.service.ClinicServiceTests.shouldFindAllPetTypes -- Time elapsed: 0.021 s <<< FAILURE!
+[ERROR] Tests run: 76, Failures: 1, Errors: 1, Skipped: 0
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.6:test (default-test) on project spring-petclinic: There are test failures.

@@ -1,0 +1,15 @@
+{
+  "target": "targets/practice-webflux-redis",
+  "commit": "1de6a1a",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:02:27Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 12,
+  "testJavaFiles": 3,
+  "mainLoc": 264,
+  "testLoc": 166,
+  "assertionCalls": 1
+}

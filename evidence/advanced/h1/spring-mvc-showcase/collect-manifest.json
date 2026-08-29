@@ -1,0 +1,15 @@
+{
+  "target": "https://github.com/spring-projects/spring-mvc-showcase",
+  "commit": "71d8c7e",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:11:01Z",
+  "hasPom": 1,
+  "buildStatus": "FAIL",
+  "testStatus": "FAIL",
+  "depsStatus": "FAIL",
+  "mainJavaFiles": 40,
+  "testJavaFiles": 18,
+  "mainLoc": 1757,
+  "testLoc": 1148,
+  "assertionCalls": 0
+}

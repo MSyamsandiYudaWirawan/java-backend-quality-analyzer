@@ -1,0 +1,15 @@
+{
+  "target": "https://github.com/RameshMF/springboot-blog-rest-api",
+  "commit": "b080232",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:06:23Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "FAIL",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 41,
+  "testJavaFiles": 1,
+  "mainLoc": 1670,
+  "testLoc": 13,
+  "assertionCalls": 0
+}

@@ -1,0 +1,41 @@
+{
+  "target": "https://github.com/spring-projects/spring-petclinic",
+  "commit": "818c413",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 72,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 25, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log, surefire-summary.txt", "note": "76 tests green. First collection FAILED PostgresIntegrationTests due to practice-postgres holding port 5432 — environmental (matches Day-2 incident); re-collected with the port free, fully green." },
+        "testDepth": { "score": 5, "max": 5, "evidence": "test-census.txt, largest-classes.txt", "note": "20 test files, 2336 test LOC vs 1878 main LOC (124%), 102 assertion calls; integration (MySql/Postgres Testcontainers) and concurrency tests present." }
+      }
+    },
+    "architecture": {
+      "score": 18, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "Feature packages (owner/vet/system/model) with controllers + Spring Data repositories; no business logic in entities." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "Blocking MVC + Thymeleaf for a server-rendered CRUD app — correct fit." },
+        "structuralSanity": { "score": 4, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 207 LOC). Datasource passwords use env-var defaults (${MYSQL_PASS:...}); k8s/db.yml carries a literal dev password — minor." }
+      }
+    },
+    "dependencies": {
+      "score": 14, "max": 15,
+      "items": {
+        "currency": { "score": 8, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 4.1.0 / Spring 7.0.8 — current." },
+        "riskBloat": { "score": 6, "max": 7, "evidence": "dependency-analyze.log", "note": "Used-undeclared/unused-declared entries are starter-transitive false positives typical of dependency:analyze on Boot starters; h2 runtime flagged unused. No genuine bloat." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 15, "max": 15,
+      "items": {
+        "readme": { "score": 5, "max": 5, "evidence": "repo-scan.txt", "note": "README.md 10.7 KB with setup steps; project is the reference Spring sample." },
+        "legibility": { "score": 5, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Consistent naming and structure across packages." },
+        "hygiene": { "score": 5, "max": 5, "evidence": "repo-scan.txt", "note": "LICENSE.txt present; only committed binary is the conventional gradle-wrapper.jar." }
+      }
+    }
+  }
+}

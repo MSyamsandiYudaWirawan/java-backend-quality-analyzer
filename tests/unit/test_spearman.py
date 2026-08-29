@@ -54,6 +54,55 @@ class TestSpearman(unittest.TestCase):
             evaluate.spearman([1, 2, 3], [1, 2])
 
 
+class TestTieBounds(unittest.TestCase):
+    def test_no_ties_bounds_equal_rho(self):
+        rho, best, worst = evaluate.spearman_tie_bounds([3, 2, 1], [3, 2, 1])
+        self.assertAlmostEqual(rho, 1.0)
+        self.assertAlmostEqual(best, 1.0)
+        self.assertAlmostEqual(worst, 1.0)
+
+    def test_known_tied_case(self):
+        # xs=[2,1,1], ys=[3,2,1]: the tied pair can be ordered with the
+        # expert (best: perfect ranks -> 1.0) or against (worst: one
+        # adjacent swap -> 0.5). Average-rank rho: ranks [1,2.5,2.5] vs
+        # [1,2,3] -> cov 1.5, variances 1.5 and 2 -> 1.5/sqrt(3) ~ 0.866.
+        rho, best, worst = evaluate.spearman_tie_bounds([2, 1, 1], [3, 2, 1])
+        self.assertAlmostEqual(rho, 1.5 / 3 ** 0.5)
+        self.assertAlmostEqual(best, 1.0)
+        self.assertAlmostEqual(worst, 0.5)
+
+    def test_bounds_bracket_average_rank_rho(self):
+        # Baseline-like profile: two tie groups (2x100, 5x90) over 10 repos.
+        scores = [100, 100, 90, 90, 90, 90, 90, 65, 55, 40]
+        expert = [10, 8, 4, 6, 7, 9, 3, 5, 2, 1]
+        rho, best, worst = evaluate.spearman_tie_bounds(scores, expert)
+        self.assertLessEqual(worst, rho)
+        self.assertLessEqual(rho, best)
+
+    def test_tie_groups_only_reports_real_ties(self):
+        groups = evaluate.tie_groups([5, 5, 1, 1, 1, 9])
+        self.assertEqual(sorted(len(g) for g in groups), [2, 3])
+
+
+class TestPairCounts(unittest.TestCase):
+    def test_all_concordant(self):
+        self.assertEqual(evaluate.pair_counts([3, 2, 1], [3, 2, 1]), (3, 0, 0))
+
+    def test_all_discordant(self):
+        self.assertEqual(evaluate.pair_counts([1, 2, 3], [3, 2, 1]), (0, 3, 0))
+
+    def test_analyzer_ties_are_unjudged_pairs(self):
+        # 5 repos, 3 tied by the analyzer: pairs = C(5,2) = 10;
+        # tied pairs = C(3,2) = 3; the rest concordant.
+        self.assertEqual(
+            evaluate.pair_counts([100, 90, 90, 90, 40], [5, 4, 3, 2, 1]),
+            (7, 0, 3))
+
+    def test_saturated_analyzer_judges_nothing(self):
+        self.assertEqual(evaluate.pair_counts([100, 100, 100], [3, 2, 1]),
+                         (0, 0, 3))
+
+
 class TestHelpers(unittest.TestCase):
     def test_repo_name_from_url(self):
         self.assertEqual(

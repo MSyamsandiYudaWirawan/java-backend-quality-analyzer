@@ -1,0 +1,21 @@
+# Top 20 Java files by LOC (path LOC)
+src/main/java/com/springboot/blog/service/impl/PostServiceImpl.java 141
+src/main/java/com/springboot/blog/service/impl/CommentServiceImpl.java 133
+src/main/java/com/springboot/blog/controller/PostController.java 132
+src/main/java/com/springboot/blog/config/SecurityConfig.java 98
+src/main/java/com/springboot/blog/service/impl/AuthServiceImpl.java 86
+src/main/java/com/springboot/blog/exception/GlobalExceptionHandler.java 82
+src/main/java/com/springboot/blog/security/JwtTokenProvider.java 79
+src/main/java/com/springboot/blog/service/impl/CategoryServiceImpl.java 73
+src/main/java/com/springboot/blog/security/JwtAuthenticationFilter.java 73
+src/main/java/com/springboot/blog/controller/CategoryController.java 59
+src/main/java/com/springboot/blog/controller/CommentController.java 54
+src/main/java/com/springboot/blog/payload/PostDto.java 47
+src/main/java/com/springboot/blog/entity/Post.java 41
+src/main/java/com/springboot/blog/controller/AuthController.java 40
+src/main/java/com/springboot/blog/security/CustomUserDetailsService.java 39
+src/main/java/com/springboot/blog/entity/User.java 36
+src/main/java/com/springboot/blog/exception/ResourceNotFoundException.java 30
+src/main/java/com/springboot/blog/exception/BlogAPIException.java 29
+src/main/java/com/springboot/blog/entity/Comment.java 28
+src/main/java/com/springboot/blog/payload/ErrorDetails.java 27

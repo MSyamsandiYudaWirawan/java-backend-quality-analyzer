@@ -1,0 +1,15 @@
+{
+  "target": "targets/practice-mvc-caffeine",
+  "commit": "a7316db",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:00:50Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 11,
+  "testJavaFiles": 4,
+  "mainLoc": 214,
+  "testLoc": 286,
+  "assertionCalls": 8
+}

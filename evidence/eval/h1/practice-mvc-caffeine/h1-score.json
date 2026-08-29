@@ -1,0 +1,41 @@
+{
+  "target": "targets/practice-mvc-caffeine",
+  "commit": "a7316db",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 55,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 23, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21. NOTE: pom has a malformed lombok scope ('annotationProcessor') — Maven warns it 'threatens the stability of your build' (dependency-analyze.log)." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log", "note": "Suite green (requires external Postgres on localhost:5432 for non-IT tests; ran with practice-postgres up)." },
+        "testDepth": { "score": 3, "max": 5, "evidence": "test-census.txt, largest-classes.txt", "note": "4 test files, 286 test LOC vs 214 main LOC, but only 8 grep-visible assertion calls across controller/service/integration tests — real but shallow happy-path coverage." }
+      }
+    },
+    "architecture": {
+      "score": 16, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "controller / service(+impl) / repository / DTOs separation; Caffeine CacheConfig isolated in its own class." },
+        "frameworkFit": { "score": 4, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "Blocking MVC + Caffeine for simple CRUD — workable and honest for the workload; blocking stack caps concurrency headroom (a runtime question, deferred to h2/h3)." },
+        "structuralSanity": { "score": 3, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 43 LOC main); violation: hardcoded DB password in application.yaml." }
+      }
+    },
+    "dependencies": {
+      "score": 12, "max": 15,
+      "items": {
+        "currency": { "score": 8, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 4.1.1 / Spring 7.0.9 — current." },
+        "riskBloat": { "score": 4, "max": 7, "evidence": "dependency-analyze.log", "note": "Malformed POM model warning (lombok scope) plus starter-transitive used-undeclared noise; no unused-declared bloat beyond false positives." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 4, "max": 15,
+      "items": {
+        "readme": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "No README at repo root." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Small, consistent, readable; nonstandard capitalized package segment." },
+        "hygiene": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "Two violations: no license file, hardcoded DB password in application.yaml." }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Top 20 Java files by LOC (path LOC)
+src/test/java/org/springframework/samples/petclinic/service/ClinicServiceTests.java 315
+src/test/java/org/springframework/samples/petclinic/owner/OwnerControllerTests.java 279
+src/test/java/org/springframework/samples/petclinic/owner/PetControllerTests.java 274
+src/main/java/org/springframework/samples/petclinic/owner/PetController.java 207
+src/main/java/org/springframework/samples/petclinic/owner/Owner.java 185
+src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java 179
+src/test/java/org/springframework/samples/petclinic/PostgresIntegrationTests.java 150
+src/test/java/org/springframework/samples/petclinic/owner/PetValidatorTests.java 139
+src/test/java/org/springframework/samples/petclinic/system/I18nPropertiesSyncTest.java 138
+src/test/java/org/springframework/samples/petclinic/PetClinicConcurrencyTests.java 134
+src/main/java/org/springframework/samples/petclinic/owner/VisitController.java 114
+src/test/java/org/springframework/samples/petclinic/owner/VisitControllerTests.java 109
+src/test/java/org/springframework/samples/petclinic/system/CrashControllerIntegrationTests.java 101
+src/test/java/org/springframework/samples/petclinic/vet/VetControllerTests.java 100
+src/test/java/org/springframework/samples/petclinic/owner/PetTypeFormatterTests.java 97
+src/main/java/org/springframework/samples/petclinic/owner/Pet.java 85
+src/test/java/org/springframework/samples/petclinic/model/ValidatorTests.java 80
+src/test/java/org/springframework/samples/petclinic/MySqlIntegrationTests.java 74
+src/main/java/org/springframework/samples/petclinic/vet/VetController.java 74
+src/main/java/org/springframework/samples/petclinic/vet/Vet.java 74

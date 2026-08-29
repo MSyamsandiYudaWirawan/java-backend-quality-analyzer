@@ -46,7 +46,7 @@ tests/unit/test-baseline.sh                 # fast offline checks
 |---|--------|--------|----------|--------|--------|
 | 1 | `baseline` | Naive analyzer: 5 shallow yes/no checks → 0–100 score | spring-petclinic run (`evidence/baseline/spring-petclinic/`) | 100/100 — saturates, no headroom to rank repos | BASELINE |
 | 2 | `baseline` | Full eval-set run: 10 repos vs expert ranking v1 | `evidence/eval/baseline/` (eval-report.md, eval-results.json) | **ρ = 0.811** — but a 5-way tie at 90 spans expert ranks 2–8; ρ carried by 3 anchors (petclinic top, degraded/showcase bottom). Environment-sensitive: same run gave ρ = 0.493 when a stray Docker container broke petclinic's tests | BASELINE-HEADLINE |
-| 3 | `exp/h1-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
+| 3 | `exp/h1-rubric-scoring` | Agent rubric scoring on collected mechanical evidence (build/test logs, census, package tree, dep analysis, repo scan); Runtime = 0 uniformly; committed per-repo score sheets | `evidence/eval/h1/`, `evidence/advanced/h1/*/score-sheet.json` | **ρ = 0.865** (baseline 0.811); 90-tie broken (5 repos now span 50–63, cited); tie bounds [0.835, 0.929] vs baseline [0.527, 0.915]; unjudged pairs 3 vs 11. Discordance on blog/degraded parked for expert-ranking v2 decision | KEPT |
 | 4 | `exp/h2-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
 | 5 | `advanced` | [Final workflow] | [Full eval-set comparison] | [baseline ρ → advanced ρ] | ADVANCED |
 
@@ -54,14 +54,31 @@ tests/unit/test-baseline.sh                 # fast offline checks
 
 ## Experiment Details
 
-### REJECTED: H1 — [Hypothesis Name]
-- **Hypothesis:** [What capability you thought would improve ranking quality.]
-- **Evidence:** [What the eval set showed before the change — scores, missed findings.]
-- **Result:** [What actually happened after the change, with per-repo scores.]
-- **Why rejected:** [Why the numbers didn't justify keeping it.]
-- **Full report:** [`evidence/experiments/h1-[name].md`](evidence/experiments/h1-[name].md)
+### KEPT: H1 — Rubric scoring by agent judgment on collected evidence
+- **Hypothesis:** An agent reading mechanically-collected evidence (build/test
+  logs, test census, package tree, `dependency:analyze`, repo scan) and
+  scoring the shared rubric with per-item citations ranks the eval set
+  closer to the expert than the baseline's binary checks — mainly by
+  breaking the 5-way tie at 90 (expert ranks 2–8) that the baseline cannot
+  see.
+- **Evidence:** Baseline ρ = 0.811 carried by 3 anchors; 7/10 scores in two
+  tie groups; Monte Carlo P(ρ ≥ 0.811 by luck) ≈ 29%
+  (`evidence/eval/baseline/eval-report.md` analyst note).
+- **Result:** ρ = **0.865**; the baseline-tied 5 repos now span 50–63 with
+  citations; tie bounds [0.835, 0.929] (baseline: [0.527, 0.915]); unjudged
+  pairs 3 of 45 (baseline: 11). Runtime dimension scored 0 uniformly
+  (h1 rule) — 25 rubric points still dark, h2/h3 territory.
+- **Why kept:** Pre-registered criteria met: ρ > 0.811 and the tie broken
+  into an evidence-defensible order. The gain is in discrimination (pair
+  check), not the headline number.
+- **Open decision (human):** h1 disagrees with expert ranking v1 on
+  blog-rest-api (h1 9th vs expert 6th — genuine undeclared-MySQL test
+  failure + committed JWT secret) and petclinic-degraded (h1 5–7th vs
+  expert 9th — petclinic-grade architecture credits). Triggers the v2
+  ranking-revision policy; human decides before h2.
+- **Full report:** [`evidence/experiments/h1-rubric-scoring.md`](evidence/experiments/h1-rubric-scoring.md)
 
-### KEPT: H2 — [Hypothesis Name]
+### REJECTED: H2 — [Hypothesis Name]
 - **Hypothesis:** [What capability you thought would improve ranking quality.]
 - **Evidence:** [What the eval set showed before the change — scores, missed findings.]
 - **Result:** [What actually happened after the change, with per-repo scores.]

@@ -1,0 +1,5 @@
+# Top 20 Java files by LOC (path LOC)
+src/test/java/com/example/restservice/GreetingControllerTests.java 38
+src/main/java/com/example/restservice/GreetingController.java 19
+src/main/java/com/example/restservice/RestServiceApplication.java 13
+src/main/java/com/example/restservice/Greeting.java 3

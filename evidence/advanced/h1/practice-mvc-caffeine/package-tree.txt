@@ -1,0 +1,11 @@
+# Java packages under src/main/java (file counts per directory)
+      4 src/main/java/com/MSyamsandiYW/practice
+      4 src/main/java/com/MSyamsandiYW/practice/product
+      1 src/main/java/com/MSyamsandiYW/practice/product/impl
+      1 src/main/java/com/MSyamsandiYW/practice/product/request
+      1 src/main/java/com/MSyamsandiYW/practice/product/response
+
+# Java packages under src/test/java (file counts per directory)
+      2 src/test/java/com/MSyamsandiYW/practice
+      1 src/test/java/com/MSyamsandiYW/practice/integration
+      1 src/test/java/com/MSyamsandiYW/practice/product/impl

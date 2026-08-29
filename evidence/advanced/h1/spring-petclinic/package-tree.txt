@@ -1,0 +1,14 @@
+# Java packages under src/main/java (file counts per directory)
+      3 src/main/java/org/springframework/samples/petclinic
+      4 src/main/java/org/springframework/samples/petclinic/model
+     12 src/main/java/org/springframework/samples/petclinic/owner
+      5 src/main/java/org/springframework/samples/petclinic/system
+      6 src/main/java/org/springframework/samples/petclinic/vet
+
+# Java packages under src/test/java (file counts per directory)
+      5 src/test/java/org/springframework/samples/petclinic
+      1 src/test/java/org/springframework/samples/petclinic/model
+      6 src/test/java/org/springframework/samples/petclinic/owner
+      2 src/test/java/org/springframework/samples/petclinic/service
+      4 src/test/java/org/springframework/samples/petclinic/system
+      2 src/test/java/org/springframework/samples/petclinic/vet

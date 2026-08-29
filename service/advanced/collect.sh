@@ -139,13 +139,14 @@ if [ "$SKIP_BUILD" -eq 0 ]; then
       fi
 
       echo ">> Running mvn dependency:analyze / dependency:list"
-      if (cd "$REPO_DIR" && timeout "$BUILD_TIMEOUT_SECONDS" mvn -B -q dependency:analyze) \
+      # No -q here: -q suppresses the dependency plugin's report output.
+      if (cd "$REPO_DIR" && timeout "$BUILD_TIMEOUT_SECONDS" mvn -B dependency:analyze) \
           >"$OUT_DIR/dependency-analyze.log" 2>&1; then
         deps_status=PASS
       else
         deps_status=FAIL
       fi
-      (cd "$REPO_DIR" && timeout "$BUILD_TIMEOUT_SECONDS" mvn -B -q dependency:list) \
+      (cd "$REPO_DIR" && timeout "$BUILD_TIMEOUT_SECONDS" mvn -B dependency:list) \
           >"$OUT_DIR/dependency-list.txt" 2>&1 || true
     else
       test_status=FAIL

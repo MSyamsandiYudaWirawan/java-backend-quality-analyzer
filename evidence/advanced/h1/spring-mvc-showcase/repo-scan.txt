@@ -1,0 +1,11 @@
+# README files at repo root (size in bytes)
+README.md 1575
+
+# License files at repo root
+LICENSE
+
+# Config files (application*.properties/yml/yaml, excluding target/)
+
+# Committed binaries (jar/class/war/ear, excluding target/)
+
+# Suspicious secret-looking lines in tracked config/source (password|secret|apikey|token = <value>)

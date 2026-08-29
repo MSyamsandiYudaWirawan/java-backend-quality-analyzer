@@ -12,6 +12,7 @@
 | 8 | 2026-08-29 | `kimi-cli/2026-08-29_10-20-public-target-validation.md` | Public target validation + eval set finalization | Kimi Code CLI (kimi-k2) | 10-repo set fixed; non-root-buildable repos (gs-rest-service, REST-With-Spring) imported as pinned local clones; spring-mvc-showcase kept as fail-fast legacy anchor |
 | 9 | 2026-08-29 | `kimi-cli/2026-08-29_11-37-expert-ranking-baseline-rho.md` | Expert ranking v1 + baseline ρ headline | Kimi Code CLI (kimi-k2) | Expert grades structure-only except practice repos (runtime-measured), with pre-authorized v2 revision path; baseline ρ = 0.811 with 5-way tie at 90; URL-mangling harness bug fixed; ρ swings ±0.3 from one stray Docker container |
 | 10 | 2026-08-29 | `kimi-cli/2026-08-29_11-55-h1-design-closeout.md` | h1 design decision + Day 2 close-out | Kimi Code CLI (kimi-k2) | h1 = Option A (agent judgment, committed score sheets, uniform Runtime=0); h2 redefined as generate+run+report; high-RPS-with-critical-hotspot scores lower in h3 |
+| 11 | 2026-08-29 | `kimi-cli/2026-08-29_05-43-h1-implementation-kept.md` | h1 implementation: collector, blind scoring, tie-aware harness, KEPT | Kimi Code CLI (kimi-k2) | h1 ρ = 0.865 vs baseline 0.811; custom weighted ρ rejected in favor of standard ρ + tie bounds + pair counts; port-5432 env incident reproduced and attributed; v2 ranking-revision decision parked for human |
 
 ---
 

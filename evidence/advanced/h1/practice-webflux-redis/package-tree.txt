@@ -1,0 +1,14 @@
+# Java packages under src/main/java (file counts per directory)
+      1 src/main/java/com/MSyamsandiYW/service
+      1 src/main/java/com/MSyamsandiYW/service/config
+      2 src/main/java/com/MSyamsandiYW/service/exception
+      4 src/main/java/com/MSyamsandiYW/service/product
+      1 src/main/java/com/MSyamsandiYW/service/product/impl
+      1 src/main/java/com/MSyamsandiYW/service/product/request
+      1 src/main/java/com/MSyamsandiYW/service/product/response
+      1 src/main/java/com/MSyamsandiYW/service/redis
+
+# Java packages under src/test/java (file counts per directory)
+      1 src/test/java/com/MSyamsandiYW/service
+      1 src/test/java/com/MSyamsandiYW/service/integration
+      1 src/test/java/com/MSyamsandiYW/service/product

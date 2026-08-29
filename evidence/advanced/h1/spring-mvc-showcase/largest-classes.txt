@@ -1,0 +1,21 @@
+# Top 20 Java files by LOC (path LOC)
+src/main/java/org/springframework/samples/mvc/form/FormBean.java 155
+src/test/java/org/springframework/samples/mvc/messageconverters/MessageConvertersControllerTests.java 143
+src/test/java/org/springframework/samples/mvc/convert/ConvertControllerTests.java 143
+src/main/java/org/springframework/samples/mvc/convert/JavaBean.java 115
+src/test/java/org/springframework/samples/mvc/form/FormControllerTests.java 114
+src/test/java/org/springframework/samples/mvc/mapping/MappingControllerTests.java 108
+src/main/java/org/springframework/samples/mvc/messageconverters/MessageConvertersController.java 104
+src/test/java/org/springframework/samples/mvc/data/DataControllerTests.java 85
+src/main/java/org/springframework/samples/mvc/config/WebMvcConfig.java 80
+src/main/java/org/springframework/samples/mvc/async/DeferredResultController.java 78
+src/test/java/org/springframework/samples/mvc/data/StandardArgumentsControllerTests.java 75
+src/test/java/org/springframework/samples/mvc/async/DeferredResultControllerTests.java 74
+src/main/java/org/springframework/samples/mvc/async/CallableController.java 72
+src/test/java/org/springframework/samples/mvc/async/CallableControllerTests.java 71
+src/main/java/org/springframework/samples/mvc/data/standard/StandardArgumentsController.java 69
+src/main/java/org/springframework/samples/mvc/data/RequestDataController.java 68
+src/test/java/org/springframework/samples/mvc/response/ResponseControllerTests.java 65
+src/main/java/org/springframework/samples/mvc/mapping/MappingController.java 64
+src/main/java/org/springframework/samples/mvc/form/FormController.java 64
+src/main/java/org/springframework/samples/mvc/mapping/ClasslevelMappingController.java 61

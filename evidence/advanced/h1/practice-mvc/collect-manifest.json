@@ -1,0 +1,15 @@
+{
+  "target": "targets/practice-mvc",
+  "commit": "378ddde",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T04:59:10Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 9,
+  "testJavaFiles": 4,
+  "mainLoc": 181,
+  "testLoc": 232,
+  "assertionCalls": 8
+}

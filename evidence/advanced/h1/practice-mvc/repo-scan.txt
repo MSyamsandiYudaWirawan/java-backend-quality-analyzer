@@ -1,0 +1,14 @@
+# README files at repo root (size in bytes)
+
+# License files at repo root
+
+# Config files (application*.properties/yml/yaml, excluding target/)
+src/main/resources/application.yaml
+
+# Committed binaries (jar/class/war/ear, excluding target/)
+
+# Suspicious secret-looking lines in tracked config/source (password|secret|apikey|token = <value>)
+docker-compose.yml:21:      POSTGRES_PASSWORD: password
+docker-compose.yml:82:#      DATABASES_PASSWORD: password
+docker-compose.yml:114:#      GF_SECURITY_ADMIN_PASSWORD: admin
+src/main/resources/application.yaml:7:    password: password

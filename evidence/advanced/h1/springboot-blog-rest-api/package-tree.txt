@@ -1,0 +1,15 @@
+# Java packages under src/main/java (file counts per directory)
+      1 src/main/java/com/springboot/blog
+      1 src/main/java/com/springboot/blog/config
+      4 src/main/java/com/springboot/blog/controller
+      5 src/main/java/com/springboot/blog/entity
+      3 src/main/java/com/springboot/blog/exception
+      8 src/main/java/com/springboot/blog/payload
+      5 src/main/java/com/springboot/blog/repository
+      4 src/main/java/com/springboot/blog/security
+      4 src/main/java/com/springboot/blog/service
+      4 src/main/java/com/springboot/blog/service/impl
+      2 src/main/java/com/springboot/blog/utils
+
+# Java packages under src/test/java (file counts per directory)
+      1 src/test/java/com/springboot/blog

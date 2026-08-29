@@ -1,0 +1,15 @@
+{
+  "target": "targets/REST-With-Spring-module6",
+  "commit": "9c06a66",
+  "collector": "service/advanced/collect.sh (h1, mechanical facts only)",
+  "dateUtc": "2026-08-29T05:10:05Z",
+  "hasPom": 1,
+  "buildStatus": "PASS",
+  "testStatus": "PASS",
+  "depsStatus": "PASS",
+  "mainJavaFiles": 201,
+  "testJavaFiles": 34,
+  "mainLoc": 11266,
+  "testLoc": 4259,
+  "assertionCalls": 130
+}

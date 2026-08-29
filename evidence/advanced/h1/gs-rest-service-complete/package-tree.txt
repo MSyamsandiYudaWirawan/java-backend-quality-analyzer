@@ -1,0 +1,5 @@
+# Java packages under src/main/java (file counts per directory)
+      3 src/main/java/com/example/restservice
+
+# Java packages under src/test/java (file counts per directory)
+      1 src/test/java/com/example/restservice

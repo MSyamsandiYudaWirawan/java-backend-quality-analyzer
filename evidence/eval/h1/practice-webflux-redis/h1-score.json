@@ -1,0 +1,41 @@
+{
+  "target": "targets/practice-webflux-redis",
+  "commit": "1de6a1a",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 57,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 23, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log", "note": "Suite green." },
+        "testDepth": { "score": 3, "max": 5, "evidence": "test-census.txt, largest-classes.txt", "note": "3 test files incl. a Testcontainers-backed ProductControllerIT (87 LOC) and a service test (71 LOC). Assertion census shows 1 grep-visible assertion — tests use WebTestClient expectBody chains the census regex does not count (collector limitation); still a thin suite in absolute terms." }
+      }
+    },
+    "architecture": {
+      "score": 17, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "controller / service(+impl) / repository / request-response DTOs / redis / exception / config separation; no logic in entities." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "Full reactive stack (WebFlux + R2DBC + reactive Redis) used end to end — coherent, matches an I/O-bound profile." },
+        "structuralSanity": { "score": 3, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 47 LOC main); violation: hardcoded DB password in application.yaml." }
+      }
+    },
+    "dependencies": {
+      "score": 13, "max": 15,
+      "items": {
+        "currency": { "score": 8, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 4.1.1 / Spring 7.0.9 — current." },
+        "riskBloat": { "score": 5, "max": 7, "evidence": "dependency-analyze.log", "note": "Unused-declared flags on Boot starters are known dependency:analyze false positives; r2dbc-postgresql uses an old-style 1.1.2.RELEASE versioning line." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 4, "max": 15,
+      "items": {
+        "readme": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "No README at repo root." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Small, consistent, readable; nonstandard capitalized package segment (com.MSyamsandiYW)." },
+        "hygiene": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "Two violations: no license file, and a hardcoded DB password in application.yaml (+ docker-compose defaults)." }
+      }
+    }
+  }
+}

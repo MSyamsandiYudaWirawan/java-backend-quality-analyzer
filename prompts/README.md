@@ -47,14 +47,37 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (end of Day 2, Aug 29 ~11:45)
+## 3. Current State (Day 3, Aug 29 ~05:45 UTC)
 
-Branch: `exp/h1-rubric-scoring` (created from `baseline` at `a39e072`; h1
-design DECIDED — Option A, agent judgment + committed artifacts; see §4
-item 5. Scoring work starts in the next session).
+Branch: `exp/h1-rubric-scoring`. **h1 DONE, verdict KEPT: ρ = 0.865**
+(baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
+Next: `exp/h2-k6-generation` (new branch off h1 after the human's v2
+ranking decision).
 Commits: `6bbabd9` (baseline analyzer), `b5eb30e` (reframe + rubric +
 harness), `e3040f1` (controlled repos import), `1cfd7dd` (eval set + expert
-ranking v1), `a39e072` (baseline ρ headline + harness fixes).
+ranking v1), `a39e072` (baseline ρ headline + harness fixes), `80adef9`
+(h1 collector + tests), plus uncommitted h1 scoring/harness work at
+session end (commit proposed).
+
+**Day 3 DONE (h1):**
+- **Collector + wrapper:** `service/advanced/collect.sh` (mechanical
+  evidence: build/test logs, census, package tree, largest classes,
+  dependency:analyze/list, repo scan) and `service/advanced/analyze-h1.sh`
+  (thin wrapper: committed score sheet → h1-score.json). 19 + 5 bash
+  tests; `mvn -B -q` dependency-suppression bug fixed mid-run.
+- **Blind rubric scoring:** 10 committed score sheets
+  (`evidence/advanced/h1/*/score-sheet.json`), per-item citations,
+  Runtime = 0 uniformly. Scored without reading the expert ranking.
+- **h1 eval: ρ = 0.865, KEPT.** 90-tie broken (50–63 span); tie bounds
+  [0.835, 0.929]; unjudged pairs 3/45. Honest 3-way tie at 55 kept
+  (mvc/caffeine/degraded — real differences are runtime = h2/h3).
+  **OPEN for human: expert-ranking v2 decision** on blog-rest-api
+  (h1 9th vs expert 6th) and petclinic-degraded (h1 5–7th vs expert 9th)
+  per the pre-authorized revision policy.
+- **Harness tie-awareness:** `evaluate.py` now reports ρ bounds over
+  tie-breakings + tie share + pair counts (concordant/discordant/
+  unjudged). Baseline report regenerated with --resume (original scores
+  kept) + analyst note: P(ρ ≥ 0.811 by luck) ≈ 29%. 22 python tests.
 
 **Day 2 DONE (items 1–4):**
 - **Eval set finalized, n=10, all validated** (clone + Java 21 build).

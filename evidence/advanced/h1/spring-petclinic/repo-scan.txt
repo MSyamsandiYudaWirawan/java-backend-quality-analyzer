@@ -1,0 +1,21 @@
+# README files at repo root (size in bytes)
+README.md 10728
+
+# License files at repo root
+LICENSE.txt
+
+# Config files (application*.properties/yml/yaml, excluding target/)
+src/main/resources/application-mysql.properties
+src/main/resources/application-postgres.properties
+src/main/resources/application.properties
+
+# Committed binaries (jar/class/war/ear, excluding target/)
+gradle/wrapper/gradle-wrapper.jar
+
+# Suspicious secret-looking lines in tracked config/source (password|secret|apikey|token = <value>)
+docker-compose.yml:8:      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+docker-compose.yml:10:      - MYSQL_PASSWORD=petclinic
+docker-compose.yml:19:      - POSTGRES_PASSWORD=petclinic
+k8s/db.yml:14:  password: "pass"
+src/main/resources/application-mysql.properties:5:spring.datasource.password=${MYSQL_PASS:petclinic}
+src/main/resources/application-postgres.properties:5:spring.datasource.password=${POSTGRES_PASS:petclinic}

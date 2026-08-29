@@ -1,87 +1,87 @@
 {
-  "label": "baseline",
-  "rho": 0.8109364001682532,
-  "rhoBest": 0.9151515151515152,
-  "rhoWorst": 0.5272727272727272,
+  "label": "h1",
+  "rho": 0.8650957979871868,
+  "rhoBest": 0.9292831531001042,
+  "rhoWorst": 0.8351785300013596,
   "ties": {
-    "groups": 2,
-    "tiedRepos": 7
+    "groups": 1,
+    "tiedRepos": 3
   },
   "pairs": {
-    "concordant": 31,
-    "discordant": 3,
-    "tied": 11
+    "concordant": 37,
+    "discordant": 5,
+    "tied": 3
   },
   "results": [
     {
       "target": "targets/practice-mvc",
       "name": "practice-mvc",
-      "score": 90,
-      "note": "reused from previous run (--resume)",
+      "score": 55,
+      "note": "ok in 0s",
       "expertRank": 7,
-      "analyzerRank": 5.0
+      "analyzerRank": 6.0
     },
     {
       "target": "targets/practice-mvc-caffeine",
       "name": "practice-mvc-caffeine",
-      "score": 90,
-      "note": "reused from previous run (--resume)",
+      "score": 55,
+      "note": "ok in 0s",
       "expertRank": 5,
-      "analyzerRank": 5.0
+      "analyzerRank": 6.0
     },
     {
       "target": "targets/practice-webflux",
       "name": "practice-webflux",
-      "score": 90,
-      "note": "reused from previous run (--resume)",
+      "score": 56,
+      "note": "ok in 0s",
       "expertRank": 4,
-      "analyzerRank": 5.0
+      "analyzerRank": 4.0
     },
     {
       "target": "targets/practice-webflux-redis",
       "name": "practice-webflux-redis",
-      "score": 90,
-      "note": "reused from previous run (--resume)",
+      "score": 57,
+      "note": "ok in 0s",
       "expertRank": 2,
-      "analyzerRank": 5.0
+      "analyzerRank": 3.0
     },
     {
       "target": "https://github.com/spring-projects/spring-petclinic",
       "name": "spring-petclinic",
-      "score": 100,
-      "note": "reused from previous run (--resume)",
+      "score": 72,
+      "note": "ok in 0s",
       "expertRank": 1,
-      "analyzerRank": 1.5
+      "analyzerRank": 1.0
     },
     {
       "target": "https://github.com/RameshMF/springboot-blog-rest-api",
       "name": "springboot-blog-rest-api",
-      "score": 65,
-      "note": "reused from previous run (--resume)",
+      "score": 42,
+      "note": "ok in 0s",
       "expertRank": 6,
-      "analyzerRank": 8.0
+      "analyzerRank": 9.0
     },
     {
       "target": "targets/REST-With-Spring-module6",
       "name": "REST-With-Spring-module6",
-      "score": 100,
-      "note": "reused from previous run (--resume)",
+      "score": 63,
+      "note": "ok in 0s",
       "expertRank": 3,
-      "analyzerRank": 1.5
+      "analyzerRank": 2.0
     },
     {
       "target": "targets/gs-rest-service-complete",
       "name": "gs-rest-service-complete",
-      "score": 90,
-      "note": "reused from previous run (--resume)",
+      "score": 50,
+      "note": "ok in 0s",
       "expertRank": 8,
-      "analyzerRank": 5.0
+      "analyzerRank": 8.0
     },
     {
       "target": "https://github.com/spring-projects/spring-mvc-showcase",
       "name": "spring-mvc-showcase",
-      "score": 40,
-      "note": "reused from previous run (--resume)",
+      "score": 26,
+      "note": "ok in 0s",
       "expertRank": 10,
       "analyzerRank": 10.0
     },
@@ -89,9 +89,9 @@
       "target": "https://github.com/MSyamsandiYudaWirawan/petclinic-degraded",
       "name": "petclinic-degraded",
       "score": 55,
-      "note": "reused from previous run (--resume)",
+      "note": "ok in 0s",
       "expertRank": 9,
-      "analyzerRank": 9.0
+      "analyzerRank": 6.0
     }
   ]
 }

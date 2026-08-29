@@ -1,0 +1,21 @@
+# Top 20 Java files by LOC (path LOC)
+dealing-with-changes-in-the-api-versioning-end/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignV2ContentNegotiationEndToEndApiIntegrationTest.java 233
+dealing-with-changes-in-the-api-versioning-end/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignV1ContentNegotiationEndToEndApiIntegrationTest.java 233
+dealing-with-changes-in-the-api-resource-changes/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 193
+decouple-the-api-from-the-domain-model-start/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 190
+decouple-the-api-from-the-domain-model-end/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-versioning-start/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-versioning-end/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-url-changes-start/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignEndToEndApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-url-changes-start/src/test/java/com/baeldung/rwsb/contract/spring/ContractTestingCampaignApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-url-changes-end/src/test/java/com/baeldung/rwsb/contract/spring/ContractCampaignApiIntegrationTest.java 190
+dealing-with-changes-in-the-api-resource-changes/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignEndToEndApiIntegrationTest.java 189
+decouple-the-api-from-the-domain-model-start/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignEndToEndApiIntegrationTest.java 186
+decouple-the-api-from-the-domain-model-end/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignEndToEndApiIntegrationTest.java 186
+dealing-with-changes-in-the-api-versioning-start/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignEndToEndApiIntegrationTest.java 186
+dealing-with-changes-in-the-api-versioning-end/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignV2UrlEndToEndApiIntegrationTest.java 186
+dealing-with-changes-in-the-api-versioning-end/src/test/java/com/baeldung/rwsb/endtoend/spring/CampaignV1UrlEndToEndApiIntegrationTest.java 186
+decouple-the-api-from-the-domain-model-start/src/main/java/com/baeldung/rwsb/domain/model/Task.java 161
+decouple-the-api-from-the-domain-model-end/src/main/java/com/baeldung/rwsb/domain/model/Task.java 161
+dealing-with-changes-in-the-api-resource-changes/src/main/java/com/baeldung/rwsb/domain/model/Task.java 160
+dealing-with-changes-in-the-api-versioning-start/src/main/java/com/baeldung/rwsb/domain/model/Task.java 156
