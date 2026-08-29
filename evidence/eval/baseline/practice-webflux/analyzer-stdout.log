@@ -1,0 +1,22 @@
+>> Running mvn package (timeout 900s, log: /mnt/c/study/java-backend-quality-analyzer/evidence/eval/baseline/practice-webflux/build.log)
+>> Running mvn test (timeout 900s, log: /mnt/c/study/java-backend-quality-analyzer/evidence/eval/baseline/practice-webflux/test.log)
+
+# Baseline Quality Report (naive)
+
+- Target: targets/practice-webflux
+- Commit: ec9d052
+- Date (UTC): 2026-08-29T04:09:19Z
+- Analyzer: service/baseline/analyze.sh (no AI, shallow checks only)
+
+| Check | Weight | Result | Points |
+|-------|--------|--------|--------|
+| README present | 10 | FAIL | 0 |
+| Maven build file (pom.xml) | 10 | PASS | 10 |
+| Tests present (3 test files) | 20 | PASS | 20 |
+| Build passes (mvn package) | 25 | PASS | 25 |
+| Tests pass (mvn test) | 35 | PASS | 35 |
+
+**Score: 90/100**
+
+>> Wrote /mnt/c/study/java-backend-quality-analyzer/evidence/eval/baseline/practice-webflux/baseline-report.md
+>> Wrote /mnt/c/study/java-backend-quality-analyzer/evidence/eval/baseline/practice-webflux/baseline-score.json

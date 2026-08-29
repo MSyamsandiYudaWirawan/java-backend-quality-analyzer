@@ -1,0 +1,147 @@
+11:59:37.032 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.integration.ProductIntegrationTest]: ProductIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:59:37.287 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.integration.ProductIntegrationTest
+11:59:37.439 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.integration.ProductIntegrationTest]: ProductIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:59:37.451 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.integration.ProductIntegrationTest
+11:59:37.539 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+11:59:37.543 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+11:59:37.650 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 2.0.5
+11:59:38.143 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+11:59:38.967 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Npipe socket (npipe:////./pipe/docker_engine)
+11:59:38.969 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+11:59:39.008 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.4.3
+  API Version: 1.54
+  Operating System: Docker Desktop
+  Total Memory: 7629 MB
+  Labels: 
+    com.docker.desktop.address=npipe://\\.\pipe\docker_cli
+11:59:39.348 [main] INFO tc.testcontainers/ryuk:0.14.0 -- Creating container for image: testcontainers/ryuk:0.14.0
+11:59:39.700 [main] INFO tc.testcontainers/ryuk:0.14.0 -- Container testcontainers/ryuk:0.14.0 is starting: 216334662a3e33de092ad9fb5259e93914be35f259484479e947025caf189d9b
+11:59:40.473 [main] INFO tc.testcontainers/ryuk:0.14.0 -- Container testcontainers/ryuk:0.14.0 started in PT1.1256623S
+11:59:40.486 [main] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+11:59:40.487 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+11:59:40.488 [main] INFO org.testcontainers.DockerClientFactory -- ?? Docker server version should be at least 1.6.0
+11:59:40.488 [main] INFO tc.postgres:16-alpine -- Creating container for image: postgres:16-alpine
+11:59:40.737 [main] INFO tc.postgres:16-alpine -- Container postgres:16-alpine is starting: 148430a11e63539279633119aaeca9cba5f93e716aaab167b62d6aa85fad62eb
+11:59:45.458 [main] INFO tc.postgres:16-alpine -- Container postgres:16-alpine started in PT4.9694488S
+11:59:45.459 [main] INFO tc.postgres:16-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:51787/test?loggerLevel=OFF)
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-08-29T11:59:46.085+07:00  INFO 11204 --- [practice] [           main] c.M.p.i.ProductIntegrationTest           : Starting ProductIntegrationTest using Java 21.0.11 with PID 11204 (started by user in C:\study\java-backend-quality-analyzer\targets\practice-mvc-caffeine)
+2026-08-29T11:59:46.087+07:00  INFO 11204 --- [practice] [           main] c.M.p.i.ProductIntegrationTest           : No active profile set, falling back to 1 default profile: "default"
+2026-08-29T11:59:47.555+07:00  INFO 11204 --- [practice] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-29T11:59:47.656+07:00  INFO 11204 --- [practice] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 1 JPA repository interface.
+2026-08-29T11:59:48.779+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-29T11:59:48.916+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-08-29T11:59:49.822+07:00  INFO 11204 --- [practice] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-29T11:59:49.898+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-29T11:59:50.200+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@158cb50a
+2026-08-29T11:59:50.203+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-29T11:59:50.262+07:00  WARN 11204 --- [practice] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-08-29T11:59:50.305+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:51787/test?loggerLevel=OFF]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 16.15
+	Default catalog/schema: test/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-29T11:59:51.934+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-29T11:59:52.006+07:00  INFO 11204 --- [practice] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-29T11:59:52.182+07:00  INFO 11204 --- [practice] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-29T11:59:53.823+07:00  INFO 11204 --- [practice] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-08-29T11:59:53.823+07:00  INFO 11204 --- [practice] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-08-29T11:59:53.837+07:00  INFO 11204 --- [practice] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-29T11:59:53.860+07:00  INFO 11204 --- [practice] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 35 ms
+2026-08-29T11:59:53.968+07:00  INFO 11204 --- [practice] [           main] c.M.p.i.ProductIntegrationTest           : Started ProductIntegrationTest in 8.438 seconds (process running for 18.767)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.18.11\byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-08-29T11:59:56.010+07:00  WARN 11204 --- [practice] [           main] o.j.j.e.d.AbstractExtensionContext       : Type implements CloseableResource but not AutoCloseable: org.testcontainers.junit.jupiter.TestcontainersExtension$StoreAdapter
+2026-08-29T11:59:56.686+07:00  INFO 11204 --- [practice] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.PracticeApplicationTests]: PracticeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-08-29T11:59:56.734+07:00  INFO 11204 --- [practice] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.PracticeApplicationTests
+2026-08-29T11:59:56.738+07:00  INFO 11204 --- [practice] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.PracticeApplicationTests]: PracticeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-08-29T11:59:56.752+07:00  INFO 11204 --- [practice] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.PracticeApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-08-29T11:59:56.858+07:00  INFO 11204 --- [practice] [           main] c.M.practice.PracticeApplicationTests    : Starting PracticeApplicationTests using Java 21.0.11 with PID 11204 (started by user in C:\study\java-backend-quality-analyzer\targets\practice-mvc-caffeine)
+2026-08-29T11:59:56.858+07:00  INFO 11204 --- [practice] [           main] c.M.practice.PracticeApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2026-08-29T11:59:57.239+07:00  INFO 11204 --- [practice] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-29T11:59:57.260+07:00  INFO 11204 --- [practice] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 1 JPA repository interface.
+2026-08-29T11:59:57.403+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-29T11:59:57.458+07:00  INFO 11204 --- [practice] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-29T11:59:57.459+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-08-29T11:59:57.485+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@725f288f
+2026-08-29T11:59:57.486+07:00  INFO 11204 --- [practice] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-08-29T11:59:57.495+07:00  WARN 11204 --- [practice] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-08-29T11:59:57.505+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/mydb]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 16.15
+	Default catalog/schema: mydb/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-29T11:59:57.555+07:00  INFO 11204 --- [practice] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-29T11:59:57.594+07:00  INFO 11204 --- [practice] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-29T11:59:57.955+07:00  INFO 11204 --- [practice] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-29T11:59:57.981+07:00  INFO 11204 --- [practice] [           main] c.M.practice.PracticeApplicationTests    : Started PracticeApplicationTests in 1.213 seconds (process running for 22.779)
+2026-08-29T11:59:58.826+07:00  INFO 11204 --- [practice] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.ProductControllerTest]: ProductControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-08-29T11:59:58.878+07:00  INFO 11204 --- [practice] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.ProductControllerTest
+2026-08-29T11:59:58.881+07:00  INFO 11204 --- [practice] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.MSyamsandiYW.practice.ProductControllerTest]: ProductControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-08-29T11:59:58.916+07:00  INFO 11204 --- [practice] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.MSyamsandiYW.practice.PracticeApplication for test class com.MSyamsandiYW.practice.ProductControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-08-29T11:59:59.024+07:00  INFO 11204 --- [practice] [           main] c.M.practice.ProductControllerTest       : Starting ProductControllerTest using Java 21.0.11 with PID 11204 (started by user in C:\study\java-backend-quality-analyzer\targets\practice-mvc-caffeine)
+2026-08-29T11:59:59.024+07:00  INFO 11204 --- [practice] [           main] c.M.practice.ProductControllerTest       : No active profile set, falling back to 1 default profile: "default"
+2026-08-29T11:59:59.627+07:00  INFO 11204 --- [practice] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-08-29T11:59:59.628+07:00  INFO 11204 --- [practice] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-08-29T11:59:59.630+07:00  INFO 11204 --- [practice] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-08-29T11:59:59.644+07:00  INFO 11204 --- [practice] [           main] c.M.practice.ProductControllerTest       : Started ProductControllerTest in 0.715 seconds (process running for 24.442)
+2026-08-29T11:59:59.819+07:00  INFO 11204 --- [practice] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-29T11:59:59.829+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@158cb50a (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.833+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@4908ec4 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.836+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@59797aae (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.837+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@48c12541 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.838+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@78b3c922 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.839+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@78558e5e (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.841+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6aeb27f0 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.843+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2b41ecc1 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.844+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@4d5dca52 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-08-29T11:59:59.846+07:00  WARN 11204 --- [practice] [ionShutdownHook] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@19ae8ad9 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+[ERROR] Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).

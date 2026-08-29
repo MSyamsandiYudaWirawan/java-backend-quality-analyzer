@@ -1,0 +1,71 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.MSyamsandiYW:service >----------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.10.0:analyze (default-cli) > test-compile @ service >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ service ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ service ---
+[INFO] skip non existing resourceDirectory C:\study\java-backend-quality-analyzer\targets\practice-webflux-redis\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.10.0:analyze (default-cli) < test-compile @ service <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.10.0:analyze (default-cli) @ service ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    tools.jackson.core:jackson-databind:jar:3.1.5:compile
+[WARNING]    org.springframework.data:spring-data-relational:jar:4.1.1:compile
+[WARNING]    org.springframework:spring-web:jar:7.0.9:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:4.1.1:compile
+[WARNING]    org.springframework:spring-test:jar:7.0.9:test
+[WARNING]    org.mockito:mockito-junit-jupiter:jar:5.23.0:test
+[WARNING]    org.springframework:spring-beans:jar:7.0.9:compile
+[WARNING]    org.springframework:spring-context:jar:7.0.9:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:6.0.3:test
+[WARNING]    io.projectreactor:reactor-core:jar:3.8.7:compile
+[WARNING]    org.springframework.data:spring-data-redis:jar:4.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:4.1.1:compile
+[WARNING]    org.slf4j:slf4j-api:jar:2.0.18:compile
+[WARNING]    io.projectreactor:reactor-test:jar:3.8.7:test
+[WARNING]    org.springframework.data:spring-data-r2dbc:jar:4.1.1:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:compile
+[WARNING]    org.testcontainers:testcontainers:jar:1.20.4:test
+[WARNING]    org.mockito:mockito-core:jar:5.23.0:test
+[WARNING]    org.springframework.data:spring-data-commons:jar:4.1.1:compile
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.1.1:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-actuator:jar:4.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-r2dbc:jar:4.1.1:compile
+[WARNING]    org.postgresql:r2dbc-postgresql:jar:1.1.2.RELEASE:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-redis-reactive:jar:4.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:4.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:4.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-actuator-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-starter-data-r2dbc-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-starter-data-redis-reactive-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-starter-validation-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux-test:jar:4.1.1:test
+[WARNING]    org.springframework.boot:spring-boot-testcontainers:jar:4.1.1:test
+[WARNING]    org.postgresql:postgresql:jar:42.7.13:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-beans:jar:7.0.9:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.882 s
+[INFO] Finished at: 2026-08-29T12:25:14+07:00
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,480 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] dealing-with-changes-in-the-api-resource-changes                   [jar]
+[INFO] dealing-with-changes-api-url-changes-start                         [jar]
+[INFO] dealing-with-changes-api-url-changes-end                           [jar]
+[INFO] dealing-with-changes-in-the-api-versioning-start                   [jar]
+[INFO] dealing-with-changes-in-the-api-versioning-end                     [jar]
+[INFO] decouple-the-api-from-the-domain-model-start                       [jar]
+[INFO] decouple-the-api-from-the-domain-model-end                         [jar]
+[INFO] rws-evolve-rest-api                                                [pom]
+[INFO] 
+[INFO] ---< com.baeldung:dealing-with-changes-in-the-api-resource-changes >----
+[INFO] Building dealing-with-changes-in-the-api-resource-changes 2.0.0    [1/8]
+[INFO]   from dealing-with-changes-in-the-api-resource-changes\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ dealing-with-changes-in-the-api-resource-changes >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dealing-with-changes-in-the-api-resource-changes ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dealing-with-changes-in-the-api-resource-changes ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dealing-with-changes-in-the-api-resource-changes ---
+[INFO] Copying 6 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dealing-with-changes-in-the-api-resource-changes ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ dealing-with-changes-in-the-api-resource-changes <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ dealing-with-changes-in-the-api-resource-changes ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.8:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.0.3:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] ------< com.baeldung:dealing-with-changes-api-url-changes-start >-------
+[INFO] Building dealing-with-changes-api-url-changes-start 2.0.0          [2/8]
+[INFO]   from dealing-with-changes-in-the-api-url-changes-start\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ dealing-with-changes-api-url-changes-start >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dealing-with-changes-api-url-changes-start ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dealing-with-changes-api-url-changes-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dealing-with-changes-api-url-changes-start ---
+[INFO] Copying 3 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dealing-with-changes-api-url-changes-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ dealing-with-changes-api-url-changes-start <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ dealing-with-changes-api-url-changes-start ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-hateoas:jar:3.4.0:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] -------< com.baeldung:dealing-with-changes-api-url-changes-end >--------
+[INFO] Building dealing-with-changes-api-url-changes-end 2.0.0            [3/8]
+[INFO]   from dealing-with-changes-in-the-api-url-changes-end\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ dealing-with-changes-api-url-changes-end >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dealing-with-changes-api-url-changes-end ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dealing-with-changes-api-url-changes-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dealing-with-changes-api-url-changes-end ---
+[INFO] Copying 3 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dealing-with-changes-api-url-changes-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ dealing-with-changes-api-url-changes-end <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ dealing-with-changes-api-url-changes-end ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.15:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.springframework.hateoas:spring-hateoas:jar:2.4.0:compile
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-hateoas:jar:3.4.0:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] ---< com.baeldung:dealing-with-changes-in-the-api-versioning-start >----
+[INFO] Building dealing-with-changes-in-the-api-versioning-start 2.0.0    [4/8]
+[INFO]   from dealing-with-changes-in-the-api-versioning-start\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ dealing-with-changes-in-the-api-versioning-start >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dealing-with-changes-in-the-api-versioning-start ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dealing-with-changes-in-the-api-versioning-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dealing-with-changes-in-the-api-versioning-start ---
+[INFO] Copying 3 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dealing-with-changes-in-the-api-versioning-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ dealing-with-changes-in-the-api-versioning-start <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ dealing-with-changes-in-the-api-versioning-start ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.0.3:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] ----< com.baeldung:dealing-with-changes-in-the-api-versioning-end >-----
+[INFO] Building dealing-with-changes-in-the-api-versioning-end 2.0.0      [5/8]
+[INFO]   from dealing-with-changes-in-the-api-versioning-end\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ dealing-with-changes-in-the-api-versioning-end >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ dealing-with-changes-in-the-api-versioning-end ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ dealing-with-changes-in-the-api-versioning-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ dealing-with-changes-in-the-api-versioning-end ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ dealing-with-changes-in-the-api-versioning-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ dealing-with-changes-in-the-api-versioning-end <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ dealing-with-changes-in-the-api-versioning-end ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.0.3:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] -----< com.baeldung:decouple-the-api-from-the-domain-model-start >------
+[INFO] Building decouple-the-api-from-the-domain-model-start 2.0.0        [6/8]
+[INFO]   from decouple-the-api-from-the-domain-model-start\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ decouple-the-api-from-the-domain-model-start >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ decouple-the-api-from-the-domain-model-start ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ decouple-the-api-from-the-domain-model-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ decouple-the-api-from-the-domain-model-start ---
+[INFO] Copying 6 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ decouple-the-api-from-the-domain-model-start ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ decouple-the-api-from-the-domain-model-start <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ decouple-the-api-from-the-domain-model-start ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.8:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.0.3:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] ------< com.baeldung:decouple-the-api-from-the-domain-model-end >-------
+[INFO] Building decouple-the-api-from-the-domain-model-end 2.0.0          [7/8]
+[INFO]   from decouple-the-api-from-the-domain-model-end\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.8.1:analyze (default-cli) > test-compile @ decouple-the-api-from-the-domain-model-end >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ decouple-the-api-from-the-domain-model-end ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ decouple-the-api-from-the-domain-model-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ decouple-the-api-from-the-domain-model-end ---
+[INFO] Copying 6 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ decouple-the-api-from-the-domain-model-end ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< dependency:3.8.1:analyze (default-cli) < test-compile @ decouple-the-api-from-the-domain-model-end <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.8.1:analyze (default-cli) @ decouple-the-api-from-the-domain-model-end ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.springframework:spring-web:jar:6.2.0:compile
+[WARNING]    org.springframework.boot:spring-boot:jar:3.4.0:compile
+[WARNING]    org.springframework.data:spring-data-jpa:jar:3.4.0:compile
+[WARNING]    jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.8:compile
+[WARNING]    org.springframework:spring-tx:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-annotations:jar:2.18.1:compile
+[WARNING]    org.springframework.data:spring-data-commons:jar:3.4.0:compile
+[WARNING]    io.projectreactor:reactor-core:jar:3.7.0:test
+[WARNING]    org.springframework:spring-test:jar:6.2.0:test
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[WARNING]    org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[WARNING]    org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.33:compile
+[WARNING]    org.hamcrest:hamcrest:jar:2.2:test
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.assertj:assertj-core:jar:3.26.3:test
+[WARNING]    org.springframework:spring-webmvc:jar:6.2.0:compile
+[WARNING]    jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[WARNING]    org.springframework.boot:spring-boot-test:jar:3.4.0:test
+[WARNING]    org.springframework:spring-context:jar:6.2.0:compile
+[WARNING]    org.hibernate.orm:hibernate-core:jar:6.6.2.Final:compile
+[WARNING]    org.springframework.boot:spring-boot-autoconfigure:jar:3.4.0:compile
+[WARNING]    org.reactivestreams:reactive-streams:jar:1.0.4:test
+[WARNING]    jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.springframework.boot:spring-boot-starter-web:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-validation:jar:3.4.0:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-data-jpa:jar:3.4.0:compile
+[WARNING]    com.h2database:h2:jar:2.3.232:compile
+[WARNING]    org.springdoc:springdoc-openapi-starter-webmvc-ui:jar:2.0.3:compile
+[WARNING]    org.springframework.boot:spring-boot-starter-test:jar:3.4.0:test
+[WARNING]    org.springframework.boot:spring-boot-starter-webflux:jar:3.4.0:test
+[WARNING] Non-test scoped test only dependencies found:
+[WARNING]    org.springframework:spring-core:jar:6.2.0:compile
+[WARNING]    com.fasterxml.jackson.core:jackson-databind:jar:2.18.1:compile
+[WARNING]    org.springframework:spring-beans:jar:6.2.0:compile
+[INFO] 
+[INFO] ------------------< com.baeldung:rws-evolve-rest-api >------------------
+[INFO] Building rws-evolve-rest-api 2.0.0                                 [8/8]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.7.0:analyze (default-cli) > test-compile @ rws-evolve-rest-api >>>
+[INFO] 
+[INFO] <<< dependency:3.7.0:analyze (default-cli) < test-compile @ rws-evolve-rest-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.7.0:analyze (default-cli) @ rws-evolve-rest-api ---
+[INFO] Skipping pom project
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for rws-evolve-rest-api 2.0.0:
+[INFO] 
+[INFO] dealing-with-changes-in-the-api-resource-changes ... SUCCESS [  4.124 s]
+[INFO] dealing-with-changes-api-url-changes-start ......... SUCCESS [  0.821 s]
+[INFO] dealing-with-changes-api-url-changes-end ........... SUCCESS [  0.536 s]
+[INFO] dealing-with-changes-in-the-api-versioning-start ... SUCCESS [  0.640 s]
+[INFO] dealing-with-changes-in-the-api-versioning-end ..... SUCCESS [  0.554 s]
+[INFO] decouple-the-api-from-the-domain-model-start ....... SUCCESS [  0.498 s]
+[INFO] decouple-the-api-from-the-domain-model-end ......... SUCCESS [  0.521 s]
+[INFO] rws-evolve-rest-api ................................ SUCCESS [  1.044 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.254 s
+[INFO] Finished at: 2026-08-29T12:25:37+07:00
+[INFO] ------------------------------------------------------------------------
