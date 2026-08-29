@@ -46,6 +46,23 @@ code=0
 "$PIPELINE" a b >/dev/null 2>&1 || code=$?
 assert_exit_code 2 "$code" "unexpected extra argument exits with code 2"
 
+# --- Case 6: slots.jarGlob matching nothing -> finding, exit 3 ---------------------------
+# The fixture repo + evidence are created at runtime and removed afterwards:
+# *.jar and */target/ are gitignored, so a committed fixture jar would vanish.
+FAKE_NAME="jarglob-repo"
+FAKE_REPO="$REPO_ROOT/tests/unit/fixtures/$FAKE_NAME"
+FAKE_EVIDENCE="$REPO_ROOT/evidence/advanced/h2/$FAKE_NAME"
+mkdir -p "$FAKE_REPO/target" "$FAKE_EVIDENCE"
+: > "$FAKE_REPO/target/decoy-1.0.0.jar"   # heuristic would pick it; the glob must not
+cat > "$FAKE_EVIDENCE/slots.json" <<'JSON'
+{"repoName": "jarglob-repo", "jarGlob": "no-such-module-*.jar"}
+JSON
+echo "// runtime fixture" > "$FAKE_EVIDENCE/load-test.js"
+code=0
+"$PIPELINE" "$FAKE_REPO" --skip-build >/dev/null 2>&1 || code=$?
+assert_exit_code 3 "$code" "jarGlob matching no jar under target/ exits with code 3 (finding)"
+rm -rf "$FAKE_REPO" "$FAKE_EVIDENCE"
+
 # --- summary ------------------------------------------------------------------------------
 if [ "$failures" -gt 0 ]; then
   echo

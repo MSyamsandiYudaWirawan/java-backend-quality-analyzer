@@ -16,6 +16,10 @@ set -uo pipefail
 # (generated via service/advanced/gen-k6.py — generation is a separate,
 # earlier step and is never part of this pipeline).
 #
+# Boot jar selection: an optional "jarGlob" in slots.json pins the boot jar
+# as */target/<jarGlob> — needed for multi-module repos where the largest
+# jar is the wrong module. Without it, the largest jar under target/ boots.
+#
 # Native mode (default, dev iteration):
 #   1. mvn package at the target's root
 #   2. node benchmarks/orchestrate.js  (boot target jar, smoke gate, k6 full)
@@ -125,11 +129,20 @@ else
   echo "[1/3] --skip-build: reusing existing jar"
 fi
 
-# Bootable jar heuristic: largest jar under target/ (boot jars bundle deps).
-JAR="$(find "$REPO_DIR" -path '*/target/*.jar' -type f \
-  ! -name '*-sources.jar' ! -name '*-javadoc.jar' ! -name '*.original' \
-  -printf '%s %p\n' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)"
-[ -n "$JAR" ] || finding "no jar under target/ after build"
+# Bootable jar selection: slots.jarGlob pins the module (multi-module repos
+# where the largest jar is the wrong one); otherwise the largest jar under
+# target/ wins (boot jars bundle deps).
+JAR_GLOB="$(python -c 'import json, sys; print(json.load(open(sys.argv[1])).get("jarGlob", ""))' "$SLOTS")"
+if [ -n "$JAR_GLOB" ]; then
+  JAR="$(find "$REPO_DIR" -path "*/target/$JAR_GLOB" -type f \
+    ! -name '*-sources.jar' ! -name '*-javadoc.jar' ! -name '*.original' | head -1)"
+  [ -n "$JAR" ] || finding "jarGlob '$JAR_GLOB' matched no jar under target/ (see build.log)"
+else
+  JAR="$(find "$REPO_DIR" -path '*/target/*.jar' -type f \
+    ! -name '*-sources.jar' ! -name '*-javadoc.jar' ! -name '*.original' \
+    -printf '%s %p\n' 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)"
+  [ -n "$JAR" ] || finding "no jar under target/ after build"
+fi
 
 if [ "$DOCKER_MODE" = true ]; then
   # --- Step 2 (docker): image + stack + smoke gate + full run ----------------
