@@ -1,0 +1,17 @@
+{
+  "repoName": "spring-petclinic",
+  "scenario": "form",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/owners/new",
+  "createStatus": 302,
+  "formFields": {
+    "firstName": "k6-__UNIQ__",
+    "lastName": "loadtest",
+    "address": "1 Test St",
+    "city": "Testville",
+    "telephone": "1234567890"
+  },
+  "idRegex": "/owners/(\\d+)",
+  "readPath": "/owners/{id}",
+  "readStatus": 200
+}

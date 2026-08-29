@@ -1,0 +1,21 @@
+{
+  "repoName": "practice-webflux",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/api/v1/products",
+  "createPayload": "{\"name\":\"k6-product\",\"price\":19.99}",
+  "readPath": "/api/v1/products/{id}",
+  "idField": "id",
+  "createStatus": 201,
+  "readStatus": 200,
+  "infra": ["postgres"],
+  "bootEnv": {
+    "SPRING_R2DBC_URL": "r2dbc:postgresql://postgres:5432/mydb",
+    "SPRING_R2DBC_USERNAME": "username",
+    "SPRING_R2DBC_PASSWORD": "password"
+  },
+  "infraEnv": {
+    "POSTGRES_USER": "username",
+    "POSTGRES_PASSWORD": "password",
+    "POSTGRES_DB": "mydb"
+  }
+}

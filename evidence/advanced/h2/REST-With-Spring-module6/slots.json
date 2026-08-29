@@ -1,0 +1,11 @@
+{
+  "repoName": "REST-With-Spring-module6",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/campaigns",
+  "createPayload": "{\"code\":\"CAMP-__UNIQ__\",\"name\":\"Load Test Campaign\",\"description\":\"Load test campaign description\"}",
+  "readPath": "/campaigns/{id}",
+  "idField": "id",
+  "createStatus": 201,
+  "readStatus": 200,
+  "jarGlob": "dealing-with-changes-in-the-api-resource-changes-*.jar"
+}

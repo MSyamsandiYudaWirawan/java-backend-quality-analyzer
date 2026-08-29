@@ -1,0 +1,20 @@
+{
+  "repoName": "springboot-blog-rest-api",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/api/posts",
+  "createPayload": "{\"title\":\"Load post __UNIQ__\",\"description\":\"load test description\",\"content\":\"load test content\",\"categoryId\":1}",
+  "readPath": "/api/posts/{id}",
+  "idField": "id",
+  "createStatus": 201,
+  "readStatus": 200,
+  "infra": ["mysql"],
+  "bootEnv": {
+    "SPRING_DATASOURCE_URL": "jdbc:mysql://mysql:3306/myblog?useSSL=false&serverTimezone=UTC",
+    "SPRING_DATASOURCE_USERNAME": "root",
+    "SPRING_DATASOURCE_PASSWORD": "Mysql@123"
+  },
+  "infraEnv": {
+    "MYSQL_ROOT_PASSWORD": "Mysql@123",
+    "MYSQL_DATABASE": "myblog"
+  }
+}

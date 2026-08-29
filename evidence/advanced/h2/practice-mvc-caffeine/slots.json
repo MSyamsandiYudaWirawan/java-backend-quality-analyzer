@@ -1,0 +1,21 @@
+{
+  "repoName": "practice-mvc-caffeine",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/api/v1/products",
+  "createPayload": "{\"name\":\"k6-product\",\"price\":19.99}",
+  "readPath": "/api/v1/products/{id}",
+  "idField": "id",
+  "createStatus": 201,
+  "readStatus": 200,
+  "infra": ["postgres"],
+  "bootEnv": {
+    "SPRING_DATASOURCE_URL": "jdbc:postgresql://postgres:5432/mydb",
+    "SPRING_DATASOURCE_USERNAME": "username",
+    "SPRING_DATASOURCE_PASSWORD": "password"
+  },
+  "infraEnv": {
+    "POSTGRES_USER": "username",
+    "POSTGRES_PASSWORD": "password",
+    "POSTGRES_DB": "mydb"
+  }
+}

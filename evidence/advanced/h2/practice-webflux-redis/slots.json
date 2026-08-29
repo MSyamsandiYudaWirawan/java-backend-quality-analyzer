@@ -1,0 +1,23 @@
+{
+  "repoName": "practice-webflux-redis",
+  "baseUrl": "http://localhost:8080",
+  "createPath": "/api/v1/products",
+  "createPayload": "{\"name\":\"k6-product\",\"price\":19.99}",
+  "readPath": "/api/v1/products/{id}",
+  "idField": "id",
+  "createStatus": 201,
+  "readStatus": 200,
+  "infra": ["postgres", "redis"],
+  "bootEnv": {
+    "SPRING_R2DBC_URL": "r2dbc:postgresql://postgres:5432/mydb",
+    "SPRING_R2DBC_USERNAME": "username",
+    "SPRING_R2DBC_PASSWORD": "password",
+    "SPRING_DATA_REDIS_HOST": "redis",
+    "SPRING_DATA_REDIS_PORT": "6379"
+  },
+  "infraEnv": {
+    "POSTGRES_USER": "username",
+    "POSTGRES_PASSWORD": "password",
+    "POSTGRES_DB": "mydb"
+  }
+}
