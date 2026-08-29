@@ -1,0 +1,20 @@
+{
+  "repo": "practice-webflux-redis",
+  "dateUtc": "2026-08-29T10:25:17Z",
+  "rps": 1262.3289866436128,
+  "totalRequests": 95425,
+  "latency": {
+    "avg": 141.6124106806291,
+    "p50": 129.292464,
+    "p95": 243.40715760000006,
+    "p99": 282.94846063999995,
+    "max": 363.64098
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "PASS",
+    "breached": []
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h3/practice-webflux-redis/k6-full.json"
+}

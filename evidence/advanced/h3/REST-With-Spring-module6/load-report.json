@@ -1,0 +1,20 @@
+{
+  "repo": "REST-With-Spring-module6",
+  "dateUtc": "2026-08-29T10:27:51Z",
+  "rps": 1218.6867819191727,
+  "totalRequests": 91861,
+  "latency": {
+    "avg": 147.2167918179423,
+    "p50": 103.427346,
+    "p95": 311.803035,
+    "p99": 994.4369361999987,
+    "max": 2563.658764
+  },
+  "failRate": 0,
+  "checkPassRate": 1,
+  "thresholds": {
+    "verdict": "PASS",
+    "breached": []
+  },
+  "rawK6Json": "C:/study/java-backend-quality-analyzer/evidence/advanced/h3/REST-With-Spring-module6/k6-full.json"
+}
