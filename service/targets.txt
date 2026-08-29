@@ -1,40 +1,41 @@
-# Sample Java backend repos used as analysis targets.
-# Format: <git-url>  # <expected tier> — <why>
-# Tiers are hypotheses to be validated during evaluation design (Day 2),
-# not ground truth. The human-expert ranking supersedes them.
+# Eval set — Java backend repos used as analysis targets (v1, Day 2 validated).
+# Format: <git-url|local-path>  # <expected tier> — <why>
+# Tiers are hypotheses to be validated by the human-expert ranking,
+# not ground truth. The expert ranking supersedes them.
+#
+# Validation gate (run Day 2, results inline): exists, shallow-clones, builds
+# on Java 21 (`mvn -DskipTests package`), fails fast (no harness-timeout
+# risk), license OK. Repos whose buildable unit is NOT the default-branch
+# root are imported as local clones under targets/ (like the controlled
+# repos) because the harness clones URLs at the default branch root.
 
-# Confirmed targets
-https://github.com/spring-projects/spring-petclinic  # good — reference Spring Boot app, maintained, tested (baseline: 100/100)
-
-# Candidates (must be validated: exists, clones, builds on Java 21, license OK, size reasonable)
-# Good tier
-https://github.com/iluwatar/java-design-patterns  # good-ish — mature, CI, many tests; caveat: patterns library, not a deployable backend
-# Average / tutorial tier
-https://github.com/eugenp/tutorials  # average/mixed — huge multi-module tutorial repo; caveat: very long build, consider a subset
-https://github.com/RameshMF/springboot-blog-rest-api  # average — tutorial-grade REST API
-https://github.com/eugenp/REST-With-Spring  # average — course project repo
-# Weak / minimal tier
-https://github.com/spring-guides/gs-rest-service  # weak-minimal — official guide skeleton, almost no tests
-# Legacy tier
-https://github.com/spring-projects/spring-mvc-showcase  # legacy — archived, XML-config MVC, pre-Boot era
-
-# Synthetic (recommended — controlled ground truth, no license risk)
-# TODO(day-2): create under a separate repo or tests/targets/:
-#   petclinic-degraded: petclinic fork with tests stripped + README removed + a broken test
-#   petclinic-legacy:   petclinic pinned to an old Spring Boot with no tests and unused deps
-# Synthetic repos give a known-correct bottom rank, which anchors the correlation metric.
-
-# TODO(day-2): add 1-2 more candidates to reach ~10 total, then run a validation
-# pass over every row: shallow clone + `mvn -q -DskipTests package` on Java 21.
-# Drop or replace any target that fails validation; record drops here.
-
-# Controlled practice repos (local clones under targets/, imported Day 2 from
-# github.com/MSyamsandiYudaWirawan/practice-*). Product create + get-by-id
+# --- Controlled practice repos (method-validation set) -----------------------
+# Local clones under targets/, imported Day 2 from
+# github.com/MSyamsandiYudaWirawan/practice-*. Product create + get-by-id
 # service built by the human to test the pipeline. Quality ordering is KNOWN
-# from runtime measurements during practice — this is the method-validation
-# set. All four are near-identical structurally, so the baseline saturates
-# (~100/100) on all of them: the baseline-blindness demo.
+# from runtime measurements during practice. All four are near-identical
+# structurally, so the baseline saturates (90/100 flat tie) on all of them:
+# the baseline-blindness demo (evidence/baseline/practice-*).
 targets/practice-mvc           # controlled — blocking MVC, no cache
 targets/practice-mvc-caffeine  # controlled — blocking MVC + Caffeine cache
 targets/practice-webflux       # controlled — reactive WebFlux, no cache
 targets/practice-webflux-redis # controlled — reactive WebFlux + Redis cache
+
+# --- Public targets (validated Day 2) ----------------------------------------
+https://github.com/spring-projects/spring-petclinic  # good — reference Spring Boot app, maintained, tested. VALIDATED: clones (3 MB), builds on Java 21 (baseline: 100/100)
+https://github.com/RameshMF/springboot-blog-rest-api  # average — tutorial-grade REST API, single bootable service. VALIDATED: clones (4 MB), builds on Java 21
+targets/REST-With-Spring-module6  # average — eugenp/REST-With-Spring @ 9c06a66, module6 branch. Default branch is a course landing page (no build file), so pinned as local clone. VALIDATED: builds on Java 21. Caveat: multi-lesson layout; bootable unit is one -end lesson dir, fixed at runtime stage
+targets/gs-rest-service-complete  # weak-minimal — spring-guides/gs-rest-service @ 2ef8e28, complete/ subdirectory (repo root is guide scaffolding, not buildable). Imported as local clone WITHOUT .git (subdir move); commit recorded here. VALIDATED: builds on Java 21. Almost no tests
+https://github.com/spring-projects/spring-mvc-showcase  # legacy — archived, XML-config pre-Boot MVC. VALIDATED: clones (2 MB), build FAILS FAST on Java 21 (javax.xml.bind removed post-Java 8) — expected; kept as honest legacy bottom-tier evidence
+
+# --- Synthetic (controlled ground truth, no license risk) --------------------
+https://github.com/MSyamsandiYudaWirawan/petclinic-degraded  # synthetic bottom — petclinic fork with README removed + broken tests; known-correct bottom rank anchors the correlation metric
+
+# --- Dropped candidates (validation/design record) ---------------------------
+# iluwatar/java-design-patterns — dropped Day 2 (design): patterns library,
+#   not a deployable backend; Runtime scores 0 by rubric design, and
+#   petclinic-degraded anchors the bottom more honestly.
+# eugenp/tutorials — dropped Day 2 (design): huge multi-module repo, build
+#   likely exceeds the 1800s harness timeout.
+# petclinic-legacy (synthetic #2) — dropped Day 2 (design): one synthetic
+#   bottom anchor is enough at n=10.

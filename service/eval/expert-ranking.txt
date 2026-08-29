@@ -2,13 +2,19 @@
 # One repo NAME per line (the last URL/path segment, see service/eval/evaluate.py),
 # best first. Comments start with #.
 #
-# TODO(day-2 ranking session): score every validated target with
-# service/rubric/quality-rubric.md, then record the resulting order here.
-# Keep the per-repo justifications (2-3 sentences each) in
-# evidence/expert-ranking-notes.md — that file is the audit trail for judges.
-#
-# Format example:
-# spring-petclinic
-# java-design-patterns
-# springboot-blog-rest-api
-# petclinic-degraded
+# v1, ranked 2026-08-29 by the human expert (repo owner).
+# Basis: structure + pom.xml + collected build/test facts; Runtime dimension
+# for the 4 practice repos comes from the expert's own measurements during
+# practice. Scores + justifications: evidence/expert-ranking-notes.md.
+# Revision policy (v2 after h3 runtime evidence): see the notes file.
+
+spring-petclinic
+practice-webflux-redis
+REST-With-Spring-module6
+practice-webflux
+practice-mvc-caffeine
+springboot-blog-rest-api
+practice-mvc
+gs-rest-service-complete
+petclinic-degraded
+spring-mvc-showcase

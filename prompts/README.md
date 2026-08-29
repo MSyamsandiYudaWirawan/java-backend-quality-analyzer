@@ -89,22 +89,35 @@ via `.gitattributes`. Paths crossing Python→bash must go through
 4. **Baseline ρ headline.** Run harness (baseline, full build mode) over the
    eval set → `evidence/eval/baseline/`. Record in IMPROVEMENTS.md.
 5. **Experiments** (one branch each, `exp/<name>`, each measured through the
-   harness on the full eval set):
+   harness on the full eval set). Each adds one capability on top of the
+   previous; h3 is the everything-working-together payoff:
    - `exp/h1-rubric-scoring` — agent scores repos against the rubric with
-     build+test evidence. Expected largest Δρ; becomes the advanced spine.
-   - `exp/h2-runtime-profiling` — k6+JFR of *target* services via
-     `run-experiment.sh` / `jfr-diagnose.sh`. Start with the 4 controlled
-     repos (k6 already exists there).
-   - `exp/h3-k6-generation` — agent generates k6 scripts for arbitrary repos
-     (see §5). Validation: generated tests must recover the known ordering of
-     the 4 controlled repos.
+     build+test evidence. Question: can the agent score repos at all?
+     Expected largest Δρ; becomes the advanced spine.
+   - `exp/h2-k6-generation` — agent generates k6 load scripts for arbitrary
+     repos (see §5), runs them against the booted target, and produces a
+     per-repo load report as committed evidence: RPS, latency percentiles
+     (p50/p95/p99/max), fail rate, check pass rate, threshold verdict, and
+     the raw k6 JSON path — fixed report shape across repos for
+     comparability. Question: can the agent generate *and execute* its own
+     load tests? Validation: generated tests must recover the known ordering
+     of the 4 controlled repos.
+   - `exp/h3-full-pipeline` — k6 alone only says *how fast*, not *why*: a
+     service can post high RPS with a critical hotspot underneath. h3 adds
+     JFR profiling during the generated load (`run-experiment.sh` /
+     `jfr-diagnose.sh`) and produces a diagnosis report (GC pauses, blocking
+     socket reads on request threads, lock contention) alongside the k6
+     report. The Runtime dimension grades on both: strong throughput with a
+     critical JFR signal scores *lower* than modest throughput with a clean
+     profile. Question: does the full pipeline — score, load, profile, grade —
+     hold together end to end?
    - REJECTED candidate: pure code-metrics scoring (LOC/complexity) — cheap,
      likely no Δρ, good "what did not matter" entry.
 6. **Package:** full baseline-vs-advanced eval table, IMPROVEMENTS/README
    numbers, REPRODUCTION final, video script, trajectories. **No new
    experiments in the final 4 hours.**
 
-## 5. k6 Generation Policy (for h3)
+## 5. k6 Generation Policy (for h2)
 
 Reproducibility lives in the **artifact**, not the authoring:
 
