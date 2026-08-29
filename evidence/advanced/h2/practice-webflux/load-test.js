@@ -50,6 +50,7 @@ const SLOTS = {
   "readPath": "/api/v1/products/{id}",
   "readStatus": 200,
   "repoName": "practice-webflux",
+  "scenario": "json",
   "vus": 50,
   "writeRatio": 0.1
 };
@@ -141,10 +142,12 @@ export function handleSummary(data) {
 
 function textSummary(data) {
   const m = data.metrics;
-  const reqs = m.http_reqs || {};
-  const dur = m.http_req_duration || {};
-  const fail = m.http_req_failed || {};
-  const checks = m.checks || {};
+  // k6 nests metric aggregates under .values (counter: count/rate, trend:
+  // avg/med/p(...), rate: rate).
+  const reqs = (m.http_reqs || {}).values || {};
+  const dur = (m.http_req_duration || {}).values || {};
+  const fail = (m.http_req_failed || {}).values || {};
+  const checks = (m.checks || {}).values || {};
   const f2 = (v) => (v != null ? v.toFixed(2) : 'N/A');
 
   let out = '';

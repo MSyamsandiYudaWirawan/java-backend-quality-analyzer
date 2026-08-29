@@ -188,7 +188,11 @@ PY
     || finding "target did not become healthy in docker"
 
   echo ">> Smoke gate (${SMOKE_VUS} VUs, ${SMOKE_DURATION}; validates the committed script)"
-  "${COMPOSE[@]}" run --rm \
+  # MSYS_NO_PATHCONV=1: Git Bash rewrites '/hackathon/...' env values into
+  # 'C:/Program Files/Git/hackathon/...' when spawning docker.exe (the
+  # Windows path-mangling bug class — trajectories 2026-08-28_23-32,
+  # 2026-08-29_11-37). k6 inside the container needs the POSIX path.
+  MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
     -e K6_VUS=$SMOKE_VUS -e K6_DURATION=$SMOKE_DURATION -e K6_RAMP=$SMOKE_RAMP \
     -e K6_ENTITY_COUNT=$SMOKE_ENTITY_COUNT \
     -e K6_JSON_OUT="/hackathon/evidence/advanced/h2/$NAME/k6-smoke.json" \
@@ -208,7 +212,7 @@ PY
   fi
 
   echo ">> Full run (fixed profile from committed script)"
-  "${COMPOSE[@]}" run --rm \
+  MSYS_NO_PATHCONV=1 "${COMPOSE[@]}" run --rm \
     -e K6_JSON_OUT="/hackathon/evidence/advanced/h2/$NAME/k6-full.json" \
     k6
   K6_RC=$?
