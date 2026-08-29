@@ -119,6 +119,19 @@ scored above webflux-redis; the evidence held it to a tie.
 
 ### Harness numbers
 
+| Repo | h3 score (Δ h2) | h3 rank | Expert rank (v2) | JFR evidence (jfrProfile) |
+|------|-----------------|---------|------------------|---------------------------|
+| spring-petclinic | 84 (+2) | 1 | 1 | 71,738 monitor events p95 407ms — ONE global lock, fat-jar classloader `UrlJarFiles$Cache` (2/10) |
+| REST-With-Spring-module6 | 82 (+4) | 2.5 | 3 | k6 PASS but 5,018 monitor events p95 1310ms (Tomcat RecycledProcessors + HashMap) (4/10) |
+| practice-webflux-redis | 82 (+10) | 2.5 | 2 | clean: 4 monitors, 40 parks (idle), no request-path reads (10/10) |
+| practice-webflux | 81 (+10) | 4 | 4 | clean: 2 monitors, 27 parks (idle), no request-path reads (10/10) |
+| practice-mvc-caffeine | 76 (+6) | 5 | 5 | 895 monitors p95 470ms (Tomcat-level); ~2.7x fewer DB reads/request than mvc (6/10) |
+| practice-mvc | 69 (+4) | 6 | 6 | blocking DB I/O: 6,859 SocketReads p95 79ms on request threads (4/10) |
+| petclinic-degraded | 67 (+2) | 7 | 8 | 74,682 monitor events p95 397ms — same classloader lock (control confirmed) (2/10) |
+| gs-rest-service-complete | 50 (+0) | 8 | 7 | NOT_TESTABLE in h2 (no create endpoint) — no h3 run, h2 finding cited (0/10) |
+| springboot-blog-rest-api | 42 (+0) | 9 | 10 | NOT_TESTABLE in h2 (MySQL 8.4 boot crash) — no h3 run, h2 finding cited (0/10) |
+| spring-mvc-showcase | 26 (+0) | 10 | 9 | NOT_TESTABLE in h2 (build fails on Java 21) — no h3 run, h2 finding cited (0/10) |
+
 - **ρ = 0.973** vs expert v2 (h2: 0.954, baseline: 0.811). Tie bounds
   [0.964, 0.976] (h2: [0.939, 0.964]).
 - Pairs: 42 concordant / 2 discordant / 1 tied (h2: 41/3/1). The h2
