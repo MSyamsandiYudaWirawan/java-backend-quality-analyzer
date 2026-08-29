@@ -6,16 +6,16 @@
 
 | Repo | Score | Analyzer rank | Expert rank | Note |
 |------|-------|---------------|-------------|------|
-| spring-petclinic | 84 | 1.0 | 1 | ok in 0s |
-| practice-webflux-redis | 82 | 2.5 | 2 | ok in 0s |
-| REST-With-Spring-module6 | 82 | 2.5 | 3 | ok in 0s |
-| practice-webflux | 81 | 4.0 | 4 | ok in 0s |
-| practice-mvc-caffeine | 76 | 5.0 | 5 | ok in 0s |
-| practice-mvc | 69 | 6.0 | 6 | ok in 0s |
-| petclinic-degraded | 67 | 7.0 | 8 | ok in 0s |
-| gs-rest-service-complete | 50 | 8.0 | 7 | ok in 0s |
-| springboot-blog-rest-api | 42 | 9.0 | 10 | ok in 0s |
-| spring-mvc-showcase | 26 | 10.0 | 9 | ok in 0s |
+| spring-petclinic | 84 | 1.0 | 1 | reused from previous run (--resume) |
+| practice-webflux-redis | 82 | 2.5 | 2 | reused from previous run (--resume) |
+| REST-With-Spring-module6 | 82 | 2.5 | 3 | reused from previous run (--resume) |
+| practice-webflux | 81 | 4.0 | 4 | reused from previous run (--resume) |
+| practice-mvc-caffeine | 76 | 5.0 | 5 | reused from previous run (--resume) |
+| practice-mvc | 69 | 6.0 | 6 | reused from previous run (--resume) |
+| petclinic-degraded | 67 | 7.0 | 8 | reused from previous run (--resume) |
+| gs-rest-service-complete | 50 | 8.0 | 7 | reused from previous run (--resume) |
+| springboot-blog-rest-api | 42 | 9.0 | 10 | reused from previous run (--resume) |
+| spring-mvc-showcase | 26 | 10.0 | 9 | reused from previous run (--resume) |
 
 **Spearman rho vs expert ranking: 0.973** (n=10)
 
