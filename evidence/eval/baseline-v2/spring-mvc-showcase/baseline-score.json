@@ -1,0 +1,14 @@
+{
+  "target": "https://github.com/spring-projects/spring-mvc-showcase",
+  "commit": "71d8c7e",
+  "analyzer": "baseline",
+  "score": 40,
+  "maxScore": 100,
+  "checks": {
+    "readme":        { "weight": 10,        "status": "PASS",        "points": 10 },
+    "buildFile":     { "weight": 10,     "status": "PASS",    "points": 10 },
+    "testsPresent":  { "weight": 20,  "status": "PASS", "points": 20, "testFileCount": 18 },
+    "buildPasses":   { "weight": 25,   "status": "FAIL",  "points": 0 },
+    "testsPass":     { "weight": 35,     "status": "FAIL",    "points": 0 }
+  }
+}

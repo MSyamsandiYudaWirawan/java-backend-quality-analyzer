@@ -1,0 +1,14 @@
+{
+  "target": "https://github.com/spring-projects/spring-petclinic",
+  "commit": "818c413",
+  "analyzer": "baseline",
+  "score": 100,
+  "maxScore": 100,
+  "checks": {
+    "readme":        { "weight": 10,        "status": "PASS",        "points": 10 },
+    "buildFile":     { "weight": 10,     "status": "PASS",    "points": 10 },
+    "testsPresent":  { "weight": 20,  "status": "PASS", "points": 20, "testFileCount": 20 },
+    "buildPasses":   { "weight": 25,   "status": "PASS",  "points": 25 },
+    "testsPass":     { "weight": 35,     "status": "PASS",    "points": 35 }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "label": "baseline-v2",
+  "rho": 0.8498613473763293,
+  "rhoBest": 0.8666666666666667,
+  "rhoWorst": 0.5515151515151515,
+  "ties": {
+    "groups": 2,
+    "tiedRepos": 7
+  },
+  "pairs": {
+    "concordant": 31,
+    "discordant": 3,
+    "tied": 11
+  },
+  "results": [
+    {
+      "target": "targets/practice-mvc",
+      "name": "practice-mvc",
+      "score": 90,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 6,
+      "analyzerRank": 5.0
+    },
+    {
+      "target": "targets/practice-mvc-caffeine",
+      "name": "practice-mvc-caffeine",
+      "score": 90,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 5,
+      "analyzerRank": 5.0
+    },
+    {
+      "target": "targets/practice-webflux",
+      "name": "practice-webflux",
+      "score": 90,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 4,
+      "analyzerRank": 5.0
+    },
+    {
+      "target": "targets/practice-webflux-redis",
+      "name": "practice-webflux-redis",
+      "score": 90,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 2,
+      "analyzerRank": 5.0
+    },
+    {
+      "target": "https://github.com/spring-projects/spring-petclinic",
+      "name": "spring-petclinic",
+      "score": 100,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 1,
+      "analyzerRank": 1.5
+    },
+    {
+      "target": "https://github.com/RameshMF/springboot-blog-rest-api",
+      "name": "springboot-blog-rest-api",
+      "score": 65,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 10,
+      "analyzerRank": 8.0
+    },
+    {
+      "target": "targets/REST-With-Spring-module6",
+      "name": "REST-With-Spring-module6",
+      "score": 100,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 3,
+      "analyzerRank": 1.5
+    },
+    {
+      "target": "targets/gs-rest-service-complete",
+      "name": "gs-rest-service-complete",
+      "score": 90,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 7,
+      "analyzerRank": 5.0
+    },
+    {
+      "target": "https://github.com/spring-projects/spring-mvc-showcase",
+      "name": "spring-mvc-showcase",
+      "score": 40,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 9,
+      "analyzerRank": 10.0
+    },
+    {
+      "target": "https://github.com/MSyamsandiYudaWirawan/petclinic-degraded",
+      "name": "petclinic-degraded",
+      "score": 55,
+      "note": "reused from previous run (--resume)",
+      "expertRank": 8,
+      "analyzerRank": 9.0
+    }
+  ]
+}
