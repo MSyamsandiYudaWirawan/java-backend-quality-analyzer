@@ -8,6 +8,7 @@
 | 4 | 2026-08-28 | `kimi-cli/2026-08-28_22-59-baseline-analyzer-scaffold.md` | Baseline analyzer scaffold + template reframe | Kimi Code CLI (kimi-k2) | Bash script as naive control; experiment metric reframed from throughput to ranking correlation (Spearman ρ) over a fixed eval set |
 | 5 | 2026-08-28 | `kimi-cli/2026-08-28_23-32-rubric-eval-harness.md` | Quality rubric + Python eval harness | Kimi Code CLI (kimi-k2) | Rubric as shared expert/agent contract; stdlib-only harness; smoke test caught Windows path-mangling bug before real eval |
 | 6 | 2026-08-29 | `kimi-cli/2026-08-29_06-37-eval-set-design.md` | Eval-set design: k6 generation policy, controlled repos, scope limits | Kimi Code CLI (kimi-k2) | Determinism in the committed artifact, not the authoring; 4 controlled repos as method-validation set; multi-service scoped out as documented limitation |
+| 7 | 2026-08-29 | `kimi-cli/2026-08-29_09-59-controlled-repos-import.md` | Controlled practice repos import + baseline blindness check | Kimi Code CLI (kimi-k2) | Local gitignored clones under `targets/`; baseline ties all four at 90/100 (blindness confirmed); MVC test failures traced to undeclared localhost Postgres, not repo defects |
 
 ---
 

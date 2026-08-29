@@ -38,3 +38,6 @@ __pycache__/
 
 # Personal study materials (not part of submission)
 personal/
+
+# Local clones of analysis-target repos (controlled practice repos etc.)
+targets/

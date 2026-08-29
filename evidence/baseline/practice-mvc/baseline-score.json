@@ -1,0 +1,14 @@
+{
+  "target": "targets/practice-mvc",
+  "commit": "378ddde",
+  "analyzer": "baseline",
+  "score": 90,
+  "maxScore": 100,
+  "checks": {
+    "readme":        { "weight": 10,        "status": "FAIL",        "points": 0 },
+    "buildFile":     { "weight": 10,     "status": "PASS",    "points": 10 },
+    "testsPresent":  { "weight": 20,  "status": "PASS", "points": 20, "testFileCount": 4 },
+    "buildPasses":   { "weight": 25,   "status": "PASS",  "points": 25 },
+    "testsPass":     { "weight": 35,     "status": "PASS",    "points": 35 }
+  }
+}

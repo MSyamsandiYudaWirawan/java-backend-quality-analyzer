@@ -27,3 +27,14 @@ https://github.com/spring-projects/spring-mvc-showcase  # legacy — archived, X
 # TODO(day-2): add 1-2 more candidates to reach ~10 total, then run a validation
 # pass over every row: shallow clone + `mvn -q -DskipTests package` on Java 21.
 # Drop or replace any target that fails validation; record drops here.
+
+# Controlled practice repos (local clones under targets/, imported Day 2 from
+# github.com/MSyamsandiYudaWirawan/practice-*). Product create + get-by-id
+# service built by the human to test the pipeline. Quality ordering is KNOWN
+# from runtime measurements during practice — this is the method-validation
+# set. All four are near-identical structurally, so the baseline saturates
+# (~100/100) on all of them: the baseline-blindness demo.
+targets/practice-mvc           # controlled — blocking MVC, no cache
+targets/practice-mvc-caffeine  # controlled — blocking MVC + Caffeine cache
+targets/practice-webflux       # controlled — reactive WebFlux, no cache
+targets/practice-webflux-redis # controlled — reactive WebFlux + Redis cache
