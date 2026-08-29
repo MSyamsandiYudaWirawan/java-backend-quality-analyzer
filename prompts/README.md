@@ -47,17 +47,24 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Day 3, Aug 29 ~05:45 UTC)
+## 3. Current State (Day 3, Aug 29 ~06:10 UTC — start of h2 session)
 
-Branch: `exp/h1-rubric-scoring`. **h1 DONE, verdict KEPT: ρ = 0.865**
-(baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
-Next: `exp/h2-k6-generation` (new branch off h1 after the human's v2
-ranking decision).
+Branch: `exp/h2-k6-generation` (created from `exp/h1-rubric-scoring` at
+`68265e4`). **h1 DONE, verdict KEPT: ρ = 0.865** (baseline 0.811) —
+see `evidence/experiments/h1-rubric-scoring.md`. `baseline` branch is
+fast-forwarded to the same commit (harness + reports in sync).
 Commits: `6bbabd9` (baseline analyzer), `b5eb30e` (reframe + rubric +
 harness), `e3040f1` (controlled repos import), `1cfd7dd` (eval set + expert
 ranking v1), `a39e072` (baseline ρ headline + harness fixes), `80adef9`
-(h1 collector + tests), plus uncommitted h1 scoring/harness work at
-session end (commit proposed).
+(h1 collector + tests), `a29e5e4` (h1 KEPT: scoring + tie-aware harness),
+`68265e4` (inline NOT ROBUST ρ warning).
+
+**OPEN for human BEFORE h2 eval runs: expert-ranking v2 decision** on
+blog-rest-api (h1 9th vs expert 6th — undeclared-MySQL test failure +
+committed JWT secret) and petclinic-degraded (h1 5–7th vs expert 9th —
+petclinic-grade architecture credited). Pre-authorized policy: revise with
+justification and re-run the eval, or keep v1 with a note. h2 was started
+without the ruling; record it in `evidence/experiments/` when made.
 
 **Day 3 DONE (h1):**
 - **Collector + wrapper:** `service/advanced/collect.sh` (mechanical
@@ -71,13 +78,12 @@ session end (commit proposed).
 - **h1 eval: ρ = 0.865, KEPT.** 90-tie broken (50–63 span); tie bounds
   [0.835, 0.929]; unjudged pairs 3/45. Honest 3-way tie at 55 kept
   (mvc/caffeine/degraded — real differences are runtime = h2/h3).
-  **OPEN for human: expert-ranking v2 decision** on blog-rest-api
-  (h1 9th vs expert 6th) and petclinic-degraded (h1 5–7th vs expert 9th)
-  per the pre-authorized revision policy.
-- **Harness tie-awareness:** `evaluate.py` now reports ρ bounds over
-  tie-breakings + tie share + pair counts (concordant/discordant/
-  unjudged). Baseline report regenerated with --resume (original scores
-  kept) + analyst note: P(ρ ≥ 0.811 by luck) ≈ 29%. 22 python tests.
+- **Harness tie-awareness:** `evaluate.py` reports ρ bounds over
+  tie-breakings + tie share + pair counts, and stamps the headline
+  `NOT ROBUST: tie-sensitive, range [...], N% of pairs unjudged` when
+  >20% of pairs are unjudged (baseline: 24% → stamped; h1: 7% → clean).
+  Baseline report regenerated with --resume (original scores kept) +
+  analyst note: P(ρ ≥ 0.811 by luck) ≈ 29%. 22 python tests, 55 total.
 
 **Day 2 DONE (items 1–4):**
 - **Eval set finalized, n=10, all validated** (clone + Java 21 build).
@@ -112,7 +118,8 @@ repo finding — baseline 65 stands).
 
 **Session-start sanity check (run these):**
 ```bash
-tests/unit/test-baseline.sh && python tests/unit/test_spearman.py
+tests/unit/test-baseline.sh && tests/unit/test-collect.sh \
+  && tests/unit/test-analyze-h1.sh && python tests/unit/test_spearman.py
 ```
 
 **Environment:** Windows + Git Bash, Java 21.0.11, Maven 3.9.11, k6, Docker,
@@ -122,7 +129,7 @@ via `.gitattributes`. Paths crossing Python→bash must go through
 2026-08-28_23-32 for the incident, and 2026-08-29_11-37 for the URL
 variant of the same bug class).
 
-## 4. Day 2 Plan (items 1–4 DONE; item 5 in progress — h1 next)
+## 4. Day 2 Plan (items 1–4 DONE; item 5 in progress — h2 next)
 
 1. ~~**Validate public targets.**~~ DONE — 10-repo set validated, drops/pins
    recorded in `service/targets.txt`.
@@ -137,19 +144,13 @@ variant of the same bug class).
 5. **Experiments** (one branch each, `exp/<name>`, each measured through the
    harness on the full eval set). Each adds one capability on top of the
    previous; h3 is the everything-working-together payoff:
-   - `exp/h1-rubric-scoring` — **branch created; design DECIDED (Option A):**
-     agent judgment with committed artifacts. Per repo: mechanical collectors
-     (build+test logs, test census, package tree, `dependency:analyze`,
-     README/license scan) → agent reads evidence → scores the rubric with
-     per-item citations → score sheet committed as evidence. Harness command
-     = thin wrapper (collector + read committed scores). Runtime dimension
-     scores 0 for ALL repos in h1 ("not yet measured", uniform rule so it
-     cannot distort ρ). Question: can the agent score repos at all? Expected
-     largest Δρ — judgment must break the 90-tie on Architecture /
-     Dependencies / Maintainability, which a script cannot see.
-     (Rejected designs: B pure-scripted proxies — shallow package-name
-     heuristics, the failure mode we are trying to beat; C hybrid — less
-     agent surface.)
+   - `exp/h1-rubric-scoring` — ~~branch created; design DECIDED (Option A)~~
+     **DONE, KEPT: ρ = 0.865** (baseline 0.811). Built as designed: mechanical
+     collector → blind agent scoring with per-item citations → committed
+     score sheets → thin harness wrapper; Runtime = 0 uniformly. 90-tie
+     broken (50–63 span); unjudged pairs 11 → 3. Full record:
+     `evidence/experiments/h1-rubric-scoring.md`. Open follow-up: human's
+     v2 ranking ruling on blog-rest-api / petclinic-degraded.
    - `exp/h2-k6-generation` — agent generates k6 load scripts for arbitrary
      repos (see §5), runs them against the booted target, and produces a
      per-repo load report as committed evidence: RPS, latency percentiles
