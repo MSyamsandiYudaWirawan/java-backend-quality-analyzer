@@ -1,0 +1,14 @@
+{
+  "target": "https://github.com/MSyamsandiYudaWirawan/petclinic-degraded",
+  "commit": "307e5fd",
+  "analyzer": "baseline",
+  "score": 55,
+  "maxScore": 100,
+  "checks": {
+    "readme":        { "weight": 10,        "status": "FAIL",        "points": 0 },
+    "buildFile":     { "weight": 10,     "status": "PASS",    "points": 10 },
+    "testsPresent":  { "weight": 20,  "status": "PASS", "points": 20, "testFileCount": 20 },
+    "buildPasses":   { "weight": 25,   "status": "PASS",  "points": 25 },
+    "testsPass":     { "weight": 35,     "status": "FAIL",    "points": 0 }
+  }
+}

@@ -54,16 +54,16 @@ expert's rubric-guided scores out of 100.
 ### 8. gs-rest-service-complete — 50/100
 - Minimal guide. Clean, green, but barely an application.
 
-### 9. petclinic-degraded — 50/100
+### 9. petclinic-degraded — 30/100
 - Inherited great structure, but broken tests (deliberately, by the expert) =
   red build = untrustworthy. A broken fork is worse than a simple green
   project.
-- Tie with #8 at 50: broken by the expert's stated principle — a repo whose
-  tests fail is untrustworthy and ranks below an honest minimal project that
-  is green. Documented explicitly because a human tie-break at the bottom of
-  the ranking directly moves ρ.
+- Ranked below #8 on the expert's stated principle: a repo whose tests fail
+  is untrustworthy and ranks below an honest minimal project that is green.
+  (Initially tied at 50; the expert then re-scored degraded to 30, making the
+  principle explicit in points as well as order.)
 
-### 10. spring-mvc-showcase — 30/100
+### 10. spring-mvc-showcase — 15/100
 - Legacy museum piece. Pre-Boot, Java 1.8, JUnit 4. Fails to build on
   Java 21 (javax.xml.bind). Historical value only.
 

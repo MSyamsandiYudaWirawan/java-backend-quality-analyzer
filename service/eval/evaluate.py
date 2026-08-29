@@ -23,6 +23,10 @@ Inputs:
   --label     Name for this run (baseline / h1-rubric / advanced / ...).
   --out       Directory for per-repo analyzer output + the eval report.
   --timeout   Per-repo analyzer timeout in seconds (default 1800).
+  --resume    Skip repos whose out dir already holds a *-score.json from a
+              previous (partial) run; reuse that score instead of re-running
+              the analyzer. Makes a crashed multi-hour eval re-runnable
+              without redoing finished repos.
 
 Output:
   <out>/eval-report.md    Per-repo score/rank table + Spearman rho
@@ -67,7 +71,13 @@ def bash_path(path):
     reliably understands. Repo-relative paths are used verbatim (mount-scheme
     independent); absolute drive-letter paths go through cygpath when present,
     else fall back to the /x/... MSYS form. Backslashes are always normalized:
-    in bash they are escape characters."""
+    in bash they are escape characters. Git URLs (https://, git@, ...) are
+    passed through unchanged — they are not filesystem paths and must never
+    go through abspath/relpath, which would mangle 'https://host/...' into
+    'https:/host/...' (git then parses it as scp syntax and tries ssh to a
+    host named 'https')."""
+    if "://" in path or path.startswith("git@"):
+        return path
     absolute = os.path.abspath(path)
     try:
         relative = os.path.relpath(absolute, os.getcwd())
@@ -165,6 +175,7 @@ def main():
     parser.add_argument("--ranking")
     parser.add_argument("--out", required=True)
     parser.add_argument("--timeout", type=int, default=1800)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
 
     for path in (args.targets, args.ranking):
@@ -184,7 +195,13 @@ def main():
         name = repo_name(target)
         repo_out = os.path.join(args.out, name)
         print(">> [%s] %s" % (args.label, target))
-        score, note = run_analyzer(args.analyzer, target, repo_out, args.timeout)
+        prior_scores = glob.glob(os.path.join(repo_out, "*-score.json"))
+        if args.resume and prior_scores:
+            with open(prior_scores[0], encoding="utf-8") as f:
+                score = json.load(f)["score"]
+            note = "reused from previous run (--resume)"
+        else:
+            score, note = run_analyzer(args.analyzer, target, repo_out, args.timeout)
         print("   score=%s (%s)" % (score, note))
         results.append({"target": target, "name": name, "score": score, "note": note})
 

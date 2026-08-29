@@ -45,9 +45,10 @@ tests/unit/test-baseline.sh                 # fast offline checks
 | # | Branch | Change | Evidence | Result | Status |
 |---|--------|--------|----------|--------|--------|
 | 1 | `baseline` | Naive analyzer: 5 shallow yes/no checks → 0–100 score | spring-petclinic run (`evidence/baseline/spring-petclinic/`) | 100/100 — saturates, no headroom to rank repos | BASELINE |
-| 2 | `exp/h1-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
-| 3 | `exp/h2-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
-| 4 | `advanced` | [Final workflow] | [Full eval-set comparison] | [baseline ρ → advanced ρ] | ADVANCED |
+| 2 | `baseline` | Full eval-set run: 10 repos vs expert ranking v1 | `evidence/eval/baseline/` (eval-report.md, eval-results.json) | **ρ = 0.811** — but a 5-way tie at 90 spans expert ranks 2–8; ρ carried by 3 anchors (petclinic top, degraded/showcase bottom). Environment-sensitive: same run gave ρ = 0.493 when a stray Docker container broke petclinic's tests | BASELINE-HEADLINE |
+| 3 | `exp/h1-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
+| 4 | `exp/h2-[name]` | [Capability added + hypothesis] | [Eval-set scores] | [Δρ, findings added] | **TBD** |
+| 5 | `advanced` | [Final workflow] | [Full eval-set comparison] | [baseline ρ → advanced ρ] | ADVANCED |
 
 ---
 

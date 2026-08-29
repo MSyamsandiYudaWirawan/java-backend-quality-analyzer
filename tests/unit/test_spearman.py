@@ -74,6 +74,20 @@ class TestHelpers(unittest.TestCase):
         for entry in entries:
             self.assertFalse(entry.startswith("#"))
 
+    def test_bash_path_passes_urls_through(self):
+        # URLs are not filesystem paths: abspath/relpath would mangle
+        # "https://host/..." into "https:/host/...", which git parses as scp
+        # syntax (host "https") — regression test for the Day-2 eval failure.
+        url = "https://github.com/spring-projects/spring-petclinic"
+        self.assertEqual(evaluate.bash_path(url), url)
+        self.assertEqual(evaluate.bash_path("git@github.com:a/b.git"),
+                         "git@github.com:a/b.git")
+
+    def test_bash_path_normalizes_local_path(self):
+        converted = evaluate.bash_path(os.path.join("targets", "practice-mvc"))
+        self.assertNotIn("\\", converted)
+        self.assertIn("targets/practice-mvc", converted)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
