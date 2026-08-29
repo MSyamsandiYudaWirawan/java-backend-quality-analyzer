@@ -2,19 +2,23 @@
 # One repo NAME per line (the last URL/path segment, see service/eval/evaluate.py),
 # best first. Comments start with #.
 #
-# v1, ranked 2026-08-29 by the human expert (repo owner).
-# Basis: structure + pom.xml + collected build/test facts; Runtime dimension
-# for the 4 practice repos comes from the expert's own measurements during
-# practice. Scores + justifications: evidence/expert-ranking-notes.md.
-# Revision policy (v2 after h3 runtime evidence): see the notes file.
+# v2, revised 2026-08-29 by the human expert (repo owner) after h1 evidence.
+# Change vs v1: springboot-blog-rest-api 6th -> 10th (undeclared-MySQL test
+# failure + committed JWT secret/DB passwords, verified in
+# evidence/advanced/h1/springboot-blog-rest-api/). petclinic-degraded kept at
+# its v1 relative position with an explicit note: its failures are
+# INTENTIONALLY INJECTED by the expert (synthetic bottom) — design intent is
+# not a code property and no analyzer can see it.
+# Full rationale + both versions: evidence/expert-ranking-notes.md.
+# Decision record: evidence/experiments/expert-ranking-v2-decision.md.
 
 spring-petclinic
 practice-webflux-redis
 REST-With-Spring-module6
 practice-webflux
 practice-mvc-caffeine
-springboot-blog-rest-api
 practice-mvc
 gs-rest-service-complete
 petclinic-degraded
 spring-mvc-showcase
+springboot-blog-rest-api

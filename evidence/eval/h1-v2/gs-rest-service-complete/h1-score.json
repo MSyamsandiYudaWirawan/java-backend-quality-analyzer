@@ -1,0 +1,41 @@
+{
+  "target": "targets/gs-rest-service-complete",
+  "commit": "unknown (imported subdir of spring-guides/gs-rest-service @ 2ef8e28, no .git; pin recorded in service/targets.txt)",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 50,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 21, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log", "note": "Single test class green." },
+        "testDepth": { "score": 1, "max": 5, "evidence": "test-census.txt, largest-classes.txt", "note": "1 test file (38 LOC) for a 35-LOC app; smoke-test grade. Assertion census shows 0 — the test uses MockMvc andExpect chains the census regex does not count (collector limitation), but depth is minimal regardless." }
+      }
+    },
+    "architecture": {
+      "score": 14, "max": 20,
+      "items": {
+        "layering": { "score": 5, "max": 10, "evidence": "package-tree.txt, largest-classes.txt", "note": "No layering exists: one controller + one record + one application class in a single package. Defensible for a 35-LOC guide skeleton, but there is no architecture to evaluate." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "dependency-list.txt", "note": "Spring MVC for a greeting endpoint — fine." },
+        "structuralSanity": { "score": 4, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "Trivially sane at 35 LOC; committed maven-wrapper.jar + gradle-wrapper.jar (two build systems' wrappers) is clutter, not a violation." }
+      }
+    },
+    "dependencies": {
+      "score": 8, "max": 15,
+      "items": {
+        "currency": { "score": 4, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 3.2.1 (Dec 2023) — noticeably behind current Boot 4.x." },
+        "riskBloat": { "score": 4, "max": 7, "evidence": "dependency-analyze.log", "note": "Real bloat for what the app is: unused-declared mysql-connector-j and devtools; used-undeclared spring-security/data-jpa entries are starter-transitive noise." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 7, "max": 15,
+      "items": {
+        "readme": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "No README in the imported complete/ subdir. CAVEAT: the upstream guide repo has root-level docs; the absence here is partly an import artifact (recorded in service/targets.txt)." },
+        "legibility": { "score": 4, "max": 5, "evidence": "largest-classes.txt", "note": "Clean trivial guide code." },
+        "hygiene": { "score": 3, "max": 5, "evidence": "repo-scan.txt", "note": "No license file in the imported subdir (upstream repo root carries one — import artifact); two committed wrapper jars." }
+      }
+    }
+  }
+}

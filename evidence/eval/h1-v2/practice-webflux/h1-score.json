@@ -1,0 +1,41 @@
+{
+  "target": "targets/practice-webflux",
+  "commit": "ec9d052",
+  "analyzer": "h1-rubric-scoring (agent judgment on collected evidence; runtime not measured)",
+  "score": 56,
+  "maxScore": 100,
+  "dimensions": {
+    "buildTest": {
+      "score": 22, "max": 25,
+      "items": {
+        "buildPasses": { "score": 10, "max": 10, "evidence": "build.log", "note": "Clean mvn package on Java 21." },
+        "testsPass": { "score": 10, "max": 10, "evidence": "test.log", "note": "Suite green." },
+        "testDepth": { "score": 2, "max": 5, "evidence": "test-census.txt, largest-classes.txt", "note": "3 test files (IT 70 LOC, service test 54 LOC, context test); 1 grep-visible assertion — WebTestClient-style chains are undercounted by the census (collector limitation), but the suite is thin in absolute terms." }
+      }
+    },
+    "architecture": {
+      "score": 17, "max": 20,
+      "items": {
+        "layering": { "score": 9, "max": 10, "evidence": "package-tree.txt", "note": "controller / service(+impl) / repository / DTOs / exception separation present." },
+        "frameworkFit": { "score": 5, "max": 5, "evidence": "package-tree.txt, dependency-list.txt", "note": "WebFlux + R2DBC reactive stack used coherently for a simple I/O-bound CRUD service." },
+        "structuralSanity": { "score": 3, "max": 5, "evidence": "largest-classes.txt, repo-scan.txt", "note": "No god classes (max 37 LOC main); violation: hardcoded DB password in application.yaml." }
+      }
+    },
+    "dependencies": {
+      "score": 13, "max": 15,
+      "items": {
+        "currency": { "score": 8, "max": 8, "evidence": "dependency-list.txt", "note": "Spring Boot 4.1.1 / Spring 7.0.9 — current." },
+        "riskBloat": { "score": 5, "max": 7, "evidence": "dependency-analyze.log", "note": "Unused-declared flags on webflux/r2dbc/actuator starters are dependency:analyze false positives on Boot starters; r2dbc-postgresql 1.1.2.RELEASE is an old versioning line." }
+      }
+    },
+    "runtime": { "score": 0, "max": 25, "note": "h1 uniform rule: runtime not yet measured; 0 for ALL repos so it cannot distort rho." },
+    "maintainability": {
+      "score": 4, "max": 15,
+      "items": {
+        "readme": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "No README at repo root." },
+        "legibility": { "score": 4, "max": 5, "evidence": "package-tree.txt, largest-classes.txt", "note": "Small, consistent, readable; nonstandard capitalized package segment." },
+        "hygiene": { "score": 0, "max": 5, "evidence": "repo-scan.txt", "note": "Two violations: no license file, hardcoded DB password in application.yaml." }
+      }
+    }
+  }
+}
