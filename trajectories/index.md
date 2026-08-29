@@ -14,6 +14,7 @@
 | 10 | 2026-08-29 | `kimi-cli/2026-08-29_11-55-h1-design-closeout.md` | h1 design decision + Day 2 close-out | Kimi Code CLI (kimi-k2) | h1 = Option A (agent judgment, committed score sheets, uniform Runtime=0); h2 redefined as generate+run+report; high-RPS-with-critical-hotspot scores lower in h3 |
 | 11 | 2026-08-29 | `kimi-cli/2026-08-29_05-43-h1-implementation-kept.md` | h1 implementation: collector, blind scoring, tie-aware harness, KEPT | Kimi Code CLI (kimi-k2) | h1 ρ = 0.865 vs baseline 0.811; custom weighted ρ rejected in favor of standard ρ + tie bounds + pair counts; port-5432 env incident reproduced and attributed; v2 ranking-revision decision parked for human |
 | 12 | 2026-08-29 | `kimi-cli/2026-08-29_14-20-v2-ruling-h2-tooling.md` | Expert-ranking v2 ruling + h2 tooling (k6 generation + pipeline re-point) | Kimi Code CLI (kimi-k2) | blog-rest-api to 10th/0-pts on verified committed JWT secret (ρ vs v2 = 0.939); docker-limited runs are the official path; template+slots generation standalone; infra split into `service/advanced/docker/h2-*.yml` after 4 design reversals |
+| 13 | 2026-08-29 | `kimi-cli/2026-08-29_15-02-h2-slots-generation.md` | h2 slots generation for 8 repos + webflux-redis bug claim refuted live | Kimi Code CLI (kimi-k2) | Subagent's webflux-redis null-id claim refuted by live test (human pushback caught it — stale local DB table was the real 500 cause); form-variant template for petclinic chosen over Runtime-0 (ρ math: blanket-0 drops est. ρ to 0.55–0.65 < baseline); jarGlob slot pins module6's boot jar |
 
 ---
 
