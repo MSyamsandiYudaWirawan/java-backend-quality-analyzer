@@ -1,8 +1,8 @@
 # Experiment h2 — agent-generated k6 load testing
 
-> Status: **hypothesis pre-registered** (written before any k6 script was
-> generated or executed). Harness numbers and verdict are filled in after
-> the eval run. Branch: `exp/h2-k6-generation` (from `exp/h1-rubric-scoring`
+> Status: **complete — KEPT (ρ = 0.954 vs v2)**. Hypothesis pre-registered
+> below, unchanged (written before any k6 script was generated or
+> executed). Branch: `exp/h2-k6-generation` (from `exp/h1-rubric-scoring`
 > at `68265e4`).
 
 ## Hypothesis
@@ -88,15 +88,16 @@ That produced two known artifacts runtime evidence should resolve:
   gates fail on repos the expert ranked on runtime knowledge — the agent
   cannot yet be trusted to generate its own load tests.
 
-## Open dependency (blocks h2 eval, not h2 build)
+## Open dependency (RESOLVED before h2 eval)
 
-The human's **expert-ranking v2 ruling** on blog-rest-api (h1 9th vs
-expert 6th) and petclinic-degraded (h1 5–7th vs expert 9th) is still open.
-Pre-authorized policy: revise with justification and re-run the eval, or
-keep v1 with a note. h2 was started without the ruling; it must be
-recorded in this directory before the h2 eval numbers are interpreted.
+The human's **expert-ranking v2 ruling** was recorded 2026-08-29 (see
+`trajectories/kimi-cli/2026-08-29_14-20-v2-ruling-h2-tooling.md`):
+blog-rest-api moved to 10th / 0-pts on the verified committed JWT secret,
+petclinic-degraded ruling recorded; v2 ranking committed as
+`service/eval/expert-ranking.txt`. All h2 numbers below are vs **v2**
+(h1 vs v2 = 0.939, `evidence/eval/h1-v2/`).
 
-## Environment record (fill in at eval time)
+## Environment record
 
 - `practice-postgres` container is STOPPED as of pre-registration. It must
   be UP (`docker compose up -d postgres` in `targets/practice-mvc/`) for
@@ -106,13 +107,100 @@ recorded in this directory before the h2 eval numbers are interpreted.
   cannot boot for load, Runtime = 0 with the explicit note — that is the
   designed behavior, not a harness failure.
 - Windows + Git Bash, Java 21.0.11, Maven 3.9.11, k6, Docker. No jq.
+- Measured runs: 2026-08-29 ~08:10–08:55 UTC under the docker envelope,
+  sequential (envelope fairness). **Dual fixed profile** (human decision,
+  raised BEFORE any evidence was committed because 50 VUs kept every repo
+  far from its saturation knee): 50-VU efficiency runs at
+  `evidence/advanced/h2-50vus/<repo>/`, 200-VU stress runs at
+  `evidence/advanced/h2/<repo>/`; otherwise identical (10s ramp + 60s
+  hold, 10% creates / 90% reads of 50 seeded entities, thresholds
+  p95<500ms / err<1% / checks>95%).
+- Caveat: the k6 container has 1 CPU; mvc-caffeine's 2168 rps may approach
+  the generator's ceiling, compressing the top end (noted in its score
+  sheet).
+- Pipeline fixes mid-pilot: `MSYS_NO_PATHCONV=1` on compose runs (third
+  path-mangling incident), k6 `.values` summary nesting; `scenario: form`
+  template variant (form POST → 302 → id from Location header → HTML read)
+  makes petclinic-class apps measurable; `jarGlob` slot pins module6's
+  boot jar. Commits `bc9212f`, `e401654`, `402f6ac`.
+- blog-rest-api's 50-VU report carries a stale "no pom.xml at repo root"
+  note from an earlier pipeline state; the 200-VU finding
+  (`evidence/advanced/h2/springboot-blog-rest-api/`, boot-diagnosis.log)
+  is authoritative: boot crash on stock MySQL 8.4 ("Public Key Retrieval
+  is not allowed") + ADMIN-JWT wall beyond.
+- Runtime scoring rules (fixed before scoring, blind): boots (5) +
+  latency/throughput (10) scored from the load reports; **JFR item = 0
+  for ALL repos** (h3 capability — same non-distortion rule as h1's
+  Runtime=0), so h2 max runtime is 15/25. Full latency credit only for
+  PASS at BOTH profiles; half credit for FAIL-at-200 but functional
+  (0% errors, checks 100%). NOT_TESTABLE → Runtime 0 by policy §5.
+  Scoring done blind: the agent read the rubric, load reports, and
+  findings only — never `service/eval/expert-ranking.txt`.
 
 ## Harness numbers
 
-TBD — filled in after the h2 eval run
-(`python service/eval/evaluate.py --label h2 ...`, artifacts under
-`evidence/eval/h2/`).
+Run: `python service/eval/evaluate.py --label h2 --analyzer "bash service/advanced/analyze-h1.sh {target} --out {out}" --targets service/targets.txt --ranking service/eval/expert-ranking.txt --out evidence/eval/h2`
+(full artifacts: `evidence/eval/h2/`; score sheets extended in place at
+`evidence/advanced/h1/*/score-sheet.json`; load reports:
+`evidence/advanced/h2/` + `evidence/advanced/h2-50vus/`)
 
-## Verdict
+| Repo | h2 score (Δ h1) | h2 rank | Expert rank (v2) | Runtime evidence |
+|------|-----------------|---------|------------------|------------------|
+| spring-petclinic | 82 (+10) | 1 | 1 | FAIL @200: 234 rps, p95 2191ms, max 8111ms |
+| REST-With-Spring-module6 | 78 (+15) | 2 | 3 | PASS both: p95 297ms / 1288 rps @200 |
+| practice-webflux-redis | 72 (+15) | 3 | 2 | PASS both: p95 227ms / 1448 rps, max 382ms |
+| practice-webflux | 71 (+15) | 4 | 4 | PASS both: p95 298ms / 1031 rps @200 |
+| practice-mvc-caffeine | 70 (+15) | 5 | 5 | PASS both: p95 170ms / 2168 rps @200 |
+| practice-mvc | 65 (+10) | 6.5 | 6 | FAIL @200 (p95 646ms), PASS @50 (p95 106ms) |
+| petclinic-degraded | 65 (+10) | 6.5 | 8 | FAIL @200: 240 rps, p95 2105ms |
+| gs-rest-service-complete | 50 (+0) | 8 | 7 | NOT_TESTABLE: no create endpoint exists |
+| springboot-blog-rest-api | 42 (+0) | 9 | 10 | NOT_TESTABLE: boot crash, stock MySQL 8.4 |
+| spring-mvc-showcase | 26 (+0) | 10 | 9 | NOT_TESTABLE: build fails on Java 21 |
 
-TBD — KEPT / MIXED / REJECTED per the pre-registered criteria above.
+- **ρ = 0.954 vs v2** (h1: 0.939, baseline: 0.811), n=10. Tie bounds
+  [0.939, 0.964]; one tie group of 2 (practice-mvc / petclinic-degraded
+  at 65).
+- Pair check: **41 concordant / 3 discordant / 1 unjudged** (h1: 39/3/3;
+  baseline: 31/3/11). Unjudged pairs 3 → 1; the h1 3-way tie at 55 is
+  broken as designed — caffeine separates from mvc (70 vs 65) on exactly
+  the pre-registered mechanism (same code minus a cache: 2168 rps PASS vs
+  993 rps FAIL @200).
+- petclinic-degraded is runtime-identical to upstream spring-petclinic
+  (240 vs 234 rps, p95 2105 vs 2191ms — consistent with byte-identical
+  runtime code); its remaining tie with practice-mvc at 65 is honest.
+- 3 discordant pairs: (module6, webflux-redis) swapped at ranks 2–3;
+  (petclinic-degraded, gs-rest) — the analyzer ranks a load-tested-but-
+  slow full app above a skeleton with no API surface; (blog-rest-api,
+  mvc-showcase) swapped at ranks 9–10.
+
+## Verdict: **KEPT**
+
+Pre-registered criteria:
+
+- **(b) full-set ρ ≥ h1 with no increase in unjudged pairs: MET cleanly.**
+  0.954 ≥ 0.939 (h1 vs v2) and ≥ 0.865 (h1 vs v1); unjudged pairs 3 → 1.
+- **(a) controlled-repo ordering recovered: MET at the level the eval
+  measures, with one honest caveat.** The analyzer's final order of the 4
+  controlled repos — webflux-redis (72) > webflux (71) > mvc-caffeine
+  (70) > practice-mvc (65) — matches the known order exactly. The runtime
+  evidence alone cleanly recovers the discriminating signal: practice-mvc
+  is the only FAIL @200 and lands last of the four. Caveat: raw RPS ranks
+  mvc-caffeine first (2168 > 1448 > 1031), so the order *among the three
+  PASS repos* comes from the other rubric dimensions, not from runtime
+  alone. The 1-CPU generator ceiling makes raw-RPS ties at the top
+  unreliable anyway; threshold verdicts are the robust signal.
+
+Findings the baseline could never see:
+
+- **spring-petclinic — baseline 100/100 — saturates at ~240 rps with p95
+  2191ms / max 8111ms under 200 VUs, checks 100%**: pure queueing
+  collapse. This is the "undeniable evidence moment" candidate
+  (prompts/README §7); h3's JFR is positioned to explain the why.
+- 3 NOT_TESTABLE findings with cited evidence (boot crash on stock
+  MySQL 8.4; no create endpoint; Java 21 build failure) — each a real
+  acquisition-relevant defect, scored Runtime = 0 by pre-committed policy.
+
+Remaining caveats: the ρ gain over h1 (+0.015) is small at n=10 — the
+strong claim is the evidence and the pair check, not the headline. JFR is
+still dark (10 of 25 runtime points): a service can post high RPS with a
+critical hotspot underneath — that is h3's question.

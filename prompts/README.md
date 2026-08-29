@@ -47,13 +47,15 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Aug 29 ~16:30 +07 — h2 measured runs DONE; blind Runtime scoring next)
+## 3. Current State (Aug 29 ~16:20 +07 — h2 KEPT, ρ = 0.954 vs v2; h3 or packaging next)
 
 Branch: `exp/h2-k6-generation`. **h1 DONE, verdict KEPT (ρ = 0.939 vs v2).**
-**h2 measured runs DONE: 7/10 repos measured under the docker envelope,
-3 NOT_TESTABLE findings with cited evidence. Runtime scoring + h2 eval
-NOT yet done — hand off to a FRESH session for blind scoring (h1
-discipline: score without reading the expert ranking).**
+**h2 DONE, verdict KEPT (ρ = 0.954 vs v2; h1 0.939, baseline 0.811).** Blind
+Runtime scoring done (JFR item 0-for-all, h2 max runtime 15/25), score
+sheets extended in place, eval at `evidence/eval/h2/`, full record at
+`evidence/experiments/h2-k6-generation.md`. Tie bounds [0.939, 0.964];
+pairs 41/3/1. Validation bar met: controlled-repo ordering recovered
+exactly from the load reports.
 
 **h2 evidence:**
 - **Dual profile** (human decision): 50-VU efficiency runs preserved at
@@ -89,19 +91,16 @@ Commits: `bc9212f` (form+jarGlob tooling), `e401654` (slots+scripts),
 `402f6ac` (pilot fixes), `3f791ee` (trajectory); measured evidence +
 this state update committed after this note — see git log.
 
-**NEXT (fresh session — blind Runtime scoring + h2 eval):**
-1. Read the rubric Runtime dimension, all `load-report.json` (BOTH
-   profiles), and the 3 findings; extend the 10 committed h1 score sheets
-   (`evidence/advanced/h1/*/score-sheet.json`) with Runtime scores +
-   per-item citations. Do NOT read `service/eval/expert-ranking.txt`.
-2. Run the h2 eval through the harness (§2 command, analyzer =
-   analyze-h1.sh-style wrapper pointing at the updated score sheets) vs
-   the v2 ranking; report ρ + tie bounds + pair counts.
-3. Write `evidence/experiments/h2-k6-generation.md` (hypothesis → numbers
-   → KEPT/REJECTED). Validation bar: the 4 controlled repos' known
-   ordering should be recoverable from the load reports.
-4. Then h3 (JFR seam ready: `JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh`
-   unchanged) or packaging per remaining time.
+**NEXT (fresh session — h3 or packaging per remaining time):**
+1. h3 (`exp/h3-full-pipeline`): JFR profiling during the generated load —
+   seam ready (`JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh` unchanged).
+   Runtime dimension grades on k6 + JFR together; update the JFR item
+   (currently 0-for-all) in the score sheets, re-run the eval, write
+   `evidence/experiments/h3-full-pipeline.md`. Target: explain the
+   petclinic 200-VU collapse (p95 2191ms, checks 100%) with a JFR signal.
+2. Or packaging (§4 item 6) if time is short: full baseline-vs-advanced
+   eval table, IMPROVEMENTS/README numbers, REPRODUCTION final, video
+   script. **No new experiments in the final 4 hours.**
 
 **h1 context (from Day 3 morning):** h1 ρ = 0.865 vs v1 ranking
 (baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
