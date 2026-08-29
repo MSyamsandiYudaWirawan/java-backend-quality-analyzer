@@ -1,0 +1,9 @@
+# Generic target image for h2/h3 benchmarks — identical for every repo.
+# The runner builds it per repo with the target's boot jar as build arg:
+#   docker build -f Dockerfile.target --build-arg JAR_FILE=target/foo.jar <repo-dir>
+# JVM resource pinning lives in h2-target.yml (JAVA_OPTS), not here, so this
+# file stays a pure package step.
+FROM eclipse-temurin:21-jre
+ARG JAR_FILE
+COPY ${JAR_FILE} /app/app.jar
+ENTRYPOINT ["bash", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]

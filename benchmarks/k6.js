@@ -2,9 +2,12 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 // ============================================================================
-// Comprehensive Load Test Template
+// Comprehensive Load Test Template  —  LEGACY (h2, 2026-08-29)
 // ============================================================================
-// ADAPT THIS SCRIPT TO THE PROBLEM DOMAIN BEFORE RUNNING.
+// SUPERSEDED for the quality-analyzer event work: k6 scripts for TARGET
+// repos are generated via template + slots and committed per repo —
+// see service/advanced/k6/template.js and service/advanced/gen-k6.py.
+// This file remains as the original free-form reference.
 //
 // What to change:
 //   1. setup()    — seed payload shape, endpoint, and entity count

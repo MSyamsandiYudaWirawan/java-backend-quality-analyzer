@@ -13,6 +13,7 @@
 | 9 | 2026-08-29 | `kimi-cli/2026-08-29_11-37-expert-ranking-baseline-rho.md` | Expert ranking v1 + baseline ρ headline | Kimi Code CLI (kimi-k2) | Expert grades structure-only except practice repos (runtime-measured), with pre-authorized v2 revision path; baseline ρ = 0.811 with 5-way tie at 90; URL-mangling harness bug fixed; ρ swings ±0.3 from one stray Docker container |
 | 10 | 2026-08-29 | `kimi-cli/2026-08-29_11-55-h1-design-closeout.md` | h1 design decision + Day 2 close-out | Kimi Code CLI (kimi-k2) | h1 = Option A (agent judgment, committed score sheets, uniform Runtime=0); h2 redefined as generate+run+report; high-RPS-with-critical-hotspot scores lower in h3 |
 | 11 | 2026-08-29 | `kimi-cli/2026-08-29_05-43-h1-implementation-kept.md` | h1 implementation: collector, blind scoring, tie-aware harness, KEPT | Kimi Code CLI (kimi-k2) | h1 ρ = 0.865 vs baseline 0.811; custom weighted ρ rejected in favor of standard ρ + tie bounds + pair counts; port-5432 env incident reproduced and attributed; v2 ranking-revision decision parked for human |
+| 12 | 2026-08-29 | `kimi-cli/2026-08-29_14-20-v2-ruling-h2-tooling.md` | Expert-ranking v2 ruling + h2 tooling (k6 generation + pipeline re-point) | Kimi Code CLI (kimi-k2) | blog-rest-api to 10th/0-pts on verified committed JWT secret (ρ vs v2 = 0.939); docker-limited runs are the official path; template+slots generation standalone; infra split into `service/advanced/docker/h2-*.yml` after 4 design reversals |
 
 ---
 

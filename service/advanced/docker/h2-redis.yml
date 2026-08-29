@@ -1,0 +1,27 @@
+# Redis addendum for the h2 benchmark stack — merged by run-experiment.sh
+# when the target's slots.json lists "redis" in infra. Same envelope as the
+# template's (previously commented) redis block: 0.5 CPU / 256 MB.
+services:
+  redis:
+    image: redis:7.4.3-alpine3.21
+    container_name: hackathon-redis-bench
+    volumes:
+      - redis_bench_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+
+  service:
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis_bench_data:

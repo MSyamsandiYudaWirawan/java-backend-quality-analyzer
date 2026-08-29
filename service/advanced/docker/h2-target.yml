@@ -1,0 +1,87 @@
+# ============================================================================
+# h2 benchmark stack: TARGET repo + k6 (exp/h2-k6-generation)
+# ============================================================================
+# Same resource envelope as the pre-existing docker-compose.benchmark.yml
+# (which stays untouched), pointed at TARGET repos:
+#   service: 2 CPU / 2 GB (JVM pinned via -XX:ActiveProcessorCount)
+#   k6:      1 CPU / 512 MB
+#
+# Not run directly — run-experiment.sh merges infra addendums from the
+# target's committed slots.json ("infra"):
+#   docker compose -f h2-target.yml [-f h2-postgres.yml] [-f h2-mysql.yml]
+#                   [-f h2-redis.yml] up -d --wait service
+#
+# Interpolated from the runner's environment:
+#   REPO_DIR         target repo root (docker build context)
+#   DOCKERFILE_TARGET  generic image def (service/advanced/docker/Dockerfile.target)
+#   JAR_FILE         boot jar path relative to REPO_DIR (build arg)
+#   TARGET_ENV_FILE  SERVER_PORT + slots.bootEnv (datasource etc.)
+#   REPO             eval-set repo name (locates the committed k6 script)
+#   PROJECT_ROOT_WIN repo root, Windows-style (evidence mount; JFR in h3)
+#   JFR_OPTS         h3 seam: JFR flags appended to JAVA_OPTS (empty in h2)
+# ============================================================================
+
+services:
+  # The TARGET repo's service (built from its own jar by run-experiment.sh).
+  service:
+    build:
+      context: ${REPO_DIR}
+      dockerfile: ${DOCKERFILE_TARGET}
+      args:
+        JAR_FILE: ${JAR_FILE}
+    container_name: hackathon-service-bench
+    env_file: ${TARGET_ENV_FILE}
+    environment:
+      JAVA_OPTS: >-
+        -XX:ActiveProcessorCount=2
+        -XX:+UseContainerSupport
+        -Xms1536m
+        -Xmx1536m
+        ${JFR_OPTS:-}
+        -Djava.security.egd=file:/dev/./urandom
+    volumes:
+      - ${PROJECT_ROOT_WIN}/evidence:/jfr-repo
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '2.00'
+          memory: 2G
+    healthcheck:
+      # Actuator is not guaranteed on arbitrary repos; a listening port is
+      # the only universal readiness signal.
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8080' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    stop_grace_period: 15s
+
+  # k6 is started by run-experiment.sh via `docker compose run` (smoke gate,
+  # then full run) — it is intentionally NOT started by `up`.
+  k6:
+    image: grafana/k6:0.57.0
+    volumes:
+      - ${PROJECT_ROOT_WIN}:/hackathon:ro
+      - ${PROJECT_ROOT_WIN}/evidence:/hackathon/evidence
+    working_dir: /hackathon
+    environment:
+      TARGET_URL: http://service:8080
+      K6_JSON_OUT: ${K6_JSON_OUT:-/tmp/k6-summary.json}
+      # Smoke-gate overrides; empty strings fall through to the committed
+      # script's fixed profile (see service/advanced/k6/template.js).
+      K6_VUS: ${K6_VUS:-}
+      K6_DURATION: ${K6_DURATION:-}
+      K6_RAMP: ${K6_RAMP:-}
+      K6_ENTITY_COUNT: ${K6_ENTITY_COUNT:-}
+      K6_WRITE_RATIO: ${K6_WRITE_RATIO:-}
+    command: run /hackathon/evidence/advanced/h2/${REPO}/load-test.js
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+    depends_on:
+      service:
+        condition: service_healthy

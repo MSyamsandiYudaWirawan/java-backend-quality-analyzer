@@ -47,24 +47,52 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Day 3, Aug 29 ~06:10 UTC — start of h2 session)
+## 3. Current State (Aug 29 ~14:30 +07 — v2 ruled; h2 tooling built)
 
-Branch: `exp/h2-k6-generation` (created from `exp/h1-rubric-scoring` at
-`68265e4`). **h1 DONE, verdict KEPT: ρ = 0.865** (baseline 0.811) —
-see `evidence/experiments/h1-rubric-scoring.md`. `baseline` branch is
-fast-forwarded to the same commit (harness + reports in sync).
+Branch: `exp/h2-k6-generation`. **h1 DONE, verdict KEPT.**
+**Expert-ranking v2 RULED + applied this session** (human decision, memo:
+`evidence/experiments/expert-ranking-v2-decision.md`): blog-rest-api
+6th → **10th, scored 0/100** — undeclared-MySQL test failure + committed
+JWT secret verified in `evidence/advanced/h1/springboot-blog-rest-api/`;
+"a committed signing secret is unforgivable." petclinic-degraded **kept**
+with an intentional-degradation note (its failures are injected by the
+expert — design intent is not a code property). h1 re-eval vs v2:
+**ρ = 0.939** (was 0.865 vs v1), tie bounds [0.894, 0.965], pairs
+39/3/3 — `evidence/eval/h1-v2/`. Always cite ρ with its ranking version.
+
+**h2 tooling BUILT (this session), not yet run on targets:**
+- Generator: `service/advanced/k6/template.js` + `gen-k6.py` (template +
+  slots; slots also carry `infra`/`bootEnv`/`infraEnv` for the benchmark
+  environment). Scripts are committed per repo under
+  `evidence/advanced/h2/<repo>/` before any measured run.
+- Pipeline re-pointed at targets: `run-experiment.sh <target> [--docker]`
+  (baseline/advanced MODE removed), `benchmarks/orchestrate.js` (native
+  dev iteration), `benchmarks/k6-report.js` (fixed report shape +
+  NOT_TESTABLE finding mode), `benchmarks/k6.js` marked legacy.
+- Docker is the OFFICIAL measured path (human decision, fairness):
+  template's exact resource envelope in
+  `service/advanced/docker/h2-{target,postgres,mysql,redis}.yml`
+  (addendums merged per slots.infra) + generic `Dockerfile.target`.
+  Pre-existing `docker-compose.benchmark.yml` untouched.
+- Smoke gate inside the pipeline: 2 VUs/5s, setup must seed + checks must
+  pass, else NOT_TESTABLE finding (exit 3) — a finding, not a failure.
+- h3 seam ready: `JFR_OPTS` in h2-target.yml; `jfr-diagnose.sh` already
+  works on any .jfr path unchanged.
+- Tests: +37 (test_gen_k6.py 16, test-k6-report.sh 16,
+  test-run-experiment.sh 5) → **77 total green**.
+- NEXT: generate slots+scripts per repo (inspect API surface), commit
+  them, then the 10 measured docker runs, Runtime scoring, h2 eval.
+
+Commits through `68265e4` (h1); this session's work (v2 ruling + h2
+tooling) committed after this note as two commits — see git log.
+
+**h1 context (from Day 3 morning):** h1 ρ = 0.865 vs v1 ranking
+(baseline 0.811) — see `evidence/experiments/h1-rubric-scoring.md`.
 Commits: `6bbabd9` (baseline analyzer), `b5eb30e` (reframe + rubric +
 harness), `e3040f1` (controlled repos import), `1cfd7dd` (eval set + expert
 ranking v1), `a39e072` (baseline ρ headline + harness fixes), `80adef9`
 (h1 collector + tests), `a29e5e4` (h1 KEPT: scoring + tie-aware harness),
 `68265e4` (inline NOT ROBUST ρ warning).
-
-**OPEN for human BEFORE h2 eval runs: expert-ranking v2 decision** on
-blog-rest-api (h1 9th vs expert 6th — undeclared-MySQL test failure +
-committed JWT secret) and petclinic-degraded (h1 5–7th vs expert 9th —
-petclinic-grade architecture credited). Pre-authorized policy: revise with
-justification and re-run the eval, or keep v1 with a note. h2 was started
-without the ruling; record it in `evidence/experiments/` when made.
 
 **Day 3 DONE (h1):**
 - **Collector + wrapper:** `service/advanced/collect.sh` (mechanical
@@ -119,7 +147,9 @@ repo finding — baseline 65 stands).
 **Session-start sanity check (run these):**
 ```bash
 tests/unit/test-baseline.sh && tests/unit/test-collect.sh \
-  && tests/unit/test-analyze-h1.sh && python tests/unit/test_spearman.py
+  && tests/unit/test-analyze-h1.sh && python tests/unit/test_spearman.py \
+  && python tests/unit/test_gen_k6.py \
+  && tests/unit/test-k6-report.sh && tests/unit/test-run-experiment.sh
 ```
 
 **Environment:** Windows + Git Bash, Java 21.0.11, Maven 3.9.11, k6, Docker,
@@ -158,7 +188,8 @@ variant of the same bug class).
      the raw k6 JSON path — fixed report shape across repos for
      comparability. Question: can the agent generate *and execute* its own
      load tests? Validation: generated tests must recover the known ordering
-     of the 4 controlled repos.
+     of the 4 controlled repos. **Tooling built Aug 29 (see §3); measured
+     runs pending.**
    - `exp/h3-full-pipeline` — k6 alone only says *how fast*, not *why*: a
      service can post high RPS with a critical hotspot underneath. h3 adds
      JFR profiling during the generated load (`run-experiment.sh` /
@@ -236,8 +267,10 @@ advanced workflow catches failing under load, with the JFR to prove it.
 | [`post.txt`](post.txt) | Event rules, timeline, judging criteria | current |
 | [`problem.txt`](problem.txt) | Full problem statement incl. the code-analysis example (appendix 01) | current |
 | [`TIGERSTYLE.md`](TIGERSTYLE.md) | Coding principles for all generated code | current |
-| [`../run-experiment.sh`](../run-experiment.sh) | Build → k6 benchmark → report → JFR diagnose pipeline | current — re-pointed at *target* repos in h2/h3 |
-| [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — same |
+| [`../run-experiment.sh`](../run-experiment.sh) | Build → k6 benchmark → report pipeline | **RE-POINTED (h2)**: `<target> [--docker]`; baseline/advanced MODE removed; JFR step joins in h3 |
+| [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — h3; works on any .jfr path unchanged |
+| `../benchmarks/k6.js`, `orchestrate.js`, `k6-report.js` | k6 template / native runner / reporter | k6.js **legacy** (superseded by `service/advanced/k6/template.js` + `gen-k6.py`); orchestrate + k6-report **re-pointed** at targets (h2) |
+| `../docker-compose.benchmark.yml` | Original benchmark envelope | pre-existing, **untouched**; h2 stack lives in `service/advanced/docker/h2-*.yml` with the same limits |
 | `01-scaffold-service.md`, `00-scaffold-reactive-service.md` | MVC / WebFlux+Redis scaffold references | legacy — from the practice problem; useful only as reference for the 4 controlled repos |
 | `02–05-*.md` (CAS, idempotency, chaos, outbox) | Practice-problem patterns | legacy — out of scope (multi-service excluded) |
 | `00-git-workflow.md` | Branch/commit workflow | current |

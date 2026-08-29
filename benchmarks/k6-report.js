@@ -1,165 +1,160 @@
 #!/usr/bin/env node
 // ============================================================================
-// K6 Summary JSON → Markdown Report Generator
+// K6 Summary JSON → Fixed-Shape Load Report (h2)
 // ============================================================================
+// h2 re-point (2026-08-29, exp/h2-k6-generation): reports on a TARGET repo,
+// not on our own service's baseline/advanced modes. The old baseline-delta
+// tracker table is gone — the report shape is fixed across repos for
+// comparability (prompts/README.md §5):
+//   RPS, latency percentiles (p50/p95/p99/max), fail rate, check pass rate,
+//   threshold verdict, raw k6 JSON path.
+//
 // Usage:
-//   node benchmarks/k6-report.js baseline
-//   node benchmarks/k6-report.js advanced
-//   node benchmarks/k6-report.js evidence/k6-run.json [--baseline evidence/k6-baseline.json]
+//   node benchmarks/k6-report.js <k6-summary.json> --repo NAME [--out DIR]
+//   node benchmarks/k6-report.js --finding REASON --repo NAME [--out DIR]
 //
-// Outputs a markdown block you can paste directly into your experiment tracker.
+// --finding mode: a target that cannot be load-tested (build/boot/smoke-gate
+// failure) gets a NOT_TESTABLE report with an explicit note — a finding
+// (Runtime scores 0), not a harness failure.
 //
-// NOTE: When comparing baseline vs advanced, ensure both runs used the same
-// resource envelope. Docker mode (--docker) enforces:
-//   Service:  2 CPU / 2 GB  |  k6: 1 CPU / 512 MB  |  Postgres: 1 CPU / 512 MB
-// Native mode shares the host — keep other apps closed for fair comparison.
+// Outputs (into --out, default: alongside the k6 JSON):
+//   load-report.json   machine-readable fixed shape
+//   load-report.md     human-readable table
+//
+// Exit codes: 0 ok, 1 unusable k6 JSON, 2 usage/io error.
 // ============================================================================
 
 const fs = require('fs');
 const path = require('path');
 
 function parseArgs(argv) {
-  const args = { file: null, baseline: null };
-  const first = argv[2] || null;
-  if (first === 'baseline' || first === 'advanced') {
-    args.file = `evidence/k6-${first}.json`;
-    if (first === 'advanced') args.baseline = 'evidence/k6-baseline.json';
-  } else {
-    args.file = first;
-    for (let i = 3; i < argv.length; i++) {
-      if (argv[i] === '--baseline' && i + 1 < argv.length) {
-        args.baseline = argv[i + 1];
-        i++;
-      }
-    }
+  const args = { file: null, finding: null, repo: null, out: null };
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === '--repo' && i + 1 < argv.length) args.repo = argv[++i];
+    else if (argv[i] === '--out' && i + 1 < argv.length) args.out = argv[++i];
+    else if (argv[i] === '--finding' && i + 1 < argv.length) args.finding = argv[++i];
+    else if (!argv[i].startsWith('--') && !args.file) args.file = argv[i];
   }
   return args;
 }
 
 const args = parseArgs(process.argv);
-const experimentName = (args.file || '').includes('advanced') ? 'ADVANCED' : 'BASELINE';
-
-if (!args.file || !fs.existsSync(args.file)) {
-  console.error('Usage: node benchmarks/k6-report.js <baseline|advanced|k6-summary.json> [--baseline <baseline.json>]');
-  process.exit(1);
+if (!args.repo || Boolean(args.file) === Boolean(args.finding)) {
+  console.error('Usage: node benchmarks/k6-report.js <k6-summary.json> --repo NAME [--out DIR]');
+  console.error('       node benchmarks/k6-report.js --finding REASON --repo NAME [--out DIR]');
+  process.exit(2);
 }
 
-// --- Load metrics -----------------------------------------------------------
-function loadMetrics(filePath) {
-  const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  const m = data.metrics || {};
-  const rv = (metric) => (metric && metric.values) || {};
+const nowUtc = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+function breachedThresholds(metrics) {
+  const breached = [];
+  for (const [metricName, entry] of Object.entries(metrics).sort()) {
+    for (const [expr, result] of Object.entries(entry.thresholds || {}).sort()) {
+      if (!result.ok) breached.push(`${metricName}: ${expr}`);
+    }
+  }
+  return breached;
+}
+
+function buildReport(k6, repo, rawJsonPath) {
+  const m = k6.metrics || {};
+  if (typeof m !== 'object' || !m.http_reqs) {
+    console.error('ERROR: not a k6 summary JSON (no metrics.http_reqs)');
+    process.exit(1);
+  }
+  const v = (name) => (m[name] && m[name].values) || {};
+  const reqs = v('http_reqs');
+  const dur = v('http_req_duration');
+  const breached = breachedThresholds(m);
   return {
-    reqs: rv(m.http_reqs),
-    dur: rv(m.http_req_duration),
-    fail: rv(m.http_req_failed),
-    checks: rv(m.checks),
-    iterations: rv(m.iterations),
-    vus: rv(m.vus_max),
+    repo,
+    dateUtc: nowUtc(),
+    rps: reqs.rate || 0,
+    totalRequests: reqs.count || 0,
+    latency: {
+      avg: dur.avg ?? null,
+      p50: dur.med ?? null,
+      p95: dur['p(95)'] ?? null,
+      p99: dur['p(99)'] ?? null,
+      max: dur.max ?? null,
+    },
+    failRate: v('http_req_failed').rate || 0,
+    checkPassRate: v('checks').rate || 0,
+    thresholds: { verdict: breached.length === 0 ? 'PASS' : 'FAIL', breached },
+    rawK6Json: rawJsonPath,
   };
 }
 
-// Auto-detect baseline if not provided and file is not already baseline
-if (!args.baseline && !args.file.includes('baseline') && fs.existsSync('evidence/k6-baseline.json')) {
-  args.baseline = 'evidence/k6-baseline.json';
-}
-const hasBaselineArg = args.baseline && fs.existsSync(args.baseline);
-const run = loadMetrics(args.file);
-const base = hasBaselineArg ? loadMetrics(args.baseline) : null;
-
-// --- Extract helper ---------------------------------------------------------
-function extract(x) {
+function buildFindingReport(repo, reason) {
   return {
-    rps: x.reqs.rate || 0,
-    totalReqs: x.reqs.count || 0,
-    totalIterations: x.iterations.count || 0,
-    failRate: (x.fail.rate || 0) * 100,
-    checkRate: (x.checks.rate || 0) * 100,
-    avg: x.dur.avg != null ? x.dur.avg : null,
-    med: x.dur.med != null ? x.dur.med : null,
-    p90: x.dur['p(90)'] != null ? x.dur['p(90)'] : null,
-    p95: x.dur['p(95)'] != null ? x.dur['p(95)'] : null,
-    p99: x.dur['p(99)'] != null ? x.dur['p(99)'] : null,
-    max: x.dur.max != null ? x.dur.max : null,
-    maxVus: x.vus.max != null ? x.vus.max : (x.vus.value != null ? x.vus.value : null),
+    repo,
+    dateUtc: nowUtc(),
+    rps: null,
+    totalRequests: 0,
+    latency: { avg: null, p50: null, p95: null, p99: null, max: null },
+    failRate: null,
+    checkPassRate: null,
+    thresholds: { verdict: 'NOT_TESTABLE', breached: [] },
+    rawK6Json: null,
+    note: `could not generate a valid load scenario: ${reason}`,
   };
 }
 
-// When no --baseline is given, the single file IS the baseline record.
-// When --baseline IS given, args.file = This Run, args.baseline = Baseline.
-const thisRun = extract(run);
-const baseline = hasBaselineArg ? extract(base) : extract(run);
-
-// --- Formatting helpers -----------------------------------------------------
-const fmt = (v, unit = '') => v != null ? `${v.toFixed(2)}${unit}` : 'N/A';
-const fmtInt = (v) => v != null ? v.toLocaleString() : 'N/A';
-
-function delta(thisVal, baseVal, unit = '', invert = false) {
-  if (thisVal == null || baseVal == null) return '—';
-  const diff = thisVal - baseVal;
-  const pct = baseVal !== 0 ? ((diff / baseVal) * 100) : 0;
-  const sign = diff > 0 ? '+' : '';
-  const arrow = invert
-    ? (diff < 0 ? '↓' : diff > 0 ? '↑' : '')
-    : (diff > 0 ? '↑' : diff < 0 ? '↓' : '');
-  return `${sign}${diff.toFixed(2)}${unit} (${sign}${pct.toFixed(1)}%) ${arrow}`;
+function renderMd(report) {
+  const fmt = (x) => (typeof x === 'number' ? x.toFixed(2) : 'N/A');
+  const pct = (x) => (typeof x === 'number' ? `${(x * 100).toFixed(2)}%` : 'N/A');
+  const lines = [
+    `# Load report: ${report.repo}`,
+    '',
+    `- Date (UTC): ${report.dateUtc}`,
+    `- Raw k6 JSON: \`${report.rawK6Json}\``,
+    `- Threshold verdict: **${report.thresholds.verdict}**`,
+    ...report.thresholds.breached.map((b) => `  - breached: \`${b}\``),
+  ];
+  if (report.note) lines.push(`- Note: ${report.note}`);
+  lines.push(
+    '',
+    '| Metric | Value |',
+    '|--------|-------|',
+    `| RPS | ${fmt(report.rps)} req/s |`,
+    `| Total requests | ${report.totalRequests} |`,
+    `| Fail rate | ${pct(report.failRate)} |`,
+    `| Check pass rate | ${pct(report.checkPassRate)} |`,
+    `| p50 latency | ${fmt(report.latency.p50)} ms |`,
+    `| p95 latency | ${fmt(report.latency.p95)} ms |`,
+    `| p99 latency | ${fmt(report.latency.p99)} ms |`,
+    `| max latency | ${fmt(report.latency.max)} ms |`,
+    ''
+  );
+  return lines.join('\n');
 }
 
-// --- Markdown output --------------------------------------------------------
-const out = [];
+let report;
+if (args.finding) {
+  report = buildFindingReport(args.repo, args.finding);
+} else {
+  let k6;
+  try {
+    k6 = JSON.parse(fs.readFileSync(args.file, 'utf8'));
+  } catch (e) {
+    console.error(`ERROR: cannot read k6 JSON ${args.file}: ${e.message}`);
+    process.exit(2);
+  }
+  report = buildReport(k6, args.repo, args.file);
+}
 
-out.push(`## K6 Load Test Report: ${experimentName}`);
-out.push('');
-out.push(`- **Source:** \`${path.basename(args.file)}\``);
-if (hasBaselineArg) out.push(`- **Baseline:** \`${path.basename(args.baseline)}\``);
-out.push(`- **Max VUs:** ${fmtInt(thisRun.maxVus)}`);
-out.push(`- **Total Requests:** ${fmtInt(thisRun.totalReqs)}`);
-out.push(`- **Total Iterations:** ${fmtInt(thisRun.totalIterations)}`);
-out.push(`- **Fail Rate:** ${fmt(thisRun.failRate, '%')}`);
-out.push(`- **Check Pass Rate:** ${fmt(thisRun.checkRate, '%')}`);
-out.push('');
+const outDir = args.out || path.dirname(args.file);
+fs.mkdirSync(outDir, { recursive: true });
+fs.writeFileSync(path.join(outDir, 'load-report.json'), JSON.stringify(report, null, 2) + '\n');
+fs.writeFileSync(path.join(outDir, 'load-report.md'), renderMd(report));
 
-out.push('### Latency');
-out.push('');
-out.push('| Metric | Value |');
-out.push('|--------|-------|');
-out.push(`| avg | ${fmt(thisRun.avg)} ms |`);
-out.push(`| med | ${fmt(thisRun.med)} ms |`);
-out.push(`| p90 | ${fmt(thisRun.p90)} ms |`);
-out.push(`| p95 | ${fmt(thisRun.p95)} ms |`);
-out.push(`| p99 | ${fmt(thisRun.p99)} ms |`);
-out.push(`| max | ${fmt(thisRun.max)} ms |`);
-out.push('');
-
-out.push('### Experiment Tracker Row');
-out.push('');
-out.push('Paste this row into your experiment tracker:');
-out.push('');
-out.push('| Metric | Baseline | This Run | Delta |');
-out.push('|--------|----------|----------|-------|');
-
-const r = thisRun;
-const b = baseline;
-
-out.push(`| RPS (req/s) | ${fmt(b.rps)} | ${r ? fmt(r.rps) : '—'} | ${delta(r && r.rps, b.rps, '', false)} |`);
-out.push(`| p50 latency (ms) | ${fmt(b.med)} | ${r ? fmt(r.med) : '—'} | ${delta(r && r.med, b.med, '', true)} |`);
-out.push(`| p95 latency (ms) | ${fmt(b.p95)} | ${r ? fmt(r.p95) : '—'} | ${delta(r && r.p95, b.p95, '', true)} |`);
-out.push(`| p99 latency (ms) | ${fmt(b.p99)} | ${r ? fmt(r.p99) : '—'} | ${delta(r && r.p99, b.p99, '', true)} |`);
-out.push(`| max latency (ms) | ${fmt(b.max)} | ${r ? fmt(r.max) : '—'} | ${delta(r && r.max, b.max, '', true)} |`);
-out.push(`| errors (%) | ${fmt(b.failRate, '%')} | ${r ? fmt(r.failRate, '%') : '—'} | ${delta(r && r.failRate, b.failRate, '%', true)} |`);
-out.push(`| checks passed (%) | ${fmt(b.checkRate, '%')} | ${r ? fmt(r.checkRate, '%') : '—'} | ${delta(r && r.checkRate, b.checkRate, '%', false)} |`);
-out.push(`| max VUs | ${fmtInt(b.maxVus)} | ${r ? fmtInt(r.maxVus) : '—'} | — |`);
-out.push('');
-
-out.push('### Raw JSON Path');
-out.push(`- This run: \`${args.file}\``);
-if (hasBaselineArg) out.push(`- Baseline: \`${args.baseline}\``);
-out.push('');
-
-const md = out.join('\n');
-console.log(md);
-
-// Optionally write to a sidecar .md file
-const mdFile = args.file.replace(/\.json$/, '.md');
-fs.writeFileSync(mdFile, md);
-console.log(`Report also saved to: ${mdFile}`);
+if (report.thresholds.verdict === 'NOT_TESTABLE') {
+  console.log(`>> load report for ${report.repo}: NOT_TESTABLE (${args.finding}) -> ${outDir}`);
+} else {
+  console.log(
+    `>> load report for ${report.repo}: ${report.thresholds.verdict} ` +
+    `(rps=${report.rps.toFixed(2)} p95=${report.latency.p95} ` +
+    `checks=${(report.checkPassRate * 100).toFixed(2)}%) -> ${outDir}`
+  );
+}
