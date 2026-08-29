@@ -47,36 +47,21 @@ python service/eval/evaluate.py --label <name> \
   --out evidence/eval/<name>
 ```
 
-## 3. Current State (Aug 29 ~18:00 +07 — h3 KEPT, ρ = 0.973 vs v2; packaging next)
+## 3. Current State (Aug 29 ~18:45 +07 — h3 KEPT ρ = 0.973; PACKAGING DONE on `advanced`)
 
-Branch: `exp/h3-full-pipeline`. **h1 DONE, KEPT (ρ = 0.865). h2 DONE, KEPT
-(ρ = 0.954). h3 DONE, KEPT (ρ = 0.973 vs v2; baseline 0.811).** JFR item
-scored blind from 7 measured profiles (uniform pre-registered 0–10 rubric;
-3 NOT_TESTABLE repos stay 0 citing h2 findings, no h3 runs). Eval at
-`evidence/eval/h3/` (bounds [0.964, 0.976]; pairs 42/2/1), full record at
-`evidence/experiments/h3-full-pipeline.md`.
+Branch: `advanced` (created at the `exp/h3-full-pipeline` tip — chained
+KEPT branches, so it IS baseline + h1 + h2 + h3). **h1 KEPT (0.865),
+h2 KEPT (0.954), h3 KEPT (0.973 vs v2; baseline 0.811 v1 / 0.850 v2).**
+Packaging complete: 4-stage eval table + all details in IMPROVEMENTS.md,
+README filled (headline, corrected eval set, hot take, trade-offs),
+REPRODUCTION final (every command verified — `--resume` reproduces
+0.973 in <10s), video script filled, full unit suite green on `advanced`.
+New artifact: `evidence/eval/baseline-v2/` (original baseline scores
+re-ranked vs v2, no re-measurement: 0.850, still NOT ROBUST).
 
-**h3 headline evidence (the §7 moment):** spring-petclinic — baseline's
-100/100 repo — collapses at 200 VUs (189 rps, p95 2500ms, checks 100%) on
-ONE global monitor: the fat-jar classloader's `UrlJarFiles$Cache`
-(71,193/71,738 monitor events, p95 407ms). petclinic-degraded replicates it
-exactly (control). **module6 PASSed k6 with a CRITICAL JFR signal**
-(5,018 monitor events p95 1310ms) — the h3 grading rule held it below a
-clean-profile repo. mvc FAIL = blocking Postgres reads on request threads
-(6,859 SocketReads p95 79ms); caffeine sibling does ~2.7x fewer
-reads/request at 2.2x throughput. webflux/redis: clean profiles, 10/10.
-
-**h3 pipeline fixes (trajectory 2026-08-29_17-10):** in-memory JFR +
-dumponexit (disk=true chunk writes fail on Windows bind mounts);
-MSYS_NO_PATHCONV=1 on ALL compose calls (4th path-mangling instance, first
-on `up` — exported JFR_OPTS got rewritten); Python json.dump needs explicit
-encoding="utf-8" on Windows (cp1252 default corrupted sheets; harness JSON
-parse caught it); Dockerfile.target pinned to `eclipse-temurin:21-jre-jammy`.
-
-**NEXT (fresh session — packaging only, §4 item 6):** full
-baseline-vs-advanced eval table, IMPROVEMENTS/README numbers,
-REPRODUCTION final, video script. **No new experiments in the final 4
-hours.**
+**Remaining (human):** record the video; decide whether to fast-forward
+`master` to `advanced` for platforms that judge the default branch;
+final submission checklist at README bottom.
 
 **h2 evidence (kept, see git log for full detail):**
 - **Dual profile** (human decision): 50-VU efficiency runs preserved at
