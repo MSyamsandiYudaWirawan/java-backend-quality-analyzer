@@ -6,15 +6,19 @@ Every experiment lives on its own branch. Pick the one you want to verify:
 
 | Branch | What it is | Key result |
 |--------|------------|------------|
-| `baseline` | Naive shell-script analyzer: 5 shallow checks → 0–100 score. Control for all experiments. | spring-petclinic → 100/100 (saturates) |
 | `exp/h1-rubric-scoring` | Agent rubric scoring on collected mechanical evidence; Runtime = 0 uniformly. **KEPT** — broke the baseline's 5-way tie at 90. | ρ = 0.865 vs v1 (0.939 vs v2) |
 | `exp/h2-k6-generation` | + agent-generated k6 load tests (template+slots, smoke gate, docker envelope); Runtime scored from measured load. **KEPT** — controlled-repo ordering recovered exactly. | ρ = 0.954 vs v2 |
 | `exp/h3-full-pipeline` | + JFR profiling during the generated load (`--jfr`); Runtime grades on k6 + JFR. **KEPT** — petclinic collapse explained (fat-jar classloader lock). | ρ = 0.973 vs v2 |
 | `advanced` | Final agent workflow = baseline + h1 + h2 + h3 (all KEPT). | ρ 0.811 → 0.973 |
 
+The **baseline has no dedicated branch** — it is the control *analyzer*
+(`service/baseline/analyze.sh`) plus its committed evidence
+(`evidence/eval/baseline*/`), both present on every branch above, so the
+baseline is reproduced from whichever branch you checked out (see
+[Running the Baseline Analyzer](#running-the-baseline-analyzer) and the
+`--resume` eval commands below).
+
 ```bash
-git checkout baseline
-# or
 git checkout exp/h3-full-pipeline
 # or
 git checkout advanced

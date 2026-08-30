@@ -20,11 +20,14 @@ only maps the code.
 | Branch | What it is |
 |--------|------------|
 | `master` | Pre-event template snapshot (being renamed `template/init`) — the repo as it stood before the event. |
-| `baseline` | Naive shell-script analyzer; the intentional control. |
 | `exp/h1-rubric-scoring` | Baseline + blind rubric scoring on collected mechanical evidence. KEPT. |
 | `exp/h2-k6-generation` | h1 + agent-generated k6 load tests against the booted target. KEPT. |
 | `exp/h3-full-pipeline` | h2 + JFR profiling during the generated load. KEPT. |
 | `advanced` | h3 tip under a new name (chained KEPT branches, so it IS baseline + h1 + h2 + h3). **The deliverable.** |
+
+The baseline control has no branch of its own: `service/baseline/analyze.sh`
+and its committed evidence (`evidence/eval/baseline*/`) exist on every branch
+above, so the baseline runs from whichever branch you check out.
 
 ## Directory map
 

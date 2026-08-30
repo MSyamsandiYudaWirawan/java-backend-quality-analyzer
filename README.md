@@ -149,7 +149,7 @@ See [`prompts/TIGERSTYLE.md`](prompts/TIGERSTYLE.md) for the coding principles e
 
 A submission is scored only after it passes completeness, integrity, trace, and reproducibility checks. Before submitting, verify:
 
-- [ ] `baseline` branch passes all unit and integration tests
+- [ ] Baseline analyzer reproducible from `advanced` (committed evidence + `--resume` eval match; see REPRODUCTION.md)
 - [ ] `advanced` branch passes all unit and integration tests
 - [ ] Every experiment branch exists and is documented in `IMPROVEMENTS.md`
 - [ ] `evidence/` contains analysis reports (markdown + JSON) for baseline and advanced across the eval repos, plus JFR/k6 recordings for repos where runtime profiling was used
