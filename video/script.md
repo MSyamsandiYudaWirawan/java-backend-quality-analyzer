@@ -83,6 +83,41 @@ in under ten seconds from committed evidence. Thank you."
 
 ---
 
+## Shot List (what's actually on screen)
+
+- **§0 Hook** — talking head, or the top of `README.md` (Problem & User) if
+  you want a visual anchor. Nothing else; keep it clean.
+- **§1 Baseline** — 3 beats: (1) `service/baseline/analyze.sh` header block
+  (the 5 checks, ~3 sec), (2) `evidence/eval/baseline/eval-report.md`
+  scrolled to the score table — linger on the five 90/100 rows, (3) the
+  `NOT ROBUST` stamp line under the ρ. This table IS the baseline story.
+- **§2 Rejected** — split view: `evidence/advanced/h2-50vus/spring-petclinic/load-report.md`
+  (left) vs `evidence/advanced/h2/spring-petclinic/load-report.md` (right).
+  Point at PASS-by-5x thresholds on the left, FAIL at 200 VUs on the right.
+- **§3 Kept — the money shot, give it the most care** — full-screen
+  `evidence/advanced/h3/spring-petclinic/load-report.md`: RPS 189.08, p95
+  2500ms, checks 100%, verdict FAIL (these h3 numbers match the narration;
+  the h2 report's 233.77/2190ms is the no-profiler twin if asked). Then cut
+  to `evidence/advanced/h3/spring-petclinic/jfr/diagnosis-report.md` at the
+  `jdk.JavaMonitorEnter 71738` line and the fat-jar classloader finding.
+- **§4 Advanced** — `Documentation.md` §Pipeline flow (schematic, 5 sec),
+  then `evidence/eval/h3/eval-report.md` full ordering vs the baseline
+  table from §1 (side-by-side if possible). Flash one NOT_TESTABLE:
+  `evidence/advanced/h2/springboot-blog-rest-api/load-report.md` finding
+  note. End on `IMPROVEMENTS.md` §Full Baseline-vs-Advanced Eval Table.
+- **§5 Failure mode** — optional: `trajectories/kimi-cli/2026-08-29_17-10-h3-jfr-tooling.md`
+  header on screen while you talk; or grep `MSYS_NO_PATHCONV` in
+  `run-experiment.sh`. Talking head is fine here too.
+- **§6 Hot take** — back on the h3 diagnosis report: the event-count table
+  (`jdk.JavaMonitorEnter 71738 / 1886945` vs the tiny
+  `jdk.GCPhasePauseLevel1 117 / 4719`) — the visual proof that "GC
+  explained nothing".
+- **§7 Close** — LIVE terminal, the one real demo:
+  `python service/eval/evaluate.py --label h3 --resume --analyzer "bash service/advanced/analyze-h1.sh {target} --out {out}" --targets service/targets.txt --ranking service/eval/expert-ranking.txt --out evidence/eval/h3`
+  printing ρ = 0.973 in <10s. **After recording: `git checkout -- evidence/`
+  — `--resume` regenerates the report and drops the hand-written analyst
+  note.** Practice this command twice before recording.
+
 ## Recording Tips
 
 - Use a terminal with a dark theme and large font (14pt+)
