@@ -149,11 +149,11 @@ See [`prompts/TIGERSTYLE.md`](prompts/TIGERSTYLE.md) for the coding principles e
 
 A submission is scored only after it passes completeness, integrity, trace, and reproducibility checks. Before submitting, verify:
 
-- [ ] Baseline analyzer reproducible from `advanced` (committed evidence + `--resume` eval match; see REPRODUCTION.md)
-- [ ] `advanced` branch passes all unit and integration tests
-- [ ] Every experiment branch exists and is documented in `IMPROVEMENTS.md`
-- [ ] `evidence/` contains analysis reports (markdown + JSON) for baseline and advanced across the eval repos, plus JFR/k6 recordings for repos where runtime profiling was used
-- [ ] `REPRODUCTION.md` commands run successfully on a clean environment
-- [ ] Trajectories exported for every major agent session in `trajectories/kimi-cli/`
+- [x] Baseline analyzer reproducible from `advanced` (committed evidence + `--resume` eval match; see REPRODUCTION.md) — verified: `--resume` reproduces baseline-v2 0.850, h1-v2 0.939, h2 0.954, h3 0.973 exactly
+- [x] `advanced` branch passes the unit test suite (baseline 9, collect 19, analyze-h1 5, spearman 22, gen_k6 31, k6-report 16, run-experiment 9 — all green; no integration suite exists, `tests/integration/` is a documented placeholder)
+- [x] Every experiment branch exists and is documented in `IMPROVEMENTS.md` (`exp/h1-rubric-scoring`, `exp/h2-k6-generation`, `exp/h3-full-pipeline`, `advanced`; the baseline control runs from any branch — no dedicated branch by design)
+- [x] `evidence/` contains analysis reports (markdown + JSON) for baseline and advanced across the eval repos, plus committed k6 JSON/reports and JFR diagnosis reports for runtime-profiled repos (raw `.jfr` binaries are gitignored by design — they regenerate via `run-experiment.sh <target> --docker --jfr`)
+- [x] `REPRODUCTION.md` commands run successfully on a clean environment (every command verified during packaging; `--resume` set re-verified on all branches in the refinement pass)
+- [x] Trajectories exported for every major agent session in `trajectories/kimi-cli/` (1–19 indexed, incl. the Day-2 refinement session)
 - [ ] 5-minute video recorded and under 5 minutes
-- [ ] Root README clearly states tools used and what was built during the event
+- [x] Root README clearly states tools used and what was built during the event
