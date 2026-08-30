@@ -1,7 +1,7 @@
 # Session: Scaffold a simple health endpoint
 - Date: 2026-08-28
 - Tool: Kimi API Console (platform.moonshot.cn)
-- Model: kimi-k2-0711
+- Model: kimi-k3
 - Human Checkpoint: yes
 
 ---
