@@ -289,9 +289,11 @@ advanced workflow catches failing under load, with the JFR to prove it.
 | [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — h3; works on any .jfr path unchanged |
 | `../benchmarks/k6.js`, `orchestrate.js`, `k6-report.js` | k6 template / native runner / reporter | k6.js **legacy** (superseded by `service/advanced/k6/template.js` + `gen-k6.py`); orchestrate + k6-report **re-pointed** at targets (h2) |
 | `../docker-compose.benchmark.yml` | Original benchmark envelope | pre-existing, **untouched**; h2 stack lives in `service/advanced/docker/h2-*.yml` with the same limits |
-| `01-scaffold-service.md`, `00-scaffold-reactive-service.md` | MVC / WebFlux+Redis scaffold references | legacy — from the practice problem; useful only as reference for the 4 controlled repos |
-| `02–05-*.md` (CAS, idempotency, chaos, outbox) | Practice-problem patterns | legacy — out of scope (multi-service excluded) |
 | `00-git-workflow.md` | Branch/commit workflow | current |
+
+The legacy practice-problem scaffolds (`00-scaffold-reactive-service.md`,
+`01-scaffold-service.md`, `02–05-*.md`) were removed in the refinement pass;
+they remain reachable via git history / the `template/init` snapshot.
 
 The old "ceiling experiment" and perf-tuning workflow from the practice
 problem do not apply here — JFR/k6 are analysis tools pointed at *target*
