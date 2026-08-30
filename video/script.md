@@ -83,35 +83,46 @@ in under ten seconds from committed evidence. Thank you."
 
 ---
 
-## Shot List (what's actually on screen)
+## Shot List (exact file per beat)
 
-- **§0 Hook** — talking head, or the top of `README.md` (Problem & User) if
-  you want a visual anchor. Nothing else; keep it clean.
-- **§1 Baseline** — 3 beats: (1) `service/baseline/analyze.sh` header block
-  (the 5 checks, ~3 sec), (2) `evidence/eval/baseline/eval-report.md`
-  scrolled to the score table — linger on the five 90/100 rows, (3) the
-  `NOT ROBUST` stamp line under the ρ. This table IS the baseline story.
+Rule of thumb: every file on screen is under `evidence/` or `service/` —
+never show a number that isn't in the file behind it.
+
+- **§0 Hook** — talking head, or the top of `README.md` (Problem & User).
+- **§1 Baseline** — 3 files: (1) `service/baseline/analyze.sh` header block
+  (the 5 checks, ~3 sec); (2) `evidence/eval/baseline/eval-report.md` score
+  table — linger on the five 90/100 rows, then the `NOT ROBUST` stamp under
+  ρ = 0.811; (3) `service/eval/expert-ranking.txt` — flash the commented
+  header (v1→v2 revision policy) when you say "human expert"; it points to
+  `evidence/expert-ranking-notes.md` ("Ranking basis policy" paragraph) as
+  the audit trail if judges ask.
 - **§2 Rejected** — split view: `evidence/advanced/h2-50vus/spring-petclinic/load-report.md`
-  (left) vs `evidence/advanced/h2/spring-petclinic/load-report.md` (right).
-  Point at PASS-by-5x thresholds on the left, FAIL at 200 VUs on the right.
-- **§3 Kept — the money shot, give it the most care** — full-screen
-  `evidence/advanced/h3/spring-petclinic/load-report.md`: RPS 189.08, p95
-  2500ms, checks 100%, verdict FAIL (these h3 numbers match the narration;
-  the h2 report's 233.77/2190ms is the no-profiler twin if asked). Then cut
-  to `evidence/advanced/h3/spring-petclinic/jfr/diagnosis-report.md` at the
-  `jdk.JavaMonitorEnter 71738` line and the fat-jar classloader finding.
-- **§4 Advanced** — `Documentation.md` §Pipeline flow (schematic, 5 sec),
-  then `evidence/eval/h3/eval-report.md` full ordering vs the baseline
-  table from §1 (side-by-side if possible). Flash one NOT_TESTABLE:
-  `evidence/advanced/h2/springboot-blog-rest-api/load-report.md` finding
-  note. End on `IMPROVEMENTS.md` §Full Baseline-vs-Advanced Eval Table.
-- **§5 Failure mode** — optional: `trajectories/kimi-cli/2026-08-29_17-10-h3-jfr-tooling.md`
-  header on screen while you talk; or grep `MSYS_NO_PATHCONV` in
-  `run-experiment.sh`. Talking head is fine here too.
-- **§6 Hot take** — back on the h3 diagnosis report: the event-count table
-  (`jdk.JavaMonitorEnter 71738 / 1886945` vs the tiny
-  `jdk.GCPhasePauseLevel1 117 / 4719`) — the visual proof that "GC
-  explained nothing".
+  (left, vacuous PASS) vs `evidence/advanced/h2/spring-petclinic/load-report.md`
+  (right, FAIL: 233.77 rps / p95 2190ms at 200 VUs).
+- **§3 Kept — the money sequence, give it the most care** — 4 files:
+  (1) `evidence/advanced/h2/spring-petclinic/slots.json` → `load-test.js`,
+  3-sec flash proving the agent GENERATED the load test (committed
+  template+slots artifact); (2) `evidence/advanced/h3/spring-petclinic/load-report.md`
+  full-screen: RPS 189.08, p95 2500ms, checks 100%, verdict FAIL (matches
+  the narration; h2's 233.77/2190ms is the no-profiler twin if asked);
+  (3) `evidence/advanced/h3/spring-petclinic/jfr/diagnosis-report.md` at
+  the `jdk.JavaMonitorEnter 71738` line + the fat-jar classloader lock
+  finding; (4) the ρ ladder — flash the headline line of
+  `evidence/eval/h1/eval-report.md` (0.865) → `h2` (0.954) → `h3` (0.973).
+- **§4 Advanced** — 3 files: (1) `Documentation.md` §Pipeline flow (5 sec
+  schematic); (2) `evidence/advanced/h1/spring-petclinic/score-sheet.json`
+  — the traceability proof: every item carries `"evidence": "build.log"` /
+  `"evidence": "test.log, surefire-summary.txt"` fields; show this when you
+  say "every point traces to a file"; (3) `evidence/advanced/h2/springboot-blog-rest-api/boot-diagnosis.log`
+  ("Public Key Retrieval is not allowed") next to its `load-report.md`
+  NOT_TESTABLE finding — honesty over coverage. End on `IMPROVEMENTS.md`
+  §Full Baseline-vs-Advanced Eval Table.
+- **§5 Failure mode** — `trajectories/kimi-cli/2026-08-29_17-10-h3-jfr-tooling.md`
+  on screen while you talk (shows the real retry trail), or grep
+  `MSYS_NO_PATHCONV` in `run-experiment.sh`. Talking head is fine too.
+- **§6 Hot take** — back on the h3 `jfr/diagnosis-report.md` event table:
+  `jdk.JavaMonitorEnter 71738 / 1886945` vs `jdk.GCPhasePauseLevel1 117 /
+  4719` — the visual proof that "GC explained nothing".
 - **§7 Close** — LIVE terminal, the one real demo:
   `python service/eval/evaluate.py --label h3 --resume --analyzer "bash service/advanced/analyze-h1.sh {target} --out {out}" --targets service/targets.txt --ranking service/eval/expert-ranking.txt --out evidence/eval/h3`
   printing ρ = 0.973 in <10s. **After recording: `git checkout -- evidence/`
