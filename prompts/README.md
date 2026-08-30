@@ -238,9 +238,11 @@ advanced workflow catches failing under load, with the JFR to prove it.
 | [`TIGERSTYLE.md`](TIGERSTYLE.md) | Coding principles for all generated code | current |
 | [`../run-experiment.sh`](../run-experiment.sh) | Build → k6 benchmark → report → JFR diagnose pipeline | current — re-pointed at *target* repos in h2/h3 |
 | [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — same |
-| `01-scaffold-service.md`, `00-scaffold-reactive-service.md` | MVC / WebFlux+Redis scaffold references | legacy — from the practice problem; useful only as reference for the 4 controlled repos |
-| `02–05-*.md` (CAS, idempotency, chaos, outbox) | Practice-problem patterns | legacy — out of scope (multi-service excluded) |
 | `00-git-workflow.md` | Branch/commit workflow | current |
+
+The legacy practice-problem scaffolds (`00-scaffold-reactive-service.md`,
+`01-scaffold-service.md`, `02–05-*.md`) were removed in the refinement pass;
+they remain reachable via git history / the `template/init` snapshot.
 
 The old "ceiling experiment" and perf-tuning workflow from the practice
 problem do not apply here — JFR/k6 are analysis tools pointed at *target*
