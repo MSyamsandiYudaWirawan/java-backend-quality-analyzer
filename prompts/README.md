@@ -91,10 +91,10 @@ Known rough edges, most valuable first:
 5. **Mojibake in h2-committed score-sheet notes** — double-encoded
    em-dashes (`â€"`) from a Windows locale bug; cosmetic, fix in place
    (scores/structure untouched) or leave and document.
-6. **Hollow local clones** — `targets/spring-petclinic` and
-   `targets/springboot-blog-rest-api` are empty git inits (failed clones);
-   delete or re-clone so local-path invocations stop misfiring (URL
-   invocation is the working path and how all measured runs happened).
+6. ~~**Hollow local clones**~~ DONE — `targets/spring-petclinic` and
+   `targets/springboot-blog-rest-api` (empty git inits from failed clones)
+   were deleted in the refinement pass; URL invocation remains the working
+   path (and how all measured runs happened).
 7. **Native-mode JFR** — `--jfr` is docker-only (orchestrate.js has no
    JAVA_OPTS wiring); either wire it or remove native mode from the docs.
 8. **Dual-profile scoring** — h2 kept 50-VU + 200-VU reports, but the
@@ -331,9 +331,11 @@ advanced workflow catches failing under load, with the JFR to prove it.
 | [`../jfr-diagnose.sh`](../jfr-diagnose.sh) | JFR hypothesis-driven diagnosis | current — h3; works on any .jfr path unchanged |
 | `../benchmarks/k6.js`, `orchestrate.js`, `k6-report.js` | k6 template / native runner / reporter | k6.js **legacy** (superseded by `service/advanced/k6/template.js` + `gen-k6.py`); orchestrate + k6-report **re-pointed** at targets (h2) |
 | `../docker-compose.benchmark.yml` | Original benchmark envelope | pre-existing, **untouched**; h2 stack lives in `service/advanced/docker/h2-*.yml` with the same limits |
-| `01-scaffold-service.md`, `00-scaffold-reactive-service.md` | MVC / WebFlux+Redis scaffold references | legacy — from the practice problem; useful only as reference for the 4 controlled repos |
-| `02–05-*.md` (CAS, idempotency, chaos, outbox) | Practice-problem patterns | legacy — out of scope (multi-service excluded) |
 | `00-git-workflow.md` | Branch/commit workflow | current |
+
+The legacy practice-problem scaffolds (`00-scaffold-reactive-service.md`,
+`01-scaffold-service.md`, `02–05-*.md`) were removed in the refinement pass;
+they remain reachable via git history / the `master` snapshot.
 
 The old "ceiling experiment" and perf-tuning workflow from the practice
 problem do not apply here — JFR/k6 are analysis tools pointed at *target*

@@ -63,14 +63,15 @@ prompts/                            Event brief + policies (pre-existing templat
   README.md                         Single source of truth: problem, metric, k6 policy, working agreements, state log
   post.txt, problem.txt             Event rules and the full problem statement
   TIGERSTYLE.md                     Coding principles enforced on all generated code
-  00-05-*.md                        Legacy practice-problem scaffolds (reference only, out of scope)
+  00-git-workflow.md                Branch/commit workflow
+                                    (legacy practice-problem scaffolds 00/01-scaffold-*.md, 02-05-*.md
+                                    removed in the refinement pass; reachable via git history / master)
 trajectories/                       Curated agent-session records (event work)
   index.md                          One row per session, with the key decision of each
   kimi-cli/                         The session files themselves (the submission's trajectory record)
   kimi-api/, kimi-web/              Template scaffolding (example file / empty export dirs)
 targets/                            Local clones of eval repos — GITIGNORED, not part of the repo.
-                                    spring-petclinic and springboot-blog-rest-api are hollow failed
-                                    clones; URL invocation is the working path (prompts/README.md §3)
+                                    URL invocation is the working path (prompts/README.md §3)
 video/script.md                     5-minute submission video script
 personal/                           Personal study notes from practice — NOT part of the submission
 run-experiment.sh                   Root runtime pipeline: build target -> k6 load -> report -> optional --jfr
