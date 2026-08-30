@@ -4,6 +4,8 @@
 
 > **Pre-existing:** This repo was initialized from a personal hackathon template (prompts, benchmark scripts, CI skeleton). All solution code, tests, experiments, and evidence were built during the August 2026 event.
 
+> **Branch:** `exp/h1-rubric-scoring` — iteration 1 (**KEPT**). Built on the `baseline` stage; later experiments (`exp/h2-*`, …) and the final workflow (`advanced`) build on this one.
+
 ---
 
 ## Tools Used
@@ -27,10 +29,10 @@ This repo was initialized from a personal hackathon template built before the ev
 
 **Everything below was built during the August 2026 event:**
 
-- `service/` — all solution code (baseline and advanced)
+- `service/` — the baseline analyzer, the h1 collector + scoring wrapper, the shared rubric, the eval harness
 - All filled-in values in README, IMPROVEMENTS.md, REPRODUCTION.md
-- All experiment branches (`experiment/h*`)
-- All evidence files (`evidence/*.jfr`, `evidence/k6-*.json`, `evidence/*/diagnosis-report-*.md`)
+- All experiment branches (`exp/h1-rubric-scoring`, …)
+- All evidence files (`evidence/baseline/`, `evidence/eval/`, `evidence/advanced/h1/`, `evidence/experiments/`)
 - All agent trajectories in `trajectories/kimi-cli/`
 - The solution video
 
@@ -46,76 +48,81 @@ This repo was initialized from a personal hackathon template built before the ev
 
 ---
 
-## Baseline Solution
+## Baseline Solution (the control)
 
-A naive shell-script analyzer: `service/baseline/analyze.sh`. No AI, no deep analysis. For a target Java repo it checks five shallow yes/no signals and sums them into a 0–100 score:
+A naive shell-script analyzer: `service/baseline/analyze.sh`. Five shallow yes/no checks (README 10 / `pom.xml` 10 / tests present 20 / `mvn package` 25 / `mvn test` 35) summed into a 0–100 score.
 
-| Check | Weight |
-|-------|--------|
-| README present | 10 |
-| Maven build file (`pom.xml`) | 10 |
-| Tests present under `src/test` | 20 |
-| `mvn package` succeeds | 25 |
-| `mvn test` passes | 35 |
-
-**Measured:** spring-petclinic @ `818c413` → **100/100** (`evidence/baseline/spring-petclinic/`).
-
-The baseline is intentionally naive — it saturates on any well-formed repo and cannot distinguish "compiles and has tests" from "well-architected, low-debt, performant under load". This scoring ceiling is the control against which all experiments are judged.
+**Measured:** spring-petclinic @ `818c413` → 100/100 (`evidence/baseline/spring-petclinic/`); full eval set vs expert ranking v1 → **ρ = 0.811**, NOT ROBUST (5-way tie at 90 spanning expert ranks 2–8; 11 of 45 pairs unjudged; tie bounds [0.527, 0.915]; P(ρ ≥ 0.811 by luck) ≈ 29%) — `evidence/eval/baseline/eval-report.md`. The blindness is intentional: it is the control.
 
 ---
 
-## Advanced Solution
+## This Branch: H1 — Agent Rubric Scoring on Collected Evidence (KEPT)
 
-An agent workflow (Kimi Code CLI) that analyzes a target Java backend end to end:
+The first capability added on top of the baseline: replace binary checks with agent judgment over mechanically-collected facts, scored against the shared rubric (`service/rubric/quality-rubric.md`, 100 pts: Build & Test 25, Architecture 20, Dependencies 15, Runtime 25, Maintainability 15).
 
-1. **Clone + build** the target (Testcontainers for isolated infra where needed).
-2. **Full test evidence** — parsed surefire results: counts, failures, coverage trend, not a pass/fail bit.
-3. **Runtime profiling** — k6 load test + JFR recording of the *target* repo, via the pre-existing `run-experiment.sh` / `jfr-diagnose.sh` pipeline.
-4. **Architecture & dependency health** — layering, MVC vs WebFlux, outdated/risky dependencies.
-5. **Evidence-linked report** — every score traces to a file, test result, or profiler recording; scored against a fixed rubric shared with the human expert.
+The pipeline:
 
-**Measured:** [Spearman ρ vs. human-expert ranking on the 10-repo eval set: baseline ρ = X → advanced ρ = Y. Secondary: findings per repo, evidence traceability, wall-clock time per analysis.]
+1. **Mechanical collection** — `service/advanced/collect.sh` gathers facts only, no judgments: build/test logs, parsed surefire summary, test census (files/LOC/assertions), package tree, top-20 classes by LOC, `dependency:analyze` + `dependency:list`, repo scan (README/license/config/binaries/secrets).
+2. **Blind agent scoring** — the agent reads only the collected evidence (never the expert ranking) and scores each rubric item **with per-item citations** to the evidence files. Score sheets are committed: `evidence/advanced/h1/<repo>/score-sheet.json`.
+3. **Thin harness wrapper** — `service/advanced/analyze-h1.sh` validates the committed sheet and emits `h1-score.json`. No re-scoring at eval time: eval runs are fast and reproducible.
+4. **Runtime = 0 uniformly** for all repos (a uniform "not yet measured" rule) so the missing capability cannot distort ρ — 25 rubric points deliberately left dark for later experiments.
 
-> ⚠️ [Add caveats about eval-set size and ranking methodology here.]
+**Measured (headline):** Spearman ρ vs. expert ranking v1 on the 10-repo eval set: **baseline 0.811 → h1 0.865** (`evidence/eval/h1/eval-report.md`; full record: `evidence/experiments/h1-rubric-scoring.md`). The substance is in the checks the harness reports alongside ρ:
 
-### Scope & Limitations
+- The baseline's **5-way tie at 90 is broken** — those repos now span 50–63, each point cited to collector artifacts.
+- **Unjudged pairs 11 → 3** of 45 (37 concordant / 5 discordant); tie bounds tighten [0.527, 0.915] → **[0.835, 0.929]** — no NOT ROBUST stamp.
+- The remaining 3-way tie at 55 (practice-mvc / mvc-caffeine / petclinic-degraded) is **honest**: structurally near-identical repos whose real differences are runtime — out of h1 scope by design.
 
-- **Single deployable unit only.** The runtime pipeline (k6 + JFR) measures one bootable service — the target itself or its gateway. Multi-service architectures (Kafka topologies, outbox patterns, microservice meshes) are analyzed with static signals only; we deliberately do not spin up multi-service harnesses, and reports say so plainly rather than faking coverage.
-- **Runtime evidence is bounded by deployability.** A repo that cannot be built and booted as a service (libraries, broken builds, ungeneratable load scenarios) scores 0 on the Runtime dimension with an explicit note — that absence is itself a finding for a backend being acquired, not a skipped checkbox.
-- **Load scenarios are agent-generated, then frozen.** k6 scripts are generated from the target's API surface against a fixed scenario standard (mixed create→read, fixed VU/duration profile across all repos), smoke-validated, and committed as evidence. Re-runs use the committed artifact, so measurements are reproducible even though authoring is agentic.
+> ⚠️ Caveats: the ρ gain (+0.054) is modest at n=10 and sits inside the baseline's own luck envelope — the strong claim is the pair check and the tie bounds, not the headline. Scoring is agent judgment: re-deriving score sheets is an agent session, only *consuming* them is mechanical. h1 disagrees with expert ranking v1 on two repos (blog-rest-api: h1 9th vs expert 6th — genuine undeclared-MySQL test failure + committed JWT secret; petclinic-degraded: h1 5–7th vs expert 9th — petclinic-grade architecture credits on a synthetic-bottom repo). This triggers the v2 ranking-revision policy; the human's call is recorded before the next experiment (`evidence/experiments/h1-rubric-scoring.md`).
 
+### How to run
 
+```bash
+# Collect mechanical evidence for a repo:
+bash service/advanced/collect.sh <repo-url-or-path> --out evidence/advanced/h1/<repo>
 
-**[Failure name].** [Describe the subtle failure you encountered and how you fixed it. Be specific about the root cause and the solution.]
+# Score-to-harness path (uses the COMMITTED score sheet; does not re-score):
+bash service/advanced/analyze-h1.sh <repo-url-or-path> --out <out-dir>
 
-**Fix:** [Describe the fix.]
+# Reproduce the headline numbers from committed artifacts (seconds):
+python service/eval/evaluate.py --label h1 --resume \
+  --analyzer "bash service/advanced/analyze-h1.sh {target} --out {out}" \
+  --targets service/targets.txt --ranking service/eval/expert-ranking.txt \
+  --out evidence/eval/h1
+# Expected: "Spearman rho vs expert ranking: 0.865 (n=10)"
+```
+
+Full setup, versions, and expected output: [`REPRODUCTION.md`](REPRODUCTION.md).
 
 ---
 
 ## Eval Set
 
-The 10-repo evaluation set is composed of public repos, one synthetic degraded fork, and four self-authored controlled repos:
+The 10-repo evaluation set is composed of public repos, one synthetic degraded fork, and four self-authored controlled repos (`service/targets.txt` is the authoritative record, incl. validation results, pins, and dropped candidates). Scores below are committed in `evidence/eval/baseline/eval-report.md` and `evidence/eval/h1/eval-report.md`:
 
-| # | Repo | Type | Purpose |
-|---|------|------|---------|
-| 1 | spring-projects/spring-petclinic | public good | Boots with H2, already scored 100/100 by baseline — saturation demo |
-| 2 | petclinic-degraded (fork) | synthetic bottom | Ground-truth anchor; tests stripped, README gutted, dependency broken |
-| 3 | spring-guides/gs-rest-service | public weak | Official skeleton, minimal tests — separates "minimal" from "bad" |
-| 4 | RameshMF/springboot-blog-rest-api | public average | Tutorial-grade full app, needs MySQL — exercises Testcontainers handling |
-| 5 | spring-projects/spring-mvc-showcase | public legacy | Archived XML config — tests legacy handling and dependency-health scoring |
-| 6 | iluwatar/java-design-patterns | public edge case | Library, not a bootable backend — triggers Runtime=0 finding |
-| 7 | practice-mvc | self-authored | Controlled baseline: plain Spring MVC, no cache |
-| 8 | practice-mvc-redis | self-authored | Controlled mid: MVC + Redis cache layer |
-| 9 | practice-webflux | self-authored | Controlled mid: WebFlux, no cache |
-| 10 | practice-webflux-redis | self-authored | Controlled top: WebFlux + Redis — known best runtime |
+| # | Repo | Type | Expert (v1) | Baseline | h1 |
+|---|------|------|:-----------:|:--------:|:--:|
+| 1 | spring-projects/spring-petclinic | public good | 1 | 100 | 72 |
+| 2 | practice-webflux-redis | self-authored controlled | 2 | 90 | 57 |
+| 3 | eugenp/REST-With-Spring (module6, pinned clone @ `9c06a66`) | public multi-module | 3 | 100 | 63 |
+| 4 | practice-webflux | self-authored controlled | 4 | 90 | 56 |
+| 5 | practice-mvc-caffeine | self-authored controlled | 5 | 90 | 55 |
+| 6 | RameshMF/springboot-blog-rest-api | public average, tutorial-grade | 6 | 65 | 42 |
+| 7 | practice-mvc | self-authored controlled | 7 | 90 | 55 |
+| 8 | spring-guides/gs-rest-service-complete (pinned clone @ `2ef8e28`) | public weak skeleton | 8 | 90 | 50 |
+| 9 | MSyamsandiYudaWirawan/petclinic-degraded | synthetic bottom (fork) | 9 | 55 | 55 |
+| 10 | spring-projects/spring-mvc-showcase | public legacy, archived | 10 | 40 | 26 |
+| | **Spearman ρ vs v1** | | | **0.811** | **0.865** |
+| | Tie bounds | | | [0.527, 0.915] | [0.835, 0.929] |
+| | Pairs (concord./discord./unjudged) | | | 31/3/11 | 37/5/3 |
 
-**Disclosure:** Repos 7–10 are self-authored practice services built before the event to test the benchmark pipeline. They are included because they provide known ground-truth runtime rankings (MVC < MVC+Redis < WebFlux < WebFlux+Redis). The agent had no access to this ground truth during development — rankings were determined by the rubric applied to JFR evidence, the same process used for every other repo.
+**Disclosure:** The four practice repos are self-authored services built before the event to test the benchmark pipeline, included because they provide a known ground-truth ordering. The agent scored blind — it read only collected evidence, never the expert ranking (`evidence/experiments/h1-rubric-scoring.md`). The expert ranking basis and justifications: `evidence/expert-ranking-notes.md`.
 
 ---
 
 ## Hot Take
 
-> **[Your opinionated conclusion about what actually mattered.]** [e.g., "Micro-optimizations are a trap. The real bottleneck was 6 orders of magnitude larger — DB round-trips. If your optimization target isn't visible in the JFR flame graph, you're optimizing noise. Measure first, benchmark second."]
+> **The ties are where the information is.** The baseline's 0.811 and h1's 0.865 are almost the same number — what changed is that the analyzer now has an *opinion* about the middle of the ranking, with receipts: 11 unjudged pairs became 3, and every point in the 50–63 span cites a build log, a test census, or a dependency analysis. A quality score that can't order the middle isn't scoring quality; it's checking boxes.
 
 ---
 
@@ -123,9 +130,9 @@ The 10-repo evaluation set is composed of public repos, one synthetic degraded f
 
 | What we gained | What we gave up |
 |----------------|-----------------|
-| [Gain 1] | [Cost 1] |
-| [Gain 2] | [Cost 2] |
-| [Gain 3] | [Cost 3] |
+| Discrimination with receipts: the 90-tie broke into a cited, defensible 50–63 span; unjudged pairs 11 → 3 | Authoring is agentic: score sheets are agent judgment — only consuming them is mechanical, so reproducibility lives in the committed artifact |
+| A uniform Runtime = 0 rule that keeps an unmeasured dimension from distorting ρ | 25 of 100 rubric points still dark — the practice-repo runtime ordering remains untested (later experiments' territory) |
+| Mechanical collection is repeatable (`collect.sh`, facts only) | Collection is environment-sensitive like the baseline: the port-5432 incident reproduced during collection and petclinic had to be re-collected with the container stopped (`evidence/experiments/h1-rubric-scoring.md`) |
 
 ---
 
