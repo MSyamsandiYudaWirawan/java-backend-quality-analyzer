@@ -2,7 +2,7 @@
 
 - Date: 2026-08-29
 - Tool: Kimi Code CLI
-- Model: kimi-k2
+- Model: kimi-k3
 - Human Checkpoint: pending (commit not yet approved)
 
 ## Prompt Given
