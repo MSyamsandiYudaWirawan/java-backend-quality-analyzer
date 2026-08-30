@@ -19,7 +19,7 @@ only maps the code.
 
 | Branch | What it is |
 |--------|------------|
-| `master` | Pre-event template snapshot (being renamed `template/init`) — the repo as it stood before the event. |
+| `template/init` | Pre-event template snapshot — the repo as it stood before the event (renamed from `master` in the refinement pass). |
 | `exp/h1-rubric-scoring` | Baseline + blind rubric scoring on collected mechanical evidence. KEPT. |
 | `exp/h2-k6-generation` | h1 + agent-generated k6 load tests against the booted target. KEPT. |
 | `exp/h3-full-pipeline` | h2 + JFR profiling during the generated load. KEPT. |
@@ -68,7 +68,7 @@ prompts/                            Event brief + policies (pre-existing templat
   TIGERSTYLE.md                     Coding principles enforced on all generated code
   00-git-workflow.md                Branch/commit workflow
                                     (legacy practice-problem scaffolds 00/01-scaffold-*.md, 02-05-*.md
-                                    removed in the refinement pass; reachable via git history / master)
+                                    removed in the refinement pass; reachable via git history / template/init)
 trajectories/                       Curated agent-session records (event work)
   index.md                          One row per session, with the key decision of each
   kimi-cli/                         The session files themselves (the submission's trajectory record)
@@ -163,7 +163,7 @@ prompts/README.md §5).
 
 `prompts/`, `benchmarks/`, `run-experiment.sh`, `jfr-diagnose.sh`,
 `docker-compose*.yml`, and the doc scaffolding are the pre-existing personal
-hackathon template (snapshot on `master`). `service/`, `tests/`, `evidence/`,
+hackathon template (snapshot on `template/init`). `service/`, `tests/`, `evidence/`,
 the filled docs, and `trajectories/` are event work built during the August
 2026 event. This distinction is a submission requirement — never blur it
 (prompts/README.md §6.6).

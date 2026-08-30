@@ -59,9 +59,9 @@ script filled, full unit suite green on `advanced`, trajectories 1–18
 indexed. New artifact: `evidence/eval/baseline-v2/` (original baseline
 scores re-ranked vs v2, no re-measurement: 0.850, still NOT ROBUST).
 
-**Remaining (human):** record the video; decide whether to fast-forward
-`master` to `advanced` for platforms that judge the default branch;
-final submission checklist at README bottom.
+**Remaining (human):** record the video; set `advanced` as the default branch
+when pushing (no remote yet; `master` renamed to `template/init` in the
+refinement pass); final submission checklist at README bottom.
 
 ### NEXT SESSION — refinement (polish, no new capabilities)
 
@@ -335,7 +335,7 @@ advanced workflow catches failing under load, with the JFR to prove it.
 
 The legacy practice-problem scaffolds (`00-scaffold-reactive-service.md`,
 `01-scaffold-service.md`, `02–05-*.md`) were removed in the refinement pass;
-they remain reachable via git history / the `master` snapshot.
+they remain reachable via git history / the `template/init` snapshot.
 
 The old "ceiling experiment" and perf-tuning workflow from the practice
 problem do not apply here — JFR/k6 are analysis tools pointed at *target*
