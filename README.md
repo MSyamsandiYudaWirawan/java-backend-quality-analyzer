@@ -10,7 +10,7 @@
 
 ## Tools Used
 
-- **Kimi Code CLI** — local terminal agent (model: kimi-k2-0711)
+- **Kimi Code CLI** — local terminal agent (model: kimi-k3)
 - **JFR / JMH / k6** — measurement and load testing
 - **Testcontainers** — integration test infrastructure
 

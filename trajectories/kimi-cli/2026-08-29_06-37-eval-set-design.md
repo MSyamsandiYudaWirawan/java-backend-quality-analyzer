@@ -2,7 +2,7 @@
 
 - Date: 2026-08-29
 - Tool: Kimi Code CLI
-- Model: kimi-k2
+- Model: kimi-k3
 - Branch: `baseline`
 - Human Checkpoint: yes (human explicitly opened with "DONT WRITE ANYTHING
   FIRST, I just want to discuss" — design was settled in conversation before

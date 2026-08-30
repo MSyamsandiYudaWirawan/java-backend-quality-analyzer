@@ -2,7 +2,7 @@
 
 - Date: 2026-08-28
 - Tool: Kimi Code CLI
-- Model: kimi-k2
+- Model: kimi-k3
 - Branch: `baseline`
 - Human Checkpoint: yes
 
