@@ -19,6 +19,8 @@
 # Env:
 #   H1_EVIDENCE_DIR   Dir holding per-repo h1 evidence + score sheets.
 #                     Default: <repo-root>/evidence/advanced/h1
+#
+# Exit codes: 0 ok, 1 no committed score sheet for the target, 2 usage error.
 
 set -euo pipefail
 

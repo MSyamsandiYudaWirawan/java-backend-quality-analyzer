@@ -1,8 +1,15 @@
 // ============================================================================
-// GENERATED FILE — do not edit by hand.
-// Rendered from service/advanced/k6/template-form.js + committed slots JSON via
-// service/advanced/gen-k6.py. Re-runs use THIS committed script, never
-// regeneration (prompts/README.md §5 — k6 Generation Policy).
+// h2 k6 load-test TEMPLATE — form scenario (fixed scenario standard).
+// ============================================================================
+// gen-k6.py renders this template + a committed slots JSON into a
+// self-contained load-test.js by replacing the slots-marker line below
+// (SLOTS_MARKER in gen-k6.py — the literal sentinel is not spelled out in
+// this header because the generator rejects rendered output still
+// containing it) with the validated slots as a JSON object. The rendered
+// script is committed per repo as evidence; re-runs use the committed
+// script, never regeneration (prompts/README.md §5 — k6 Generation
+// Policy). NEVER hand-edit generated output — fix the slots JSON or this
+// template and re-render.
 //
 // Fixed scenario standard (identical across repos for comparability):
 //   setup()    seeds ENTITY_COUNT entities via the repo's real create endpoint

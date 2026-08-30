@@ -23,6 +23,10 @@
 # Env:
 #   BUILD_TIMEOUT_SECONDS   Max wall time per maven invocation (default 900).
 
+# Pipeline: invoked per repo by the eval harness (service/eval/evaluate.py) —
+# the intentional control the advanced analyzer is measured against.
+# Exit codes: 0 ok (any score), 2 usage/environment error.
+
 set -euo pipefail
 
 # Scoring weights. tests/unit/test-baseline.sh asserts against these values;

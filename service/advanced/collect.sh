@@ -31,6 +31,11 @@
 # Env:
 #   BUILD_TIMEOUT_SECONDS   Max wall time per maven invocation (default 900).
 
+# Pipeline: first stage of the h1 analyzer — the agent runs this per repo,
+# reads the evidence, scores the rubric blind, and commits score-sheet.json;
+# analyze-h1.sh serves that committed sheet to the eval harness.
+# Exit codes: 0 ok, 2 usage/environment error.
+
 set -euo pipefail
 
 readonly BUILD_TIMEOUT_SECONDS="${BUILD_TIMEOUT_SECONDS:-900}"

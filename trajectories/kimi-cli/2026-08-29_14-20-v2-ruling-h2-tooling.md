@@ -2,7 +2,7 @@
 
 - Date: 2026-08-29 (~06:00–14:20 UTC, human local +07)
 - Tool: Kimi Code CLI
-- Model: kimi-k2
+- Model: kimi-k3
 - Human Checkpoint: yes (repeated, decision-driving)
 
 ## Prompt Given

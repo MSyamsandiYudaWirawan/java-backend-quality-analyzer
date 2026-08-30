@@ -26,7 +26,7 @@ Since you are using the Kimi API Console (platform.moonshot.cn) instead of a loc
    # Session: {brief topic}
    - Date: 2026-08-28
    - Tool: Kimi API Console (platform.moonshot.cn)
-   - Model: kimi-k2-0711 (or whatever model you selected)
+   - Model: kimi-k3 (or whatever model you selected)
    - Human Checkpoint: yes/no
    ```
 5. **Append the Key Decisions section** at the bottom of the file (see template below).

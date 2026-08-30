@@ -2,11 +2,18 @@
 # ============================================================================
 # Save current Kimi trajectory
 # ============================================================================
-# Usage:
-#   ./save-traj.sh "experiment/h3-cache"
+# Part of the trajectory curation workflow (prompts/README.md §6 — one curated
+# trajectory per work block). Run /log inside the Kimi CLI, place the exported
+# .md in trajectories/, then run this script.
 #
-# Run this inside the Kimi CLI with /log, then move the exported file here.
-# This script renames and appends metadata so trajectories stay organized.
+# Usage:
+#   ./save-traj.sh [label]        # label defaults to "session"
+#
+# Input:  the newest trajectories/*.md (the /log export).
+# Output: trajectories/kimi-api/<YYYYMMDD-HHMMSS>_<label>.md with a metadata
+#         header (date, branch, commit) prepended; the source file is removed.
+#
+# Exit codes: 0 saved, 1 no exported .md found in trajectories/.
 # ============================================================================
 
 LABEL="${1:-session}"

@@ -4,6 +4,20 @@ set -uo pipefail
 # ============================================================================
 # Generic JFR Hypothesis-Driven Diagnosis Script
 # ============================================================================
+# Dumps per-event evidence from a .jfr recording and emits a markdown report
+# that rates competing bottleneck hypotheses (I/O, parking, GC, CPU, locks,
+# allocation, exceptions) by confidence — never a single verdict.
+#
+# Pipeline: h3 — run-experiment.sh --jfr invokes this on the recording flushed
+# to evidence/advanced/h3/<repo>/profile.jfr; also works standalone on any
+# .jfr path.
+#
+# Outputs (into -o dir): per-event evidence dumps (cpu.txt, io.txt, gc.txt,
+# locks.txt, park.txt, summary.txt, ...) plus <name>-report.md unless
+# --no-report.
+#
+# Exit codes: 0 ok, 1 missing/invalid JFR file or no working jfr binary.
+#
 # Usage:
 #   jfr-diagnose.sh [options] [recording.jfr]
 #

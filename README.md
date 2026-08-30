@@ -8,7 +8,7 @@
 
 ## Tools Used
 
-- **Kimi Code CLI** — local terminal agent (model: kimi-k2-0711)
+- **Kimi Code CLI** — local terminal agent (model: kimi-k3)
 - **JFR / JMH / k6** — measurement and load testing
 - **Testcontainers** — integration test infrastructure
 
@@ -133,7 +133,7 @@ The 10-repo evaluation set is composed of public repos, one synthetic degraded f
 
 ## Reproduction
 
-See [`REPRODUCTION.md`](REPRODUCTION.md) for exact setup commands, versions, and expected output.
+See [`REPRODUCTION.md`](REPRODUCTION.md) for exact setup commands, versions, and expected output. For a structural map of the repo itself, see [`Documentation.md`](Documentation.md).
 
 ## Improvement Changelog
 
