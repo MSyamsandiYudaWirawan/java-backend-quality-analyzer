@@ -162,5 +162,5 @@ A submission is scored only after it passes completeness, integrity, trace, and 
 - [x] `evidence/` contains analysis reports (markdown + JSON) for baseline and advanced across the eval repos, plus committed k6 JSON/reports and JFR diagnosis reports for runtime-profiled repos (raw `.jfr` binaries are gitignored by design — they regenerate via `run-experiment.sh <target> --docker --jfr`)
 - [x] `REPRODUCTION.md` commands run successfully on a clean environment (every command verified during packaging; `--resume` set re-verified on all branches in the refinement pass)
 - [x] Trajectories exported for every major agent session in `trajectories/kimi-cli/` (1–19 indexed, incl. the Day-2 refinement session)
-- [ ] 5-minute video recorded and under 5 minutes
+- [x] 5-minute video recorded and under 5 minutes
 - [x] Root README clearly states tools used and what was built during the event
