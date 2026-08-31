@@ -112,12 +112,12 @@ The 10-repo evaluation set is composed of public repos, one synthetic degraded f
 
 **Disclosure:** Repos 7–10 are self-authored practice services built before the event to test the benchmark pipeline. They are included because they provide known ground-truth runtime rankings (mvc < mvc-caffeine at throughput, webflux stacks clean of blocking signals). The analyzer recovered this ordering from its own measurements only — the expert ranked these four on measured runtime knowledge, the agent scored them blind (`evidence/expert-ranking-notes.md`).
 
-**Why 10 repos?** The brief's own bar is "ten or more cases... when the task allows it" — and this task's cases are expensive by design:
+**Why 10 repos?** The brief's bar is "ten or more cases... when the task allows it" — and here, each case is expensive by design.
 
-- **Each case is measured, not scanned.** Every repo costs a real boot + build + 70s load + JFR profile (~6–9 min machine time) plus blind agent scoring — and the ground truth itself (a qualified expert ranking per repo) scales linearly with n. Ten deeply-measured repos beat fifty shallowly-scanned ones for a quality metric.
-- **The set is stratified, not sampled.** It deliberately covers the archetypes a buyer meets: a reference standard (petclinic), a synthetic bottom with a byte-identical runtime twin as control (degraded), a controlled ordering quartet for method validation (7–10), a legacy fail-fast (showcase), a multi-module repo (module6), and two NOT_TESTABLE cases. The required "one challenging case" is petclinic itself — the baseline's 100/100 that collapses under load.
-- **ρ is coarse at n=10 — so it is never reported alone.** The harness emits tie bounds, unjudged-pair counts, and a NOT ROBUST stamp when >20% of pairs are ties (the baseline is stamped; the advanced workflow is not). The co-primary metric is per-repo findings traced to evidence, which does not depend on n.
-- **Reproducibility is a feature of small n.** A judge can re-verify the full eval set in minutes with `--resume`; a 50-repo set would be its own barrier to checking our work.
+- **Measured, not scanned.** A case costs a real boot, build, 70s of generated load, and a JFR profile (~6–9 min), plus a blind scoring pass — and the ground truth itself (one qualified-expert ranking per repo) scales linearly with n. Ten deeply measured repos carry more signal than fifty shallow scans.
+- **Stratified, not sampled.** The set covers the archetypes a buyer actually meets: a reference standard (petclinic), a synthetic bottom with a byte-identical runtime twin as control (degraded), a controlled ordering quartet (7–10), a legacy fail-fast (showcase), a multi-module repo (module6), and two NOT_TESTABLE findings. The required challenging case is petclinic — the baseline's 100/100 that collapses under load.
+- **Small n is handled, not hidden.** ρ at n=10 is coarse, so the harness never reports it alone: tie bounds, unjudged-pair counts, and a NOT ROBUST stamp when >20% of pairs are ties (baseline: stamped; advanced: clean). The co-primary — per-repo findings traced to evidence — does not depend on n.
+- **Small n is reproducible.** `--resume` re-verifies the whole set in minutes; a 50-repo set would be a barrier to checking our work.
 
 ---
 

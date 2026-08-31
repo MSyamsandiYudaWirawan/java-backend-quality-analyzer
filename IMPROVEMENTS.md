@@ -153,15 +153,33 @@ ranked against the v2 expert ranking (`service/eval/expert-ranking.txt`).
   → JFR names the cause.
 - **Full report:** [`evidence/experiments/h3-full-pipeline.md`](evidence/experiments/h3-full-pipeline.md)
 
+### REJECTED (measured, then rejected): 50-VU load profile
+- **Hypothesis (rejected):** 50 concurrent users per repo is enough load to
+  discriminate runtime quality.
+- **What happened:** the first pilot runs put every repo through 50 VUs —
+  and ALL of them PASSed every threshold by ~5x. No repo came anywhere near
+  its saturation knee, so the runs carried no ordering information:
+  vacuous verdicts.
+- **Decision:** the profile was raised to 200 VUs and every script
+  re-rendered BEFORE any evidence was committed — comparability preserved,
+  garbage evidence never entered the record. The 50-VU reports stay in
+  `evidence/advanced/h2-50vus/` as the efficiency view and as the proof of
+  the rejection.
+- **Lesson:** a load test that can't push repos toward saturation measures
+  the generator, not the service — thresholds only mean something near the
+  knee.
+
 ### REJECTED (by design, never run): Pure code-metrics scoring
 - **Hypothesis (rejected):** LOC/complexity metrics would improve ranking
-  cheaply.
-- **Why rejected without running:** no plausible Δρ over rubric scoring —
-  the ties that matter are runtime differences invisible to static metrics.
-  Recorded as the "one experiment you removed" entry: cheap to build,
-  nothing to teach the analyzer. See `prompts/README.md` §4.
+  cheaply, without booting repos.
+- **Why rejected without a branch:** the ties still open after h1 (the
+  honest 55-tie: mvc / mvc-caffeine / degraded) are runtime differences by
+  construction — static metrics cannot see them, so the best case is
+  Δρ ≈ 0 over h1. And the proxy experiment had already run: the baseline
+  IS five static checks, and it saturated (5-way tie at 90). More static
+  signal does not cure static blindness. See `prompts/README.md` §4.
 - **Lesson:** an experiment whose best case adds no discriminative signal
-  is not worth a branch.
+  is not worth a branch — the control had already answered the question.
 
 ---
 
